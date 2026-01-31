@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование API профилей SmartMatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Тестирование API профилей SmartMatch</h1>
+
+    <div class="grid">
+        <!-- Аутентификация -->
+        <div class="container">
+            <h2>🔐 Аутентификация</h2>
+            
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="email" value="candidate@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="password" value="Password123">
+            </div>
+            
+            <div class="form-group">
+                <label>Роль:</label>
+                <select id="role">
+                    <option value="CANDIDATE">CANDIDATE</option>
+                    <option value="HR">HR</option>
+                    <option value="UNIVERSITY">UNIVERSITY</option>
+                </select>
+            </div>
+            
+            <button onclick="login()">Войти</button>
+            <button onclick="register()">Регистрация</button>
+            <button onclick="logout()">Выход</button>
+            
+            <div id="auth-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Получение профиля -->
+        <div class="container">
+            <h2>👤 Получение профиля</h2>
+            
+            <button onclick="getProfile()">Получить мой профиль</button>
+            <button onclick="getHRProfile()">Получить HR профиль</button>
+            <button onclick="getCandidateProfile()">Получить Candidate профиль</button>
+            <button onclick="getUniversityProfile()">Получить University профиль</button>
+            
+            <div id="profile-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Создание профиля -->
+        <div class="container">
+            <h2>➕ Создание профиля</h2>
+            
+            <div class="form-group">
+                <label>Имя:</label>
+                <input type="text" id="firstName" placeholder="Имя">
+            </div>
+            
+            <div class="form-group">
+                <label>Фамилия:</label>
+                <input type="text" id="lastName" placeholder="Фамилия">
+            </div>
+            
+            <div class="form-group">
+                <label>Телефон:</label>
+                <input type="tel" id="phone" placeholder="+7-999-123-45-67">
+            </div>
+            
+            <div class="form-group">
+                <label>Компания (для HR):</label>
+                <input type="text" id="company" placeholder="ООО Технологии">
+            </div>
+            
+            <div class="form-group">
+                <label>Должность (для HR):</label>
+                <input type="text" id="position" placeholder="HR Manager">
+            </div>
+            
+            <div class="form-group">
+                <label>Биография (для кандидата):</label>
+                <textarea id="bio" placeholder="Краткое описание о себе"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Местоположение (для кандидата):</label>
+                <input type="text" id="location" placeholder="Москва">
+            </div>
+            
+            <div class="form-group">
+                <label>Название университета:</label>
+                <input type="text" id="universityName" placeholder="МГУ">
+            </div>
+            
+            <div class="form-group">
+                <label>Адрес университета:</label>
+                <input type="text" id="address" placeholder="Москва, Ленинские горы, 1">
+            </div>
+            
+            <button onclick="createProfile()">Создать профиль</button>
+            
+            <div id="create-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Обновление профиля -->
+        <div class="container">
+            <h2>✏️ Обновление профиля</h2>
+            
+            <div class="form-group">
+                <label>Новое имя:</label>
+                <input type="text" id="updateFirstName" placeholder="Новое имя">
+            </div>
+            
+            <div class="form-group">
+                <label>Новая биография:</label>
+                <textarea id="updateBio" placeholder="Обновленное описание"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Новое местоположение:</label>
+                <input type="text" id="updateLocation" placeholder="Новое местоположение">
+            </div>
+            
+            <div class="form-group">
+                <label>LinkedIn URL:</label>
+                <input type="url" id="linkedinUrl" placeholder="https://linkedin.com/in/username">
+            </div>
+            
+            <div class="form-group">
+                <label>GitHub URL:</label>
+                <input type="url" id="githubUrl" placeholder="https://github.com/username">
+            </div>
+            
+            <button onclick="updateProfile()">Обновить профиль</button>
+            
+            <div id="update-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Загрузка файлов -->
+        <div class="container">
+            <h2>📁 Загрузка файлов</h2>
+            
+            <div class="form-group">
+                <label>Выберите файл:</label>
+                <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx">
+            </div>
+            
+            <div class="form-group">
+                <label>Тип файла:</label>
+                <select id="fileType">
+                    <option value="AVATAR">Аватар</option>
+                    <option value="RESUME">Резюме</option>
+                    <option value="LOGO">Логотип</option>
+                    <option value="DOCUMENT">Документ</option>
+                </select>
+            </div>
+            
+            <button onclick="uploadFile()">Загрузить файл</button>
+            
+            <div id="upload-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Тестирование API -->
+        <div class="container">
+            <h2>🧪 Тестирование API</h2>
+            
+            <button onclick="testCORS()">Тест CORS</button>
+            <button onclick="getToken()">Получить токен</button>
+            <button onclick="getMe()">Проверить аутентификацию</button>
+            <button onclick="clearResults()">Очистить результаты</button>
+            
+            <div id="test-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Конфигурация API
+        const API_BASE_URL = 'http://localhost:3000';
+        let currentToken = null;
+
+        // Вспомогательные функции
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isError ? 'error' : 'success'}`;
+            element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        }
+
+        function getAuthHeaders() {
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            if (currentToken) {
+                headers['Authorization'] = `Bearer ${currentToken}`;
+            }
+            return headers;
+        }
+
+        // Аутентификация
+        async function login() {
+            try {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.accessToken;
+                    showResult('auth-result', `Вход успешен!\nТокен: ${data.accessToken}\nПользователь: ${JSON.stringify(data.user, null, 2)}`);
+                } else {
+                    showResult('auth-result', `Ошибка входа: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('auth-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        async function register() {
+            try {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const role = document.getElementById('role').value;
+
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password, role })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.accessToken;
+                    showResult('auth-result', `Регистрация успешна!\nТокен: ${data.accessToken}\nПользователь: ${JSON.stringify(data.user, null, 2)}`);
+                } else {
+                    showResult('auth-result', `Ошибка регистрации: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('auth-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                currentToken = null;
+                showResult('auth-result', `Выход выполнен: ${data.message}`);
+            } catch (error) {
+                showResult('auth-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        // Получение профилей
+        async function getProfile() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/profiles`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('profile-result', `Универсальный профиль:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('profile-result', `Ошибка: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('profile-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        async function getHRProfile() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/profiles/hr`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('profile-result', `HR профиль:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('profile-result', `Ошибка: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('profile-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        async function getCandidateProfile() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/profiles/candidate`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('profile-result', `Candidate профиль:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('profile-result', `Ошибка: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('profile-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        async function getUniversityProfile() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/profiles/university`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('profile-result', `University профиль:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('profile-result', `Ошибка: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('profile-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        // Создание профиля
+        async function createProfile() {
+            try {
+                const role = document.getElementById('role').value;
+                let profileData = {};
+
+                // Общие поля
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const phone = document.getElementById('phone').value;
+
+                if (firstName) profileData.firstName = firstName;
+                if (lastName) profileData.lastName = lastName;
+                if (phone) profileData.phone = phone;
+
+                // Специфичные поля для разных ролей
+                if (role === 'HR') {
+                    const company = document.getElementById('company').value;
+                    const position = document.getElementById('position').value;
+                    if (company) profileData.company = company;
+                    if (position) profileData.position = position;
+                } else if (role === 'CANDIDATE') {
+                    const bio = document.getElementById('bio').value;
+                    const location = document.getElementById('location').value;
+                    if (bio) profileData.bio = bio;
+                    if (location) profileData.location = location;
+                } else if (role === 'UNIVERSITY') {
+                    const name = document.getElementById('universityName').value;
+                    const address = document.getElementById('address').value;
+                    if (name) profileData.name = name;
+                    if (address) profileData.address = address;
+                }
+
+                const endpoint = role === 'HR' ? 'hr' : 
+                                role === 'CANDIDATE' ? 'candidate' : 'university';
+
+                const response = await fetch(`${API_BASE_URL}/profiles/${endpoint}`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    credentials: 'include',
+                    body: JSON.stringify(profileData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('create-result', `Профиль создан:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('create-result', `Ошибка создания: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('create-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        // Обновление профиля
+        async function updateProfile() {
+            try {
+                const updateData = {};
+
+                const firstName = document.getElementById('updateFirstName').value;
+                const bio = document.getElementById('updateBio').value;
+                const location = document.getElementById('updateLocation').value;
+                const linkedinUrl = document.getElementById('linkedinUrl').value;
+                const githubUrl = document.getElementById('githubUrl').value;
+
+                if (firstName) updateData.firstName = firstName;
+                if (bio) updateData.bio = bio;
+                if (location) updateData.location = location;
+                if (linkedinUrl) updateData.linkedinUrl = linkedinUrl;
+                if (githubUrl) updateData.githubUrl = githubUrl;
+
+                const response = await fetch(`${API_BASE_URL}/profiles`, {
+                    method: 'PATCH',
+                    headers: getAuthHeaders(),
+                    credentials: 'include',
+                    body: JSON.stringify(updateData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('update-result', `Профиль обновлен:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('update-result', `Ошибка обновления: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('update-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        // Загрузка файлов
+        async function uploadFile() {
+            try {
+                const fileInput = document.getElementById('fileInput');
+                const fileType = document.getElementById('fileType').value;
+
+                if (!fileInput.files[0]) {
+                    showResult('upload-result', 'Выберите файл для загрузки', true);
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('type', fileType);
+
+                const response = await fetch(`${API_BASE_URL}/storage/upload`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('upload-result', `Файл загружен:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('upload-result', `Ошибка загрузки: ${data.message}`, true);
+                }
+            } catch (error) {
+                showResult('upload-result', `Ошибка: ${error.message}`, true);
+            }
+        }
+
+        // Тестирование API
+        async function testCORS() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/cors-test`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                showResult('test-result', `CORS тест:\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                showResult('test-result', `Ошибка CORS: ${error.message}`, true);
+            }
+        }
+
+        async function getToken() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/token`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                showResult('test-result', `Токен:\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                showResult('test-result', `Ошибка получения токена: ${error.message}`, true);
+            }
+        }
+
+        async function getMe() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/me`, {
+                    method: 'GET',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                showResult('test-result', `Аутентификация:\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                showResult('test-result', `Ошибка аутентификации: ${error.message}`, true);
+            }
+        }
+
+        function clearResults() {
+            const results = document.querySelectorAll('.result');
+            results.forEach(result => {
+                result.style.display = 'none';
+                result.textContent = '';
+            });
+        }
+    </script>
+</body>
+</html>
