@@ -1,10 +1,56 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { handleAuthError, determineErrorContext } from '@/shared/lib/authErrorHandler';
+
+interface AnalyticsOverview {
+  [key: string]: unknown;
+}
+
+interface CompaniesAnalytics {
+  [key: string]: unknown;
+}
+
+interface UniversitiesAnalytics {
+  [key: string]: unknown;
+}
+
+interface SkillsAnalytics {
+  [key: string]: unknown;
+}
+
+interface JobsAnalytics {
+  [key: string]: unknown;
+}
+
+interface ApplicationsAnalytics {
+  [key: string]: unknown;
+}
+
+interface UsersAnalytics {
+  [key: string]: unknown;
+}
+
+interface ActivityAnalytics {
+  [key: string]: unknown;
+}
+
+interface ModerationJob {
+  [key: string]: unknown;
+}
+
+interface ModerationStats {
+  [key: string]: unknown;
+}
+
+interface Notification {
+  [key: string]: unknown;
+}
+
 const getBaseUrl = () => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
   const finalUrl = backendUrl.replace(/\/$/, '');
   return finalUrl;
 };
+
 export const analyticsApi = createApi({
   reducerPath: 'analyticsApi',
   baseQuery: fetchBaseQuery({
@@ -24,12 +70,9 @@ export const analyticsApi = createApi({
       });
       if (!response.ok) {
         const errorText = await response.text();
-        const url = typeof input === 'string' ? input : input.url;
-        const context = determineErrorContext(errorText, url);
+        const urlString = typeof input === 'string' ? input : input.url;
+        const context = determineErrorContext(errorText, urlString);
         handleAuthError(response.status, response, context);
-      }
-      if (process.env.NODE_ENV === 'development') {
-        const url = typeof input === 'string' ? input : input.url;
       }
       const contentType = response.headers.get('content-type');
       if (contentType && !contentType.includes('application/json')) {
@@ -40,57 +83,57 @@ export const analyticsApi = createApi({
   }),
   tagTypes: ['Analytics', 'Moderation'],
   endpoints: (builder) => ({
-    getAnalyticsOverview: builder.query<any, void>({
+    getAnalyticsOverview: builder.query<AnalyticsOverview, void>({
       query: () => '/admin/analytics/overview',
       providesTags: ['Analytics'],
     }),
-    getCompaniesAnalytics: builder.query<any, void>({
+    getCompaniesAnalytics: builder.query<CompaniesAnalytics, void>({
       query: () => '/admin/analytics/companies',
       providesTags: ['Analytics'],
     }),
-    getUniversitiesAnalytics: builder.query<any, void>({
+    getUniversitiesAnalytics: builder.query<UniversitiesAnalytics, void>({
       query: () => '/admin/analytics/universities',
       providesTags: ['Analytics'],
     }),
-    getSkillsAnalytics: builder.query<any, void>({
+    getSkillsAnalytics: builder.query<SkillsAnalytics, void>({
       query: () => '/admin/analytics/skills',
       providesTags: ['Analytics'],
     }),
-    getJobsAnalytics: builder.query<any, void>({
+    getJobsAnalytics: builder.query<JobsAnalytics, void>({
       query: () => '/admin/analytics/jobs',
       providesTags: ['Analytics'],
     }),
-    getApplicationsAnalytics: builder.query<any, void>({
+    getApplicationsAnalytics: builder.query<ApplicationsAnalytics, void>({
       query: () => '/admin/analytics/applications',
       providesTags: ['Analytics'],
     }),
-    getUsersAnalytics: builder.query<any, void>({
+    getUsersAnalytics: builder.query<UsersAnalytics, void>({
       query: () => '/admin/analytics/users',
       providesTags: ['Analytics'],
     }),
-    getActivityAnalytics: builder.query<any, void>({
+    getActivityAnalytics: builder.query<ActivityAnalytics, void>({
       query: () => '/admin/analytics/activity',
       providesTags: ['Analytics'],
     }),
-    getModerationJobs: builder.query<any, any>({
+    getModerationJobs: builder.query<ModerationJob[], Record<string, unknown>>({
       query: (params) => ({
         url: '/admin/moderation/jobs',
         params,
       }),
       providesTags: ['Moderation'],
     }),
-    getModerationStats: builder.query<any, void>({
+    getModerationStats: builder.query<ModerationStats, void>({
       query: () => '/admin/moderation/stats',
       providesTags: ['Moderation'],
     }),
-    approveJob: builder.mutation<any, string>({
+    approveJob: builder.mutation<{ success: boolean }, string>({
       query: (jobId) => ({
         url: `/admin/moderation/jobs/${jobId}/approve`,
         method: 'POST',
       }),
       invalidatesTags: ['Moderation'],
     }),
-    rejectJob: builder.mutation<any, { jobId: string; reason: string }>({
+    rejectJob: builder.mutation<{ success: boolean }, { jobId: string; reason: string }>({
       query: ({ jobId, reason }) => ({
         url: `/admin/moderation/jobs/${jobId}/reject`,
         method: 'POST',
@@ -98,7 +141,7 @@ export const analyticsApi = createApi({
       }),
       invalidatesTags: ['Moderation'],
     }),
-    returnJob: builder.mutation<any, { jobId: string; reason: string }>({
+    returnJob: builder.mutation<{ success: boolean }, { jobId: string; reason: string }>({
       query: ({ jobId, reason }) => ({
         url: `/admin/moderation/jobs/${jobId}/return`,
         method: 'POST',
@@ -106,7 +149,7 @@ export const analyticsApi = createApi({
       }),
       invalidatesTags: ['Moderation'],
     }),
-    bulkApproveJobs: builder.mutation<any, string[]>({
+    bulkApproveJobs: builder.mutation<{ success: boolean }, string[]>({
       query: (jobIds) => ({
         url: '/admin/moderation/jobs/bulk-approve',
         method: 'POST',
@@ -114,7 +157,7 @@ export const analyticsApi = createApi({
       }),
       invalidatesTags: ['Moderation'],
     }),
-    bulkRejectJobs: builder.mutation<any, { jobIds: string[]; reason: string }>({
+    bulkRejectJobs: builder.mutation<{ success: boolean }, { jobIds: string[]; reason: string }>({
       query: ({ jobIds, reason }) => ({
         url: '/admin/moderation/jobs/bulk-reject',
         method: 'POST',
@@ -122,14 +165,14 @@ export const analyticsApi = createApi({
       }),
       invalidatesTags: ['Moderation'],
     }),
-    getNotifications: builder.query<any, any>({
+    getNotifications: builder.query<Notification[], Record<string, unknown>>({
       query: (params) => ({
         url: '/admin/notifications',
         params,
       }),
       providesTags: ['Analytics'],
     }),
-    broadcastNotification: builder.mutation<any, any>({
+    broadcastNotification: builder.mutation<{ success: boolean }, Record<string, unknown>>({
       query: (data) => ({
         url: '/admin/notifications/broadcast',
         method: 'POST',
@@ -137,7 +180,7 @@ export const analyticsApi = createApi({
       }),
       invalidatesTags: ['Analytics'],
     }),
-    deleteNotification: builder.mutation<any, string>({
+    deleteNotification: builder.mutation<{ success: boolean }, string>({
       query: (id) => ({
         url: `/admin/notifications/${id}`,
         method: 'DELETE',
@@ -146,6 +189,7 @@ export const analyticsApi = createApi({
     }),
   }),
 });
+
 export const {
   useGetAnalyticsOverviewQuery,
   useGetCompaniesAnalyticsQuery,
@@ -166,6 +210,7 @@ export const {
   useBroadcastNotificationMutation,
   useDeleteNotificationMutation,
 } = analyticsApi;
-export type ModerationJobsParams = any;
-export type NotificationsParams = any;
-export type BroadcastNotificationParams = any;
+
+export type ModerationJobsParams = Record<string, unknown>;
+export type NotificationsParams = Record<string, unknown>;
+export type BroadcastNotificationParams = Record<string, unknown>;

@@ -6,12 +6,65 @@ services:
     container_name: raxatjob-postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: raxatjob
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - raxatjob-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: raxatjob-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/raxatjob?schema=public
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-min-32-characters-long-change-this-in-production}
+      PORT: 3001
+      NODE_ENV: production
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+      SESSION_SECRET: ${SESSION_SECRET:-your-session-secret-key-min-32-chars}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://109.73.193.10:11434}
+      RATE_LIMIT_TTL: 60
+      RATE_LIMIT_LIMIT: 100
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - raxatjob-network
+    restart: unless-stopped
+    command: sh -c "npx prisma migrate deploy && npm run start:prod"
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:3001}
+    container_name: raxatjob-frontend
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:3001}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - raxatjob-network
+    restart: unless-stopped
+
+networks:
+  raxatjob-network:
+    driver: bridge
 
 volumes:
   postgres_data:

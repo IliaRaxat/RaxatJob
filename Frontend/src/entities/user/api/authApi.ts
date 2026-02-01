@@ -175,7 +175,7 @@ export const authApi = createApi({
         message: string;
     }, FormData>({
       queryFn: async (formData, { signal, getState }) => {
-        const state = getState() as any;
+        const state = getState() as { config?: { baseUrl?: string } };
         const baseUrl = state.config?.baseUrl || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
         const response = await fetch(`${baseUrl.replace(/\/$/, '')}/profiles/avatar/upload`, {
           method: 'POST',
