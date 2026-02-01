@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { 
   Resume, 
@@ -11,7 +10,7 @@ import {
   ResumeLanguage, 
   ResumeCertification,
   UpdateResumeDto
-} from '../../lib/api/resumesApi';
+} from '@/entities/resume';
 import { 
   Save, 
   Plus, 
@@ -32,14 +31,12 @@ import {
 } from 'lucide-react';
 import styles from './ResumeEditor.module.css';
 import { useNotificationContext } from '../../Components/NotificationProvider';
-
 interface ResumeEditorProps {
   resume: Resume;
   onSave: (data: UpdateResumeDto) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }
-
 export default function ResumeEditor({ 
   resume, 
   onSave, 
@@ -47,8 +44,6 @@ export default function ResumeEditor({
   isLoading = false 
 }: ResumeEditorProps) {
   const { showError } = useNotificationContext();
-  
-  // Утилитарные функции для работы с датами
   const formatDateForInput = (dateString: string | undefined): string => {
     if (!dateString) return '';
     try {
@@ -59,23 +54,18 @@ export default function ResumeEditor({
       return '';
     }
   };
-
   const validateDate = (dateString: string): boolean => {
-    if (!dateString) return true; // Пустые даты разрешены
+    if (!dateString) return true; 
     const date = new Date(dateString);
     return !isNaN(date.getTime()) && date.getFullYear() > 1900 && date.getFullYear() < 2100;
   };
-
   const normalizeDate = (dateString: string): string => {
     if (!dateString) return '';
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
     return date.toISOString().split('T')[0];
   };
-  
-  // Состояние формы
   const [formData, setFormData] = useState<UpdateResumeDto>(() => {
-    // Правильно обрабатываем даты при инициализации
     const processExperiences = (experiences: any[]) => {
       return experiences.map(exp => ({
         ...exp,
@@ -83,7 +73,6 @@ export default function ResumeEditor({
         endDate: formatDateForInput(exp.endDate)
       }));
     };
-
     const processEducations = (educations: any[]) => {
       return educations.map(edu => ({
         ...edu,
@@ -91,7 +80,6 @@ export default function ResumeEditor({
         endDate: formatDateForInput(edu.endDate)
       }));
     };
-
     const processProjects = (projects: any[]) => {
       return projects.map(project => ({
         ...project,
@@ -99,21 +87,18 @@ export default function ResumeEditor({
         endDate: formatDateForInput(project.endDate)
       }));
     };
-
     const processAchievements = (achievements: any[]) => {
       return achievements.map(achievement => ({
         ...achievement,
         date: formatDateForInput(achievement.date)
       }));
     };
-
     const processCertifications = (certifications: any[]) => {
       return certifications.map(cert => ({
         ...cert,
         date: formatDateForInput(cert.date)
       }));
     };
-
     return {
       title: resume.title,
       summary: resume.summary || '',
@@ -129,16 +114,10 @@ export default function ResumeEditor({
       isPublic: resume.isPublic
     };
   });
-
-  // Состояние для активной секции
   const [activeSection, setActiveSection] = useState<string>('basic');
-
-  // Обработчики для основных полей
   const handleBasicChange = (field: keyof UpdateResumeDto, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-
-  // Обработчики для навыков
   const addSkill = () => {
     const newSkill: ResumeSkill = {
       name: '',
@@ -150,11 +129,8 @@ export default function ResumeEditor({
       skills: [...(prev.skills || []), newSkill]
     }));
   };
-
   const updateSkill = (index: number, field: keyof ResumeSkill, value: any) => {
-    // Убеждаемся, что level всегда является числом
     const processedValue = field === 'level' ? parseInt(value) || 1 : value;
-    
     setFormData(prev => ({
       ...prev,
       skills: prev.skills?.map((skill, i) => 
@@ -162,15 +138,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeSkill = (index: number) => {
     setFormData(prev => ({
       ...prev,
       skills: prev.skills?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для опыта работы
   const addExperience = () => {
     const newExperience: ResumeExperience = {
       company: '',
@@ -187,7 +160,6 @@ export default function ResumeEditor({
       experiences: [...(prev.experiences || []), newExperience]
     }));
   };
-
   const updateExperience = (index: number, field: keyof ResumeExperience, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -196,15 +168,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeExperience = (index: number) => {
     setFormData(prev => ({
       ...prev,
       experiences: prev.experiences?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для образования
   const addEducation = () => {
     const newEducation: ResumeEducation = {
       institution: '',
@@ -221,7 +190,6 @@ export default function ResumeEditor({
       educations: [...(prev.educations || []), newEducation]
     }));
   };
-
   const updateEducation = (index: number, field: keyof ResumeEducation, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -230,15 +198,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeEducation = (index: number) => {
     setFormData(prev => ({
       ...prev,
       educations: prev.educations?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для проектов
   const addProject = () => {
     const newProject: ResumeProject = {
       name: '',
@@ -255,7 +220,6 @@ export default function ResumeEditor({
       projects: [...(prev.projects || []), newProject]
     }));
   };
-
   const updateProject = (index: number, field: keyof ResumeProject, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -264,15 +228,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeProject = (index: number) => {
     setFormData(prev => ({
       ...prev,
       projects: prev.projects?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для достижений
   const addAchievement = () => {
     const newAchievement: ResumeAchievement = {
       title: '',
@@ -285,7 +246,6 @@ export default function ResumeEditor({
       achievements: [...(prev.achievements || []), newAchievement]
     }));
   };
-
   const updateAchievement = (index: number, field: keyof ResumeAchievement, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -294,15 +254,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeAchievement = (index: number) => {
     setFormData(prev => ({
       ...prev,
       achievements: prev.achievements?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для языков
   const addLanguage = () => {
     const newLanguage: ResumeLanguage = {
       name: '',
@@ -314,13 +271,10 @@ export default function ResumeEditor({
       languages: [...(prev.languages || []), newLanguage]
     }));
   };
-
   const updateLanguage = (index: number, field: keyof ResumeLanguage, value: any) => {
-    // Убеждаемся, что level всегда является строкой из допустимых значений
     const validLevels = ['Basic', 'Elementary', 'Intermediate', 'Upper-Intermediate', 'Advanced', 'Fluent', 'Native'];
     const processedValue = field === 'level' && validLevels.includes(value) ? value : 
                           field === 'level' ? 'Basic' : value;
-    
     setFormData(prev => ({
       ...prev,
       languages: prev.languages?.map((lang, i) => 
@@ -328,15 +282,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeLanguage = (index: number) => {
     setFormData(prev => ({
       ...prev,
       languages: prev.languages?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для сертификатов
   const addCertification = () => {
     const newCertification: ResumeCertification = {
       name: '',
@@ -350,7 +301,6 @@ export default function ResumeEditor({
       certifications: [...(prev.certifications || []), newCertification]
     }));
   };
-
   const updateCertification = (index: number, field: keyof ResumeCertification, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -359,15 +309,12 @@ export default function ResumeEditor({
       ) || []
     }));
   };
-
   const removeCertification = (index: number) => {
     setFormData(prev => ({
       ...prev,
       certifications: prev.certifications?.filter((_, i) => i !== index) || []
     }));
   };
-
-  // Обработчики для массивов в объектах
   const addArrayItem = (section: string, index: number, field: string) => {
     if (section === 'experiences') {
       const currentAchievements = formData.experiences?.[index]?.achievements || [];
@@ -380,7 +327,6 @@ export default function ResumeEditor({
       updateProject(index, 'technologies', [...currentTechnologies, '']);
     }
   };
-
   const updateArrayItem = (section: string, index: number, field: string, itemIndex: number, value: string) => {
     if (section === 'experiences' && field === 'achievements') {
       const currentAchievements = formData.experiences?.[index]?.achievements || [];
@@ -396,7 +342,6 @@ export default function ResumeEditor({
       updateProject(index, 'technologies', updatedTechnologies);
     }
   };
-
   const removeArrayItem = (section: string, index: number, field: string, itemIndex: number) => {
     if (section === 'experiences' && field === 'achievements') {
       const currentAchievements = formData.experiences?.[index]?.achievements || [];
@@ -412,11 +357,8 @@ export default function ResumeEditor({
       updateProject(index, 'technologies', updatedTechnologies);
     }
   };
-
-  // Сохранение формы
   const handleSave = async () => {
     try {
-      // Проверяем валидность всех дат перед отправкой
       const hasInvalidDates = [
         ...(formData.experiences || []),
         ...(formData.educations || []),
@@ -429,33 +371,25 @@ export default function ResumeEditor({
         if ('date' in item && item.date && !validateDate(item.date)) return true;
         return false;
       });
-
       if (hasInvalidDates) {
         showError('Некорректные даты', 'Пожалуйста, исправьте некорректные даты перед сохранением');
         return;
       }
-
-      // Проверяем валидность уровней навыков и языков
       const hasInvalidSkills = (formData.skills || []).some(skill => 
         typeof skill.level !== 'number' || skill.level < 1 || skill.level > 5
       );
-
       const validLanguageLevels = ['Basic', 'Elementary', 'Intermediate', 'Upper-Intermediate', 'Advanced', 'Fluent', 'Native'];
       const hasInvalidLanguages = (formData.languages || []).some(lang => 
         !validLanguageLevels.includes(lang.level)
       );
-
       if (hasInvalidSkills) {
         showError('Некорректные уровни навыков', 'Пожалуйста, исправьте некорректные уровни навыков (должны быть от 1 до 5)');
         return;
       }
-
       if (hasInvalidLanguages) {
         showError('Некорректные уровни языков', 'Пожалуйста, исправьте некорректные уровни языков');
         return;
       }
-
-      // Нормализуем даты перед отправкой
       const normalizedData: UpdateResumeDto = {
         ...formData,
         experiences: formData.experiences?.map(exp => ({
@@ -482,14 +416,10 @@ export default function ResumeEditor({
           date: normalizeDate(cert.date)
         }))
       };
-
       await onSave(normalizedData);
     } catch (error) {
-      console.error('Ошибка при сохранении резюме:', error);
-    }
+          }
   };
-
-  // Навигация по секциям
   const sections = [
     { id: 'basic', label: 'Основное', icon: Edit2 },
     { id: 'skills', label: 'Навыки', icon: Code },
@@ -500,10 +430,9 @@ export default function ResumeEditor({
     { id: 'languages', label: 'Языки', icon: Languages },
     { id: 'certifications', label: 'Сертификаты', icon: Verified }
   ];
-
   return (
     <div className={styles.editor}>
-      {/* Навигация по секциям */}
+      {}
       <div className={styles.navigation}>
         {sections.map(({ id, label, icon: Icon }) => (
           <button
@@ -516,13 +445,11 @@ export default function ResumeEditor({
           </button>
         ))}
       </div>
-
       <div className={styles.content}>
-        {/* Основная информация */}
+        {}
         {activeSection === 'basic' && (
           <div className={styles.section}>
             <h2>Основная информация</h2>
-            
             <div className={styles.fieldGroup}>
               <label>Название резюме *</label>
               <input
@@ -533,7 +460,6 @@ export default function ResumeEditor({
                 className={styles.input}
               />
             </div>
-
             <div className={styles.fieldGroup}>
               <label>Краткое описание</label>
               <textarea
@@ -544,7 +470,6 @@ export default function ResumeEditor({
                 rows={4}
               />
             </div>
-
             <div className={styles.fieldGroup}>
               <label>Цель</label>
               <textarea
@@ -555,7 +480,6 @@ export default function ResumeEditor({
                 rows={3}
               />
             </div>
-
             <div className={styles.checkboxGroup}>
               <label className={styles.checkboxLabel}>
                 <input
@@ -565,7 +489,6 @@ export default function ResumeEditor({
                 />
                 Основное резюме
               </label>
-              
               <label className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -577,8 +500,7 @@ export default function ResumeEditor({
             </div>
           </div>
         )}
-
-        {/* Навыки */}
+        {}
         {activeSection === 'skills' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -588,7 +510,6 @@ export default function ResumeEditor({
                 Добавить навык
               </button>
             </div>
-
             {formData.skills?.map((skill, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -600,7 +521,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Название навыка *</label>
                   <input
@@ -611,7 +531,6 @@ export default function ResumeEditor({
                     className={styles.input}
                   />
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Уровень (1-5) *</label>
                   <select
@@ -626,7 +545,6 @@ export default function ResumeEditor({
                     <option value={5}>5 - Эксперт</option>
                   </select>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Категория</label>
                   <input
@@ -641,8 +559,7 @@ export default function ResumeEditor({
             ))}
           </div>
         )}
-
-        {/* Опыт работы */}
+        {}
         {activeSection === 'experience' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -652,7 +569,6 @@ export default function ResumeEditor({
                 Добавить опыт
               </button>
             </div>
-
             {formData.experiences?.map((exp, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -664,7 +580,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Должность *</label>
@@ -676,7 +591,6 @@ export default function ResumeEditor({
                       className={styles.input}
                     />
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Компания *</label>
                     <input
@@ -688,7 +602,6 @@ export default function ResumeEditor({
                     />
                   </div>
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Дата начала *</label>
@@ -704,7 +617,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Дата окончания</label>
                     <input
@@ -720,7 +632,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label className={styles.checkboxLabel}>
                       <input
@@ -732,7 +643,6 @@ export default function ResumeEditor({
                     </label>
                   </div>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Описание</label>
                   <textarea
@@ -743,8 +653,7 @@ export default function ResumeEditor({
                     rows={3}
                   />
                 </div>
-
-                {/* Достижения */}
+                {}
                 <div className={styles.arraySection}>
                   <div className={styles.arrayHeader}>
                     <label>Достижения</label>
@@ -755,7 +664,6 @@ export default function ResumeEditor({
                       <Plus size={14} />
                     </button>
                   </div>
-                  
                   {exp.achievements?.map((achievement, itemIndex) => (
                     <div key={itemIndex} className={styles.arrayItem}>
                       <input
@@ -774,8 +682,7 @@ export default function ResumeEditor({
                     </div>
                   ))}
                 </div>
-
-                {/* Технологии */}
+                {}
                 <div className={styles.arraySection}>
                   <div className={styles.arrayHeader}>
                     <label>Технологии</label>
@@ -786,7 +693,6 @@ export default function ResumeEditor({
                       <Plus size={14} />
                     </button>
                   </div>
-                  
                   {exp.technologies?.map((tech, itemIndex) => (
                     <div key={itemIndex} className={styles.arrayItem}>
                       <input
@@ -809,8 +715,7 @@ export default function ResumeEditor({
             ))}
           </div>
         )}
-
-        {/* Образование */}
+        {}
         {activeSection === 'education' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -820,7 +725,6 @@ export default function ResumeEditor({
                 Добавить образование
               </button>
             </div>
-
             {formData.educations?.map((edu, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -832,7 +736,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Степень *</label>
@@ -844,7 +747,6 @@ export default function ResumeEditor({
                       className={styles.input}
                     />
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Учебное заведение *</label>
                     <input
@@ -856,7 +758,6 @@ export default function ResumeEditor({
                     />
                   </div>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Специальность *</label>
                   <input
@@ -867,7 +768,6 @@ export default function ResumeEditor({
                     className={styles.input}
                   />
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Дата начала *</label>
@@ -883,7 +783,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Дата окончания</label>
                     <input
@@ -899,7 +798,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label className={styles.checkboxLabel}>
                       <input
@@ -911,7 +809,6 @@ export default function ResumeEditor({
                     </label>
                   </div>
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Средний балл (GPA)</label>
@@ -926,7 +823,6 @@ export default function ResumeEditor({
                     />
                   </div>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Описание</label>
                   <textarea
@@ -941,8 +837,7 @@ export default function ResumeEditor({
             ))}
           </div>
         )}
-
-        {/* Проекты */}
+        {}
         {activeSection === 'projects' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -952,7 +847,6 @@ export default function ResumeEditor({
                 Добавить проект
               </button>
             </div>
-
             {formData.projects?.map((project, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -964,7 +858,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Название проекта *</label>
                   <input
@@ -975,7 +868,6 @@ export default function ResumeEditor({
                     className={styles.input}
                   />
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Описание *</label>
                   <textarea
@@ -986,7 +878,6 @@ export default function ResumeEditor({
                     rows={3}
                   />
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Дата начала *</label>
@@ -1002,7 +893,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Дата окончания</label>
                     <input
@@ -1018,7 +908,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label className={styles.checkboxLabel}>
                       <input
@@ -1030,7 +919,6 @@ export default function ResumeEditor({
                     </label>
                   </div>
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>URL проекта</label>
@@ -1038,11 +926,10 @@ export default function ResumeEditor({
                       type="url"
                       value={project.url || ''}
                       onChange={(e) => updateProject(index, 'url', e.target.value)}
-                      placeholder="https://example.com"
+                      placeholder="https://project.com"
                       className={styles.input}
                     />
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>GitHub URL</label>
                     <input
@@ -1054,8 +941,7 @@ export default function ResumeEditor({
                     />
                   </div>
                 </div>
-
-                {/* Технологии проекта */}
+                {}
                 <div className={styles.arraySection}>
                   <div className={styles.arrayHeader}>
                     <label>Технологии</label>
@@ -1066,7 +952,6 @@ export default function ResumeEditor({
                       <Plus size={14} />
                     </button>
                   </div>
-                  
                   {project.technologies?.map((tech, itemIndex) => (
                     <div key={itemIndex} className={styles.arrayItem}>
                       <input
@@ -1089,8 +974,7 @@ export default function ResumeEditor({
             ))}
           </div>
         )}
-
-        {/* Достижения */}
+        {}
         {activeSection === 'achievements' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -1100,7 +984,6 @@ export default function ResumeEditor({
                 Добавить достижение
               </button>
             </div>
-
             {formData.achievements?.map((achievement, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -1112,7 +995,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Название *</label>
                   <input
@@ -1123,7 +1005,6 @@ export default function ResumeEditor({
                     className={styles.input}
                   />
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Описание *</label>
                   <textarea
@@ -1134,7 +1015,6 @@ export default function ResumeEditor({
                     rows={3}
                   />
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Дата *</label>
@@ -1150,7 +1030,6 @@ export default function ResumeEditor({
                       <span className={styles.errorText}>Некорректная дата</span>
                     )}
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Категория</label>
                     <input
@@ -1166,8 +1045,7 @@ export default function ResumeEditor({
             ))}
           </div>
         )}
-
-        {/* Языки */}
+        {}
         {activeSection === 'languages' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -1177,7 +1055,6 @@ export default function ResumeEditor({
                 Добавить язык
               </button>
             </div>
-
             {formData.languages?.map((language, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -1189,7 +1066,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Название языка *</label>
@@ -1201,7 +1077,6 @@ export default function ResumeEditor({
                       className={styles.input}
                     />
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Уровень *</label>
                     <select
@@ -1220,7 +1095,6 @@ export default function ResumeEditor({
                     </select>
                   </div>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Сертификат</label>
                   <input
@@ -1235,8 +1109,7 @@ export default function ResumeEditor({
             ))}
           </div>
         )}
-
-        {/* Сертификаты */}
+        {}
         {activeSection === 'certifications' && (
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
@@ -1246,7 +1119,6 @@ export default function ResumeEditor({
                 Добавить сертификат
               </button>
             </div>
-
             {formData.certifications?.map((cert, index) => (
               <div key={index} className={styles.itemCard}>
                 <div className={styles.itemHeader}>
@@ -1258,7 +1130,6 @@ export default function ResumeEditor({
                     <Trash2 size={16} />
                   </button>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Название сертификата *</label>
                   <input
@@ -1269,7 +1140,6 @@ export default function ResumeEditor({
                     className={styles.input}
                   />
                 </div>
-
                 <div className={styles.fieldRow}>
                   <div className={styles.fieldGroup}>
                     <label>Организация *</label>
@@ -1281,7 +1151,6 @@ export default function ResumeEditor({
                       className={styles.input}
                     />
                   </div>
-
                   <div className={styles.fieldGroup}>
                     <label>Дата получения *</label>
                     <input
@@ -1297,7 +1166,6 @@ export default function ResumeEditor({
                     )}
                   </div>
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>ID сертификата</label>
                   <input
@@ -1308,14 +1176,13 @@ export default function ResumeEditor({
                     className={styles.input}
                   />
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <label>Ссылка на сертификат</label>
                   <input
                     type="url"
                     value={cert.url || ''}
                     onChange={(e) => updateCertification(index, 'url', e.target.value)}
-                    placeholder="https://example.com/certificate"
+                    placeholder="https://certificate.com"
                     className={styles.input}
                   />
                 </div>
@@ -1324,8 +1191,7 @@ export default function ResumeEditor({
           </div>
         )}
       </div>
-
-      {/* Кнопки действий */}
+      {}
       <div className={styles.actions}>
         <button 
           onClick={onCancel}
@@ -1334,7 +1200,6 @@ export default function ResumeEditor({
         >
           Отмена
         </button>
-        
         <button 
           onClick={handleSave}
           className={styles.saveButton}

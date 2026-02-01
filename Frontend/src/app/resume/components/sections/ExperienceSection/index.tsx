@@ -1,10 +1,8 @@
 'use client';
-
 import { Briefcase, Plus, X } from 'lucide-react';
 import { ExperienceSectionProps, Experience } from '../../../types';
 import MonthYearSelect from '../../ui/MonthYearSelect';
 import styles from './ExperienceSection.module.css';
-
 export default function ExperienceSection({ experiences, setExperiences }: ExperienceSectionProps) {
   const addExperience = () => {
     const newExp: Experience = {
@@ -18,17 +16,14 @@ export default function ExperienceSection({ experiences, setExperiences }: Exper
     };
     setExperiences([...experiences, newExp]);
   };
-
   const updateExperience = (id: string, field: keyof Experience, value: string | boolean) => {
     setExperiences(experiences.map(exp => 
       exp.id === id ? { ...exp, [field]: value } : exp
     ));
   };
-
   const removeExperience = (id: string) => {
     setExperiences(experiences.filter(exp => exp.id !== id));
   };
-
   return (
     <div className={styles.experienceSection}>
       <div className={styles.sectionHeader}>
@@ -39,13 +34,11 @@ export default function ExperienceSection({ experiences, setExperiences }: Exper
           <Plus size={16} /> Добавить опыт
         </button>
       </div>
-
       {experiences.map((exp) => (
         <div key={exp.id} className={styles.experienceItem}>
           <button onClick={() => removeExperience(exp.id)} className={styles.removeButton}>
             <X size={16} />
           </button>
-          
           <div className={styles.formGrid}>
             <div className={styles.inputGroup}>
               <label>Компания *</label>
@@ -57,7 +50,6 @@ export default function ExperienceSection({ experiences, setExperiences }: Exper
                 placeholder="Название компании"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Должность *</label>
               <input
@@ -68,7 +60,6 @@ export default function ExperienceSection({ experiences, setExperiences }: Exper
                 placeholder="Ваша должность"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Дата начала *</label>
               <MonthYearSelect
@@ -77,7 +68,6 @@ export default function ExperienceSection({ experiences, setExperiences }: Exper
                 placeholder="Выберите дату начала"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Дата окончания</label>
               <MonthYearSelect
@@ -97,7 +87,6 @@ export default function ExperienceSection({ experiences, setExperiences }: Exper
               </div>
             </div>
           </div>
-          
           <div className={styles.inputGroup}>
             <label>Описание работы</label>
             <textarea

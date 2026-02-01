@@ -1,25 +1,23 @@
 'use client';
-
 import React, { useState } from 'react';
 import { 
   useGetHRCompanyResponsesQuery, 
   useUpdateCompanyResponseStatusMutation
-} from '@/lib/api/internshipRequestsApi';
+} from '@/entities/internship-request';
 import { 
   useGetMyApplicationsQuery, 
   useUpdateApplicationStatusMutation
-} from '@/lib/api/jobsApi';
+} from '@/entities/job';
 import { 
   analyzeJobCandidates, 
   getJobAnalysisResults,
   checkHRAIServiceHealth,
   JobAnalysisResponse,
   JobCandidateAnalysis
-} from '@/lib/api/aiApi';
-import { useHRToken } from '@/lib/hooks/useAuthToken';
+} from '@/entities/ai';
+import { useHRToken } from '@/shared/lib/hooks/useAuthToken';
 import MarkdownRenderer from './MarkdownRenderer';
 import styles from './UnifiedHRPanel.module.css';
-
 const UnifiedHRPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'internships' | 'jobs'>('jobs');
   const [filters, setFilters] = useState({
@@ -28,36 +26,17 @@ const UnifiedHRPanel: React.FC = () => {
   });
   const [selectedResume, setSelectedResume] = useState<any>(null);
   const [showResumeModal, setShowResumeModal] = useState(false);
-  
-  // AI Analysis states
   const [aiAnalysis, setAiAnalysis] = useState<JobAnalysisResponse | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [selectedJobForAnalysis, setSelectedJobForAnalysis] = useState<string | null>(null);
-  
-  // Get HR token for API calls
   const hrToken = useHRToken();
-
-  // Данные для откликов на стажировки
   const { data: internshipResponses, isLoading: internshipLoading, error: internshipError } = useGetHRCompanyResponsesQuery(filters);
   const [updateInternshipStatus] = useUpdateCompanyResponseStatusMutation();
-
-  // Данные для откликов на вакансии
   const { data: jobApplications, isLoading: jobLoading, error: jobError } = useGetMyApplicationsQuery();
   const [updateJobStatus] = useUpdateApplicationStatusMutation();
-
-  // Отладочная информация
-  console.log('jobApplications:', jobApplications);
-  console.log('jobLoading:', jobLoading);
-  console.log('jobError:', jobError);
-  
-  // Дополнительная отладочная информация для понимания структуры данных
-  if (Array.isArray(jobApplications) && jobApplications.length > 0) {
-    console.log('First application structure:', jobApplications[0]);
-    console.log('First application candidate:', jobApplications[0]?.candidate);
-    console.log('First application job:', jobApplications[0]?.job);
-  }
-
+        if (Array.isArray(jobApplications) && jobApplications.length > 0) {
+              }
   const handleStatusUpdate = async (id: string, status: string, type: 'internship' | 'job') => {
     try {
       if (type === 'internship') {
@@ -69,26 +48,20 @@ const UnifiedHRPanel: React.FC = () => {
         }).unwrap();
       }
     } catch (err) {
-      console.error('Failed to update status:', err);
-    }
+          }
   };
-
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({
       ...prev,
       [key]: value,
     }));
   };
-
-  // AI Analysis functions
   const handleAIAnalysis = async (jobId: string) => {
     setIsAnalyzing(true);
     setAnalysisError(null);
     setSelectedJobForAnalysis(jobId);
-    
     try {
       const result = await analyzeJobCandidates(jobId, hrToken || undefined);
-      
       if (result.success) {
         setAiAnalysis(result);
       } else {
@@ -100,15 +73,12 @@ const UnifiedHRPanel: React.FC = () => {
       setIsAnalyzing(false);
     }
   };
-
   const handleGetAnalysisResults = async (jobId: string) => {
     setIsAnalyzing(true);
     setAnalysisError(null);
     setSelectedJobForAnalysis(jobId);
-    
     try {
       const result = await getJobAnalysisResults(jobId, hrToken || undefined);
-      
       if (result.success) {
         setAiAnalysis(result);
       } else {
@@ -120,13 +90,11 @@ const UnifiedHRPanel: React.FC = () => {
       setIsAnalyzing(false);
     }
   };
-
   const clearAnalysis = () => {
     setAiAnalysis(null);
     setAnalysisError(null);
     setSelectedJobForAnalysis(null);
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -136,7 +104,6 @@ const UnifiedHRPanel: React.FC = () => {
       minute: '2-digit'
     });
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -153,7 +120,6 @@ const UnifiedHRPanel: React.FC = () => {
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -174,10 +140,8 @@ const UnifiedHRPanel: React.FC = () => {
         return status;
     }
   };
-
   const isLoading = internshipLoading || jobLoading;
   const error = internshipError || jobError;
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -188,7 +152,6 @@ const UnifiedHRPanel: React.FC = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -199,7 +162,6 @@ const UnifiedHRPanel: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -215,7 +177,6 @@ const UnifiedHRPanel: React.FC = () => {
                <button
                  className={styles.aiAnalyzeButton}
                  onClick={() => {
-                   // Находим первую вакансию с откликами для анализа
                    const jobWithApplications = jobApplications.find(app => app.job?.id);
                    if (jobWithApplications?.job?.id) {
                      handleAIAnalysis(jobWithApplications.job.id);
@@ -246,8 +207,7 @@ const UnifiedHRPanel: React.FC = () => {
            )}
          </div>
       </div>
-
-      {/* Простая статистика на основе данных */}
+      {}
       <div className={styles.statsGrid}>
          <div className={styles.statCard}>
            <div className={styles.statNumber}>
@@ -301,8 +261,7 @@ const UnifiedHRPanel: React.FC = () => {
           <div className={styles.statLabel}>Отозвано</div>
         </div>
       </div>
-
-      {/* AI Analysis Results */}
+      {}
       {aiAnalysis && aiAnalysis.success && aiAnalysis.data && (
         <div className={styles.aiResultsSection}>
           <div className={styles.aiResultsHeader}>
@@ -316,13 +275,11 @@ const UnifiedHRPanel: React.FC = () => {
               </span>
             </div>
           </div>
-          
           <div className={styles.aiSummary}>
             <div className={styles.aiSummaryText}>
               <MarkdownRenderer content={aiAnalysis.data.analysisSummary} />
             </div>
           </div>
-
           {aiAnalysis.data.topCandidates.length > 0 && (
             <div className={styles.topCandidatesSection}>
               <h4 className={styles.topCandidatesTitle}>🏆 Топ кандидаты</h4>
@@ -364,7 +321,6 @@ const UnifiedHRPanel: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
                     <div className={styles.candidateDetails}>
                       <div className={styles.strengthsSection}>
                         <h5 className={styles.sectionTitle}>✅ Сильные стороны:</h5>
@@ -374,7 +330,6 @@ const UnifiedHRPanel: React.FC = () => {
                           ))}
                         </ul>
                       </div>
-
                       <div className={styles.weaknessesSection}>
                         <h5 className={styles.sectionTitle}>⚠️ Области для улучшения:</h5>
                         <ul className={styles.weaknessesList}>
@@ -383,7 +338,6 @@ const UnifiedHRPanel: React.FC = () => {
                           ))}
                         </ul>
                       </div>
-
                       <div className={styles.recommendationsSection}>
                         <h5 className={styles.sectionTitle}>💡 Рекомендации:</h5>
                         <ul className={styles.recommendationsList}>
@@ -392,7 +346,6 @@ const UnifiedHRPanel: React.FC = () => {
                           ))}
                         </ul>
                       </div>
-
                       {candidate.aiNotes && (
                         <div className={styles.aiNotesSection}>
                           <h5 className={styles.sectionTitle}>🤖 Комментарии AI:</h5>
@@ -409,8 +362,7 @@ const UnifiedHRPanel: React.FC = () => {
           )}
         </div>
       )}
-
-      {/* AI Analysis Error */}
+      {}
       {analysisError && (
         <div className={styles.aiErrorSection}>
           <div className={styles.aiError}>
@@ -425,8 +377,7 @@ const UnifiedHRPanel: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Табы */}
+      {}
       <div className={styles.tabs}>
          <button
            className={`${styles.tab} ${activeTab === 'internships' ? styles.tabActive : ''}`}
@@ -441,8 +392,7 @@ const UnifiedHRPanel: React.FC = () => {
            💼 Заявки кандидатов на вакансии ({Array.isArray(jobApplications) ? jobApplications.length : 0})
          </button>
       </div>
-
-      {/* Фильтры */}
+      {}
       <div className={styles.filters}>
         <div className={styles.searchBox}>
            <input
@@ -453,7 +403,6 @@ const UnifiedHRPanel: React.FC = () => {
              className={styles.searchInput}
            />
         </div>
-        
         <div className={styles.statusFilter}>
           <select
             value={filters.status}
@@ -471,8 +420,7 @@ const UnifiedHRPanel: React.FC = () => {
           </select>
         </div>
       </div>
-
-      {/* Контент */}
+      {}
       <div className={styles.content}>
         {activeTab === 'internships' ? (
           <div className={styles.requestsList}>
@@ -504,13 +452,11 @@ const UnifiedHRPanel: React.FC = () => {
                       </span>
                     </div>
                   </div>
-
                   <div className={styles.requestContent}>
                     <div className={styles.requestMessage}>
                       <h4>Сообщение от компании:</h4>
                       <p>{response.message}</p>
                     </div>
-
                     {response.internshipRequest && (
                       <div className={styles.requestInfo}>
                         <h4>Заявка на стажировку:</h4>
@@ -521,7 +467,6 @@ const UnifiedHRPanel: React.FC = () => {
                       </div>
                     )}
                   </div>
-
                   <div className={styles.requestActions}>
                     {response.status === 'PENDING' && (
                       <>
@@ -591,7 +536,6 @@ const UnifiedHRPanel: React.FC = () => {
                       </span>
                     </div>
                   </div>
-
                   <div className={styles.applicationContent}>
                     {application.coverLetter && (
                       <div className={styles.coverLetter}>
@@ -599,7 +543,6 @@ const UnifiedHRPanel: React.FC = () => {
                         <p>{application.coverLetter}</p>
                       </div>
                     )}
-
                     {application.resume && (
                       <div className={styles.resumeSection}>
                         <h4>Резюме:</h4>
@@ -621,14 +564,12 @@ const UnifiedHRPanel: React.FC = () => {
                         </div>
                       </div>
                     )}
-
                     <div className={styles.hrInfo}>
                       <h4>Информация о HR:</h4>
                       <p><strong>HR:</strong> {application.hr?.firstName} {application.hr?.lastName}</p>
                       <p><strong>Компания:</strong> {application.hr?.company}</p>
                     </div>
                   </div>
-
                   <div className={styles.applicationActions}>
                     {application.status === 'PENDING' && (
                       <>
@@ -691,8 +632,7 @@ const UnifiedHRPanel: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Модальное окно для просмотра резюме */}
+      {}
       {showResumeModal && selectedResume && (
         <div className={styles.modalOverlay} onClick={() => setShowResumeModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -709,10 +649,8 @@ const UnifiedHRPanel: React.FC = () => {
               <div className={styles.resumeDetails}>
                 <h4>Название резюме:</h4>
                 <p>{selectedResume.title}</p>
-                
                 <h4>Описание:</h4>
                 <p>{selectedResume.summary}</p>
-                
                 <h4>Статус:</h4>
                 <p>{selectedResume.isDefault ? 'Резюме по умолчанию' : 'Дополнительное резюме'}</p>
               </div>
@@ -731,5 +669,4 @@ const UnifiedHRPanel: React.FC = () => {
     </div>
   );
 };
-
 export default UnifiedHRPanel;

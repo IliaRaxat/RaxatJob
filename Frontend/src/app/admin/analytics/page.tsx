@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import {
   useGetAnalyticsOverviewQuery,
@@ -10,15 +9,10 @@ import {
   useGetApplicationsAnalyticsQuery,
   useGetUsersAnalyticsQuery,
   useGetActivityAnalyticsQuery,
-} from '../../../lib/api/analyticsApi';
+} from '@/shared/api/analyticsApi';
 import styles from './analytics.module.css';
-
-// Все типы теперь импортируются из API файла
-
 export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState('overview');
-  
-  // RTK Query хуки для всех аналитических данных
   const { data: overviewData, isLoading: overviewLoading, error: overviewError, refetch: refetchOverview } = useGetAnalyticsOverviewQuery();
   const { data: companiesData, isLoading: companiesLoading, error: companiesError } = useGetCompaniesAnalyticsQuery();
   const { data: universitiesData, isLoading: universitiesLoading, error: universitiesError } = useGetUniversitiesAnalyticsQuery();
@@ -27,13 +21,9 @@ export default function AnalyticsPage() {
   const { data: applicationsData, isLoading: applicationsLoading, error: applicationsError } = useGetApplicationsAnalyticsQuery();
   const { data: usersData, isLoading: usersLoading, error: usersError } = useGetUsersAnalyticsQuery();
   const { data: activityData, isLoading: activityLoading, error: activityError } = useGetActivityAnalyticsQuery();
-
-  // Общие состояния загрузки и ошибок
   const isLoading = overviewLoading;
   const error = overviewError;
   const refetch = refetchOverview;
-
-
   const tabs = [
     { id: 'overview', name: 'Обзор', icon: '📊' },
     { id: 'companies', name: 'Компании', icon: '🏢' },
@@ -44,11 +34,9 @@ export default function AnalyticsPage() {
     { id: 'users', name: 'Пользователи', icon: '👥' },
     { id: 'activity', name: 'Активность', icon: '⚡' }
   ];
-
   const formatNumber = (num: number) => {
     return num.toLocaleString('ru-RU');
   };
-
   const formatCurrency = (num: number) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -56,7 +44,6 @@ export default function AnalyticsPage() {
       minimumFractionDigits: 0
     }).format(num);
   };
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -67,7 +54,6 @@ export default function AnalyticsPage() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -85,7 +71,6 @@ export default function AnalyticsPage() {
       </div>
     );
   }
-
   if (!overviewData && !isLoading) {
     return (
       <div className={styles.container}>
@@ -101,10 +86,9 @@ export default function AnalyticsPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Header */}
+      {}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerTop}>
@@ -153,11 +137,9 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </div>
-
-      {/* Content */}
+      {}
       <div className={styles.content}>
-
-        {/* Tabs */}
+        {}
         <div className={styles.tabsContainer}>
           <div className={styles.tabs}>
             {tabs.map((tab) => (
@@ -172,8 +154,7 @@ export default function AnalyticsPage() {
             ))}
           </div>
         </div>
-
-        {/* Overview Tab */}
+        {}
         {activeTab === 'overview' && (
           <div>
             {overviewData && (
@@ -204,8 +185,7 @@ export default function AnalyticsPage() {
                     <div className={styles.statLabel}>На модерации</div>
                   </div>
                 </div>
-
-                {/* Recent Activity */}
+                {}
                 {overviewData.recentActivity && overviewData.recentActivity.length > 0 && (
                   <div className={styles.card}>
                     <div className={styles.cardHeader}>
@@ -247,8 +227,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Companies Tab */}
+        {}
         {activeTab === 'companies' && (
           <div>
             {companiesLoading ? (
@@ -301,8 +280,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Universities Tab */}
+        {}
         {activeTab === 'universities' && (
           <div>
             {universitiesLoading ? (
@@ -356,8 +334,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Skills Tab */}
+        {}
         {activeTab === 'skills' && (
           <div>
             {skillsLoading ? (
@@ -418,8 +395,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Jobs Tab */}
+        {}
         {activeTab === 'jobs' && (
           <div>
             {jobsLoading ? (
@@ -456,7 +432,6 @@ export default function AnalyticsPage() {
                     <div className={styles.statLabel}>Макс. зарплата</div>
                   </div>
                 </div>
-
                 <div className={styles.card}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>Вакансии по статусам</h2>
@@ -498,8 +473,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Applications Tab */}
+        {}
         {activeTab === 'applications' && (
           <div>
             {applicationsLoading ? (
@@ -524,7 +498,6 @@ export default function AnalyticsPage() {
                     <div className={styles.statLabel}>Среднее время ответа</div>
                   </div>
                 </div>
-
                 <div className={styles.card}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>Отклики по статусам</h2>
@@ -566,8 +539,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Users Tab */}
+        {}
         {activeTab === 'users' && (
           <div>
             {usersLoading ? (
@@ -596,7 +568,6 @@ export default function AnalyticsPage() {
                     <div className={styles.statLabel}>Новых за месяц</div>
                   </div>
                 </div>
-
                 <div className={styles.card}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>Пользователи по ролям</h2>
@@ -638,8 +609,7 @@ export default function AnalyticsPage() {
             )}
           </div>
         )}
-
-        {/* Activity Tab */}
+        {}
         {activeTab === 'activity' && (
           <div>
             {activityLoading ? (
@@ -660,7 +630,6 @@ export default function AnalyticsPage() {
                     <div className={styles.statLabel}>Всего событий</div>
                   </div>
                 </div>
-
                 <div className={styles.card}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>События по типам</h2>

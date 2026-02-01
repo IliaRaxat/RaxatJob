@@ -1,41 +1,35 @@
 'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { RotateCw } from 'lucide-react';
-import { useGetJobsQuery } from '../../../lib/api/jobsApi';
+import { useGetJobsQuery } from '@/entities/job';
 import {
   useApproveJobMutation,
   useRejectJobMutation,
   useReturnJobMutation,
   useGetModerationStatsQuery,
-} from '../../../lib/api/analyticsApi';
+} from '@/shared/api/analyticsApi';
 import styles from './jobs.module.css';
-
 interface CustomSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }
-
 function CustomSelect({ options, value, onChange, placeholder = 'Выберите...' }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   return (
     <div className={styles.customSelect} ref={selectRef}>
       <button 
@@ -74,7 +68,6 @@ function CustomSelect({ options, value, onChange, placeholder = 'Выберит�
     </div>
   );
 }
-
 export default function AdminJobsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('Все статусы');
@@ -82,53 +75,39 @@ export default function AdminJobsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
-
-  // RTK Query hooks
   const { data: jobsData, error, isLoading, refetch } = useGetJobsQuery({
     search: searchQuery.trim() || undefined,
     type: selectedType !== 'Все типы' ? selectedType : undefined,
     page: currentPage > 1 ? currentPage : undefined,
   });
-
   const { data: statsData } = useGetModerationStatsQuery();
   const [approveJob] = useApproveJobMutation();
   const [rejectJob] = useRejectJobMutation();
   const [returnJob] = useReturnJobMutation();
-
   const jobs = jobsData?.jobs || [];
-
   const statusOptions = ['Все статусы', 'ACTIVE', 'DRAFT', 'PENDING', 'APPROVED', 'REJECTED', 'ARCHIVED'];
   const typeOptions = ['Все типы', 'Полная занятость', 'Частичная занятость', 'Проектная занятость', 'Контракт', 'Стажировка', 'Фриланс'];
-
   const handleJobAction = async (jobId: string, action: 'approve' | 'reject' | 'return', notes?: string) => {
     setActionLoading(jobId);
-    
     try {
       let result;
-      
       switch (action) {
         case 'approve':
           result = await approveJob({ jobId, notes }).unwrap();
-          console.log('✅ Вакансия одобрена:', result);
-          break;
+                    break;
         case 'reject':
           result = await rejectJob({ jobId, notes }).unwrap();
-          console.log('❌ Вакансия отклонена:', result);
-          break;
+                    break;
         case 'return':
           result = await returnJob({ jobId, notes }).unwrap();
-          console.log('🔄 Вакансия возвращена на доработку:', result);
-          break;
+                    break;
       }
-      
       refetch();
     } catch (error) {
-      console.error('❌ Ошибка при выполнении действия:', error);
-    } finally {
+          } finally {
       setActionLoading(null);
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('ru-RU', {
       day: '2-digit',
@@ -138,7 +117,6 @@ export default function AdminJobsPage() {
       minute: '2-digit'
     });
   };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'ACTIVE':
@@ -157,7 +135,6 @@ export default function AdminJobsPage() {
         return `${styles.badge}`;
     }
   };
-
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'ACTIVE':
@@ -176,7 +153,6 @@ export default function AdminJobsPage() {
         return status;
     }
   };
-
   const toggleJobSelection = (jobId: string) => {
     setSelectedJobs(prev => 
       prev.includes(jobId) 
@@ -184,7 +160,6 @@ export default function AdminJobsPage() {
         : [...prev, jobId]
     );
   };
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -195,7 +170,6 @@ export default function AdminJobsPage() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -215,10 +189,9 @@ export default function AdminJobsPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Hero */}
+      {}
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
@@ -227,7 +200,6 @@ export default function AdminJobsPage() {
           <p className={styles.heroSubtitle}>
             Административное управление всеми вакансиями на платформе
           </p>
-          
           <div className={styles.searchSection}>
             <div className={styles.searchContainer}>
               <input
@@ -241,20 +213,17 @@ export default function AdminJobsPage() {
                 <path d="M19 19L13 13L19 19ZM15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            
             <div className={styles.filters}>
               <CustomSelect
                 options={statusOptions}
                 value={selectedStatus}
                 onChange={setSelectedStatus}
               />
-              
               <CustomSelect
                 options={typeOptions}
                 value={selectedType}
                 onChange={setSelectedType}
               />
-              
               <button
                 onClick={() => refetch()}
                 className={styles.refreshButton}
@@ -271,8 +240,7 @@ export default function AdminJobsPage() {
           </div>
         </div>
       </div>
-
-      {/* Results */}
+      {}
       <div className={styles.results}>
         <div className={styles.resultsHeader}>
           <h2>Найдено {jobs.length} {jobs.length === 1 ? 'вакансия' : 'вакансий'}</h2>
@@ -285,8 +253,7 @@ export default function AdminJobsPage() {
             </div>
           )}
         </div>
-
-        {/* Jobs List */}
+        {}
         <div className={styles.jobsGrid}>
           {jobs && jobs.length > 0 ? (
             jobs.map((job) => (
@@ -319,14 +286,12 @@ export default function AdminJobsPage() {
                     </span>
                   </div>
                 </div>
-                
                 <p className={styles.jobDescription}>
                   {job.description && job.description.length > 200 
                     ? `${job.description.substring(0, 200)}...` 
                     : job.description || 'Описание не указано'
                   }
                 </p>
-                
                 <div className={styles.jobSkills}>
                   {job.skills?.map((skill, index) => (
                     <span key={index} className={styles.skillTag}>
@@ -334,7 +299,6 @@ export default function AdminJobsPage() {
                     </span>
                   )) || []}
                 </div>
-                
                 <div className={styles.jobFooter}>
                   <div className={styles.jobMeta}>
                     <span>{(job as unknown as { _count: { applications: number } })._count?.applications || 0} откликов</span>
@@ -342,7 +306,6 @@ export default function AdminJobsPage() {
                       <span>• {job.salaryMin.toLocaleString()} - {job.salaryMax.toLocaleString()} {job.currency}</span>
                     )}
                   </div>
-                  
                   <div className={styles.jobActions}>
                     <Link
                       href={`/jobs/${job.id}`}
@@ -354,7 +317,6 @@ export default function AdminJobsPage() {
                       </svg>
                       Просмотр
                     </Link>
-                    
                     <Link
                       href={`/jobs/${job.id}/edit`}
                       className={`${styles.actionButton} ${styles.actionButtonEdit}`}
@@ -365,7 +327,6 @@ export default function AdminJobsPage() {
                       </svg>
                       Редактировать
                     </Link>
-                    
                     {job.status === 'PENDING' && (
                       <>
                         <button
@@ -416,8 +377,7 @@ export default function AdminJobsPage() {
             </div>
           )}
         </div>
-
-        {/* Pagination */}
+        {}
         {jobsData && jobsData.totalPages > 1 && (
           <div className={styles.pagination}>
             <button
@@ -429,11 +389,9 @@ export default function AdminJobsPage() {
                 <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            
             <div className={styles.paginationInfo}>
               Страница {currentPage} из {jobsData.totalPages}
             </div>
-            
             <button
               onClick={() => setCurrentPage(prev => Math.min(jobsData.totalPages, prev + 1))}
               disabled={currentPage === jobsData.totalPages}

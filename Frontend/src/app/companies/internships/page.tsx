@@ -1,20 +1,15 @@
 'use client';
-
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   useGetMyInternshipsQuery, 
   useUpdateInternshipStatusMutation
-} from '@/lib/api/internshipsApi';
+} from '@/entities/internship';
 import styles from './internships.module.css';
-
 const CompanyInternshipsPage: React.FC = () => {
   const { data: responseData, isLoading, error, refetch } = useGetMyInternshipsQuery();
   const [updateStatus] = useUpdateInternshipStatusMutation();
-  
-  // Безопасно получаем массив стажировок из ответа API
   const internships = Array.isArray(responseData?.internships) ? responseData.internships : [];
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'DRAFT':
@@ -31,7 +26,6 @@ const CompanyInternshipsPage: React.FC = () => {
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'DRAFT':
@@ -48,7 +42,6 @@ const CompanyInternshipsPage: React.FC = () => {
         return status;
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -56,7 +49,6 @@ const CompanyInternshipsPage: React.FC = () => {
       day: 'numeric'
     });
   };
-
   const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -64,57 +56,45 @@ const CompanyInternshipsPage: React.FC = () => {
       minimumFractionDigits: 0,
     }).format(amount);
   };
-
-  // Обработчики для изменения статуса
   const handlePublish = async (internshipId: string) => {
     try {
       await updateStatus({ id: internshipId, status: 'ACTIVE' }).unwrap();
-      refetch(); // Обновляем список
+      refetch(); 
     } catch (err) {
-      console.error('Failed to publish internship:', err);
-    }
+          }
   };
-
   const handlePause = async (internshipId: string) => {
     try {
       await updateStatus({ id: internshipId, status: 'PAUSED' }).unwrap();
-      refetch(); // Обновляем список
+      refetch(); 
     } catch (err) {
-      console.error('Failed to pause internship:', err);
-    }
+          }
   };
-
   const handleResume = async (internshipId: string) => {
     try {
       await updateStatus({ id: internshipId, status: 'ACTIVE' }).unwrap();
-      refetch(); // Обновляем список
+      refetch(); 
     } catch (err) {
-      console.error('Failed to resume internship:', err);
-    }
+          }
   };
-
   const handleComplete = async (internshipId: string) => {
     if (confirm('Вы уверены, что хотите завершить эту стажировку?')) {
       try {
         await updateStatus({ id: internshipId, status: 'COMPLETED' }).unwrap();
-        refetch(); // Обновляем список
+        refetch(); 
       } catch (err) {
-        console.error('Failed to complete internship:', err);
-      }
+              }
     }
   };
-
   const handleCancel = async (internshipId: string) => {
     if (confirm('Вы уверены, что хотите отменить эту стажировку? Это действие нельзя отменить.')) {
       try {
         await updateStatus({ id: internshipId, status: 'CANCELLED' }).unwrap();
-        refetch(); // Обновляем список
+        refetch(); 
       } catch (err) {
-        console.error('Failed to cancel internship:', err);
-      }
+              }
     }
   };
-
   return (
     <div className={styles.pageContainer}>
       <div className={styles.header}>
@@ -128,7 +108,6 @@ const CompanyInternshipsPage: React.FC = () => {
           Создать стажировку
         </Link>
       </div>
-
       <div className={styles.content}>
         {isLoading ? (
           <div className={styles.loading}>
@@ -182,20 +161,17 @@ const CompanyInternshipsPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className={styles.internshipContent}>
                   <div className={styles.internshipDescription}>
                     <h4>Описание:</h4>
                     <p>{internship.description}</p>
                   </div>
-
                   {internship.requirements && (
                     <div className={styles.internshipRequirements}>
                       <h4>Требования:</h4>
                       <p>{internship.requirements}</p>
                     </div>
                   )}
-
                   {internship.skills && Array.isArray(internship.skills) && internship.skills.length > 0 && (
                     <div className={styles.internshipSkills}>
                       <h4>Навыки:</h4>
@@ -208,7 +184,6 @@ const CompanyInternshipsPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-
                   {internship.tags && Array.isArray(internship.tags) && internship.tags.length > 0 && (
                     <div className={styles.internshipTags}>
                       <h4>Теги:</h4>
@@ -221,7 +196,6 @@ const CompanyInternshipsPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-
                   <div className={styles.internshipDates}>
                     <div className={styles.dateItem}>
                       <span className={styles.dateLabel}>Начало:</span>
@@ -244,7 +218,6 @@ const CompanyInternshipsPage: React.FC = () => {
                       </div>
                     )}
                   </div>
-
                   <div className={styles.internshipStats}>
                     <div className={styles.statItem}>
                       <span className={styles.statLabel}>Просмотры:</span>
@@ -268,7 +241,6 @@ const CompanyInternshipsPage: React.FC = () => {
                     )}
                   </div>
                 </div>
-
                 <div className={styles.internshipFooter}>
                   <div className={styles.internshipMeta}>
                     <span className={styles.createdAt}>
@@ -276,7 +248,7 @@ const CompanyInternshipsPage: React.FC = () => {
                     </span>
                   </div>
                   <div className={styles.internshipActions}>
-                    {/* Кнопки в зависимости от статуса */}
+                    {}
                     {internship.status === 'DRAFT' && (
                       <button 
                         onClick={() => handlePublish(internship.id)}
@@ -285,7 +257,6 @@ const CompanyInternshipsPage: React.FC = () => {
                         Опубликовать
                       </button>
                     )}
-                    
                     {internship.status === 'ACTIVE' && (
                       <>
                         <button 
@@ -302,7 +273,6 @@ const CompanyInternshipsPage: React.FC = () => {
                         </button>
                       </>
                     )}
-                    
                     {internship.status === 'PAUSED' && (
                       <button 
                         onClick={() => handleResume(internship.id)}
@@ -311,7 +281,6 @@ const CompanyInternshipsPage: React.FC = () => {
                         Возобновить
                       </button>
                     )}
-                    
                     {(internship.status === 'ACTIVE' || internship.status === 'PAUSED') && (
                       <button 
                         onClick={() => handleCancel(internship.id)}
@@ -320,7 +289,6 @@ const CompanyInternshipsPage: React.FC = () => {
                         Отменить
                       </button>
                     )}
-                    
                     <button className={styles.editButton}>
                       Редактировать
                     </button>
@@ -334,5 +302,4 @@ const CompanyInternshipsPage: React.FC = () => {
     </div>
   );
 };
-
 export default CompanyInternshipsPage;

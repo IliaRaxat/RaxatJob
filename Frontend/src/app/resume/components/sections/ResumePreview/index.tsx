@@ -1,8 +1,6 @@
 'use client';
-
 import { ResumePreviewProps } from '../../../types';
 import styles from './ResumePreview.module.css';
-
 export default function ResumePreview({ 
   personalInfo, 
   experiences, 
@@ -11,7 +9,6 @@ export default function ResumePreview({
   showPreview 
 }: ResumePreviewProps) {
   if (!showPreview) return null;
-
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -21,7 +18,6 @@ export default function ResumePreview({
     ];
     return `${months[date.getMonth()]} ${date.getFullYear()}`;
   };
-
   const getLevelTranslation = (level: string) => {
     const levels = {
       'Beginner': 'Начинающий',
@@ -31,13 +27,12 @@ export default function ResumePreview({
     };
     return levels[level as keyof typeof levels] || level;
   };
-
   return (
     <div className={styles.previewPanel}>
       <div className={styles.previewContent}>
         <h3>Предварительный просмотр</h3>
         <div className={styles.resumePreview}>
-          {/* Header */}
+          {}
           <div className={styles.previewHeader}>
             <h1>{personalInfo.fullName || 'Ваше имя'}</h1>
             <h2>{personalInfo.title || 'Желаемая должность'}</h2>
@@ -47,16 +42,14 @@ export default function ResumePreview({
               {personalInfo.location && <span>{personalInfo.location}</span>}
             </div>
           </div>
-
-          {/* Summary */}
+          {}
           {personalInfo.summary && (
             <div className={styles.previewSection}>
               <h3>О себе</h3>
               <p>{personalInfo.summary}</p>
             </div>
           )}
-
-          {/* Experience */}
+          {}
           {experiences.length > 0 && (
             <div className={styles.previewSection}>
               <h3>Опыт работы</h3>
@@ -71,8 +64,7 @@ export default function ResumePreview({
               ))}
             </div>
           )}
-
-          {/* Education */}
+          {}
           {education.length > 0 && (
             <div className={styles.previewSection}>
               <h3>Образование</h3>
@@ -87,8 +79,7 @@ export default function ResumePreview({
               ))}
             </div>
           )}
-
-          {/* Skills */}
+          {}
           {skills.length > 0 && (
             <div className={styles.previewSection}>
               <h3>Навыки</h3>

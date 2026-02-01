@@ -1,4 +1,4 @@
-/* Container and Layout */
+﻿/* Container and Layout */
 .container {
   min-height: 100vh;
   background: #ffffff;
@@ -21,7 +21,7 @@
   transform: translate(-50%, -50%);
   width: 600px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(225, 6, 0, 0.2) 0%, rgba(225, 6, 0, 0.12) 25%, rgba(225, 6, 0, 0.06) 50%, transparent 75%);
+  background: radial-gradient(ellipse, rgba(29, 185, 84, 0.2) 0%, rgba(29, 185, 84, 0.12) 25%, rgba(29, 185, 84, 0.06) 50%, transparent 75%);
   border-radius: 50%;
   z-index: 1;
   pointer-events: none;
@@ -47,7 +47,7 @@
 }
 
 .backButton:hover {
-  color: #e10600;
+  color: #1db954;
 }
 
 .headerContent {
@@ -71,7 +71,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -143,8 +143,8 @@
 }
 
 .input:focus {
-  border-color: #e10600;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .inputError {
@@ -176,8 +176,8 @@
 }
 
 .textarea:focus {
-  border-color: #e10600;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .charCount {
@@ -218,13 +218,13 @@
 }
 
 .selectButton:hover {
-  border-color: #e10600;
+  border-color: #1db954;
 }
 
 .selectButton:focus {
   outline: none;
-  border-color: #e10600;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .selectButtonPlaceholder {
@@ -281,16 +281,16 @@
 }
 
 .selectOption:hover {
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .selectOptionActive {
-  background: #ffecec;
-  color: #e10600;
+  background: #dcfce7;
+  color: #1db954;
 }
 
 .selectOptionActive:hover {
-  background: #ffecec;
+  background: #dcfce7;
 }
 
 /* Skill Select */
@@ -307,8 +307,8 @@
 }
 
 .skillContainer:focus-within {
-  border-color: #e10600;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .selectedSkills {
@@ -325,9 +325,9 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.375rem 0.75rem;
-  background: #fff5f5;
-  color: #e10600;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  color: #1db954;
+  border: 1px solid #bbf7d0;
   border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -336,7 +336,7 @@
 .skillRemove {
   background: none;
   border: none;
-  color: #e10600;
+  color: #1db954;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 600;
@@ -352,7 +352,7 @@
 }
 
 .skillRemove:hover {
-  background: #e10600;
+  background: #1db954;
   color: white;
 }
 
@@ -424,8 +424,8 @@
 }
 
 .skillSearchInput:focus {
-  border-color: #e10600;
-  box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.1);
 }
 
 .skillList {
@@ -450,7 +450,7 @@
 }
 
 .skillOption:hover {
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .skillInfo {
@@ -489,9 +489,9 @@
   gap: 0.5rem;
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #fff5f5;
-  color: #e10600;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  color: #1db954;
+  border: 1px solid #bbf7d0;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -500,8 +500,8 @@
 }
 
 .createSkillButton:hover {
-  background: #ffecec;
-  border-color: #ffb3b3;
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .skillsLoading {
@@ -529,7 +529,7 @@
 .checkbox {
   width: 16px;
   height: 16px;
-  accent-color: #e10600;
+  accent-color: #1db954;
 }
 
 /* Skill Modal Styles */
@@ -649,8 +649,8 @@
 .skillModalInput:focus,
 .skillModalSelect:focus,
 .skillModalTextarea:focus {
-  border-color: #e10600;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .skillModalTextarea {
@@ -693,13 +693,13 @@
 }
 
 .skillModalCreateButton {
-  background: #e10600;
+  background: #1db954;
   color: white;
   border: none;
 }
 
 .skillModalCreateButton:hover:not(:disabled) {
-  background: #ba0500;
+  background: #1aa34a;
   transform: translateY(-1px);
 }
 
@@ -761,7 +761,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -774,7 +774,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -803,8 +803,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  background: #fff5f5;
-  border: 1px solid #ffc9c9;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
   border-radius: 8px;
   color: #dc3545;
   font-size: 0.875rem;
@@ -831,7 +831,7 @@
   .header::before {
     width: 450px;
     height: 300px;
-    background: radial-gradient(ellipse, rgba(225, 6, 0, 0.15) 0%, rgba(225, 6, 0, 0.1) 25%, rgba(225, 6, 0, 0.05) 50%, transparent 75%);
+    background: radial-gradient(ellipse, rgba(29, 185, 84, 0.15) 0%, rgba(29, 185, 84, 0.1) 25%, rgba(29, 185, 84, 0.05) 50%, transparent 75%);
   }
   
   .container {
@@ -870,7 +870,7 @@
   .header::before {
     width: 320px;
     height: 220px;
-    background: radial-gradient(ellipse, rgba(225, 6, 0, 0.12) 0%, rgba(225, 6, 0, 0.08) 25%, rgba(225, 6, 0, 0.04) 50%, transparent 75%);
+    background: radial-gradient(ellipse, rgba(29, 185, 84, 0.12) 0%, rgba(29, 185, 84, 0.08) 25%, rgba(29, 185, 84, 0.04) 50%, transparent 75%);
   }
   
   .title {
@@ -1029,3 +1029,6 @@
     gap: 0.5rem;
   }
 }
+
+
+

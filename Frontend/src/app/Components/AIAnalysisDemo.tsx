@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { 
   analyzeJobCandidates, 
@@ -7,33 +6,26 @@ import {
   checkHRAIServiceHealth,
   JobAnalysisResponse,
   JobCandidateAnalysis
-} from '@/lib/api/aiApi';
-import { useHRToken } from '@/lib/hooks/useAuthToken';
+} from '@/entities/ai';
+import { useHRToken } from '@/shared/lib/hooks/useAuthToken';
 import MarkdownRenderer from './MarkdownRenderer';
 import styles from './AIAnalysisDemo.module.css';
-
 const AIAnalysisDemo: React.FC = () => {
   const [jobId, setJobId] = useState('');
   const [aiAnalysis, setAiAnalysis] = useState<JobAnalysisResponse | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [serviceHealth, setServiceHealth] = useState<boolean | null>(null);
-  
-  // Get HR token for API calls
   const hrToken = useHRToken();
-
   const handleAIAnalysis = async () => {
     if (!jobId.trim()) {
       setAnalysisError('Введите ID вакансии');
       return;
     }
-
     setIsAnalyzing(true);
     setAnalysisError(null);
-    
     try {
       const result = await analyzeJobCandidates(jobId, hrToken || undefined);
-      
       if (result.success) {
         setAiAnalysis(result);
       } else {
@@ -45,19 +37,15 @@ const AIAnalysisDemo: React.FC = () => {
       setIsAnalyzing(false);
     }
   };
-
   const handleGetResults = async () => {
     if (!jobId.trim()) {
       setAnalysisError('Введите ID вакансии');
       return;
     }
-
     setIsAnalyzing(true);
     setAnalysisError(null);
-    
     try {
       const result = await getJobAnalysisResults(jobId, hrToken || undefined);
-      
       if (result.success) {
         setAiAnalysis(result);
       } else {
@@ -69,7 +57,6 @@ const AIAnalysisDemo: React.FC = () => {
       setIsAnalyzing(false);
     }
   };
-
   const checkHealth = async () => {
     try {
       const result = await checkHRAIServiceHealth(hrToken || undefined);
@@ -78,12 +65,10 @@ const AIAnalysisDemo: React.FC = () => {
       setServiceHealth(false);
     }
   };
-
   const clearResults = () => {
     setAiAnalysis(null);
     setAnalysisError(null);
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -98,7 +83,6 @@ const AIAnalysisDemo: React.FC = () => {
           </span>
         </div>
       </div>
-
       <div className={styles.controls}>
         <div className={styles.inputGroup}>
           <label htmlFor="jobId" className={styles.label}>
@@ -113,7 +97,6 @@ const AIAnalysisDemo: React.FC = () => {
             className={styles.input}
           />
         </div>
-
         <div className={styles.buttonGroup}>
           <button
             onClick={handleAIAnalysis}
@@ -122,7 +105,6 @@ const AIAnalysisDemo: React.FC = () => {
           >
             {isAnalyzing ? 'Анализируем...' : '🤖 Запустить анализ'}
           </button>
-
           <button
             onClick={handleGetResults}
             disabled={isAnalyzing || !jobId.trim()}
@@ -130,14 +112,12 @@ const AIAnalysisDemo: React.FC = () => {
           >
             📊 Получить результаты
           </button>
-
           <button
             onClick={checkHealth}
             className={styles.healthButton}
           >
             🏥 Проверить сервис
           </button>
-
           <button
             onClick={clearResults}
             className={styles.clearButton}
@@ -146,8 +126,7 @@ const AIAnalysisDemo: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* Service Health Status */}
+      {}
       {serviceHealth !== null && (
         <div className={styles.healthStatus}>
           <div className={`${styles.healthIndicator} ${serviceHealth ? styles.healthy : styles.unhealthy}`}>
@@ -155,8 +134,7 @@ const AIAnalysisDemo: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Analysis Results */}
+      {}
       {aiAnalysis && aiAnalysis.success && aiAnalysis.data && (
         <div className={styles.resultsSection}>
           <div className={styles.resultsHeader}>
@@ -170,13 +148,11 @@ const AIAnalysisDemo: React.FC = () => {
               </span>
             </div>
           </div>
-          
           <div className={styles.summary}>
             <div className={styles.summaryText}>
               <MarkdownRenderer content={aiAnalysis.data.analysisSummary} />
             </div>
           </div>
-
           {aiAnalysis.data.topCandidates.length > 0 && (
             <div className={styles.candidatesSection}>
               <h4 className={styles.candidatesTitle}>🏆 Топ кандидаты</h4>
@@ -216,7 +192,6 @@ const AIAnalysisDemo: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
                     <div className={styles.candidateDetails}>
                       <div className={styles.section}>
                         <h5 className={styles.sectionTitle}>✅ Сильные стороны:</h5>
@@ -226,7 +201,6 @@ const AIAnalysisDemo: React.FC = () => {
                           ))}
                         </ul>
                       </div>
-
                       <div className={styles.section}>
                         <h5 className={styles.sectionTitle}>⚠️ Слабые стороны:</h5>
                         <ul className={styles.list}>
@@ -235,7 +209,6 @@ const AIAnalysisDemo: React.FC = () => {
                           ))}
                         </ul>
                       </div>
-
                       <div className={styles.section}>
                         <h5 className={styles.sectionTitle}>💡 Рекомендации:</h5>
                         <ul className={styles.list}>
@@ -244,7 +217,6 @@ const AIAnalysisDemo: React.FC = () => {
                           ))}
                         </ul>
                       </div>
-
                       {candidate.aiNotes && (
                         <div className={styles.section}>
                           <h5 className={styles.sectionTitle}>🤖 Комментарии AI:</h5>
@@ -261,8 +233,7 @@ const AIAnalysisDemo: React.FC = () => {
           )}
         </div>
       )}
-
-      {/* Error Display */}
+      {}
       {analysisError && (
         <div className={styles.errorSection}>
           <div className={styles.error}>
@@ -274,5 +245,4 @@ const AIAnalysisDemo: React.FC = () => {
     </div>
   );
 };
-
 export default AIAnalysisDemo;

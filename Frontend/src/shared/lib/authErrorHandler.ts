@@ -1,0 +1,2 @@
+export function determineErrorContext(errorText: string, url: string): string {  if (url.includes('/admin/')) return 'admin';  if (url.includes('/hr/')) return 'hr';  if (url.includes('/universities/')) return 'university';  if (url.includes('/companies/')) return 'company';  return 'general';}export function handleAuthError(status: number, response: Response, context: string): void {  if (status === 401 || status === 403) {
+  }}

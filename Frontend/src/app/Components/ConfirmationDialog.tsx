@@ -1,9 +1,7 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 import styles from './ConfirmationDialog.module.css';
-
 interface ConfirmationDialogProps {
   isOpen: boolean;
   title: string;
@@ -14,7 +12,6 @@ interface ConfirmationDialogProps {
   onCancel: () => void;
   type?: 'danger' | 'warning' | 'info';
 }
-
 export function ConfirmationDialog({
   isOpen,
   title,
@@ -26,7 +23,6 @@ export function ConfirmationDialog({
   type = 'danger'
 }: ConfirmationDialogProps) {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
@@ -34,25 +30,20 @@ export function ConfirmationDialog({
       setIsVisible(false);
     }
   }, [isOpen]);
-
   const handleConfirm = () => {
     onConfirm();
     setIsVisible(false);
   };
-
   const handleCancel = () => {
     onCancel();
     setIsVisible(false);
   };
-
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       handleCancel();
     }
   };
-
   if (!isOpen && !isVisible) return null;
-
   return (
     <div 
       className={`${styles.backdrop} ${isVisible ? styles.visible : ''}`}
@@ -72,11 +63,9 @@ export function ConfirmationDialog({
             <X size={20} />
           </button>
         </div>
-        
         <div className={styles.content}>
           <p className={styles.message}>{message}</p>
         </div>
-        
         <div className={styles.actions}>
           <button 
             className={styles.cancelButton}

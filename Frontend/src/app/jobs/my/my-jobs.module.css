@@ -1,4 +1,4 @@
-/* Container and Layout */
+﻿/* Container and Layout */
 .container {
   min-height: 100vh;
   background: #ffffff;
@@ -20,7 +20,7 @@
   transform: translate(-50%, -50%);
   width: 600px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(225, 6, 0, 0.2) 0%, rgba(225, 6, 0, 0.12) 25%, rgba(225, 6, 0, 0.06) 50%, transparent 75%);
+  background: radial-gradient(ellipse, rgba(29, 185, 84, 0.2) 0%, rgba(29, 185, 84, 0.12) 25%, rgba(29, 185, 84, 0.06) 50%, transparent 75%);
   border-radius: 50%;
   z-index: 1;
   pointer-events: none;
@@ -55,7 +55,7 @@
 }
 
 .backButton:hover {
-  color: #e10600;
+  color: #1db954;
 }
 
 .createButton {
@@ -63,7 +63,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -73,7 +73,7 @@
 }
 
 .createButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -90,7 +90,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -129,7 +129,7 @@
   width: 48px;
   height: 48px;
   border: 3px solid #f0f0f0;
-  border-top: 3px solid #e10600;
+  border-top: 3px solid #1db954;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -152,7 +152,7 @@
 }
 
 .error svg {
-  color: #e10600;
+  color: #1db954;
   margin-bottom: 1rem;
 }
 
@@ -169,7 +169,7 @@
 
 .retryButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -179,7 +179,7 @@
 }
 
 .retryButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -217,7 +217,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -227,7 +227,7 @@
 }
 
 .createFirstButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -237,8 +237,8 @@
 }
 
 .statsCard {
-  background: #fff5f5;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 10px;
   padding: 1.25rem;
   text-align: center;
@@ -248,7 +248,7 @@
 .statsNumber {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #e10600;
+  color: #1db954;
   line-height: 1;
 }
 
@@ -280,8 +280,8 @@
 }
 
 .jobCard:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
   transform: translateY(-2px);
 }
 
@@ -343,7 +343,7 @@
 }
 
 .deadline {
-  color: #e10600;
+  color: #1db954;
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -370,15 +370,15 @@
 }
 
 .editButton:hover {
-  border-color: #e10600;
-  color: #e10600;
-  background: #fff5f5;
+  border-color: #1db954;
+  color: #1db954;
+  background: #f0fdf4;
 }
 
 .deleteButton:hover {
   border-color: #dc3545;
   color: #dc3545;
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .jobDescription {
@@ -397,12 +397,12 @@
 
 .tag {
   padding: 0.2rem 0.625rem;
-  background: #fff5f5;
-  color: #e10600;
+  background: #f0fdf4;
+  color: #1db954;
   font-size: 0.7rem;
   font-weight: 500;
   border-radius: 14px;
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .tagMore {
@@ -461,7 +461,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: #e10600;
+  color: #1db954;
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -469,7 +469,7 @@
 }
 
 .viewButton:hover {
-  color: #ba0500;
+  color: #1aa34a;
   transform: translateX(2px);
 }
 
@@ -605,7 +605,7 @@
   .header::before {
     width: 450px;
     height: 300px;
-    background: radial-gradient(ellipse, rgba(225, 6, 0, 0.15) 0%, rgba(225, 6, 0, 0.1) 25%, rgba(225, 6, 0, 0.05) 50%, transparent 75%);
+    background: radial-gradient(ellipse, rgba(29, 185, 84, 0.15) 0%, rgba(29, 185, 84, 0.1) 25%, rgba(29, 185, 84, 0.05) 50%, transparent 75%);
   }
   
   .title {
@@ -677,7 +677,7 @@
   .header::before {
     width: 320px;
     height: 220px;
-    background: radial-gradient(ellipse, rgba(225, 6, 0, 0.12) 0%, rgba(225, 6, 0, 0.08) 25%, rgba(225, 6, 0, 0.04) 50%, transparent 75%);
+    background: radial-gradient(ellipse, rgba(29, 185, 84, 0.12) 0%, rgba(29, 185, 84, 0.08) 25%, rgba(29, 185, 84, 0.04) 50%, transparent 75%);
   }
   
   .title {
@@ -897,3 +897,6 @@
     padding: 0.2rem 0.4rem;
   }
 }
+
+
+

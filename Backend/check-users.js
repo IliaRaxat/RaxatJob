@@ -1,50 +1,29 @@
 const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 async function checkUsers() {
-  const prisma = new PrismaClient();
-  
   try {
-    console.log('🔍 Проверка пользователей в системе...');
-    
     const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        isActive: true,
-        createdAt: true
-      },
-      orderBy: { createdAt: 'desc' }
+      include: {
+        hrProfile: true,
+        candidateProfile: true
+      }
     });
     
-    console.log(`📊 Всего пользователей: ${users.length}`);
+    console.log(`Total users: ${users.length}\n`);
     
-    if (users.length === 0) {
-      console.log('❌ Пользователей не найдено');
-      return;
-    }
-    
-    console.log('\n👥 Список пользователей:');
-    users.forEach((user, index) => {
-      console.log(`${index + 1}. ${user.email} (${user.role}) - ${user.isActive ? 'Активен' : 'Неактивен'}`);
+    users.forEach(user => {
+      console.log(`- ${user.email} (${user.role})`);
+      if (user.hrProfile) {
+        console.log(`  HR Profile: ${user.hrProfile.firstName} ${user.hrProfile.lastName} - ${user.hrProfile.company}`);
+      }
+      if (user.candidateProfile) {
+        console.log(`  Candidate Profile: ${user.candidateProfile.firstName} ${user.candidateProfile.lastName}`);
+      }
     });
-    
-    // Проверяем, есть ли администраторы
-    const admins = users.filter(user => user.role === 'ADMIN');
-    console.log(`\n👑 Администраторов: ${admins.length}`);
-    
-    if (admins.length === 0) {
-      console.log('⚠️ Администраторов не найдено!');
-      console.log('💡 Нужно создать администратора для доступа к админ-панели');
-    } else {
-      console.log('✅ Администраторы найдены:');
-      admins.forEach(admin => {
-        console.log(`   - ${admin.email}`);
-      });
-    }
     
   } catch (error) {
-    console.error('❌ Ошибка при проверке пользователей:', error);
+    console.error('Error:', error);
   } finally {
     await prisma.$disconnect();
   }

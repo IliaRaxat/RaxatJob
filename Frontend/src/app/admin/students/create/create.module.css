@@ -30,7 +30,7 @@
 }
 
 .backLink:hover {
-  color: #e10600;
+  color: #1db954;
 }
 
 .backLink svg {
@@ -48,7 +48,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -86,8 +86,8 @@
 }
 
 .form:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
 }
 
 /* Error Container */
@@ -177,8 +177,8 @@
 
 .input:focus,
 .select:focus {
-  border-color: #ffc9c9;
-  background: #fff5f5;
+  border-color: #86efac;
+  background: #f0fdf4;
 }
 
 .input::placeholder {
@@ -217,8 +217,8 @@
 }
 
 .cancelButton:hover {
-  border-color: #ffc9c9;
-  background: #fff5f5;
+  border-color: #86efac;
+  background: #f0fdf4;
 }
 
 .submitButton {
@@ -226,7 +226,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -238,7 +238,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -280,8 +280,8 @@
 }
 
 .infoPanel:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
 }
 
 .infoPanelHeader {
@@ -294,7 +294,7 @@
 }
 
 .infoPanelHeader svg {
-  color: #e10600;
+  color: #1db954;
   width: 24px;
   height: 24px;
 }
@@ -360,7 +360,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   padding: 0.875rem 1.5rem;
   border-radius: 8px;
@@ -372,7 +372,7 @@
 }
 
 .backButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -466,3 +466,5 @@
     margin: 0 0.75rem;
   }
 }
+
+

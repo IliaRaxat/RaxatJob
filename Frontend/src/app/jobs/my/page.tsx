@@ -2,11 +2,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useGetMyJobsQuery, useDeleteJobMutation, usePublishJobMutation, useUpdateJobStatusMutation, JobType, ExperienceLevel } from '../../../lib/api/jobsApi';
-import { getUserRole } from '../../../lib/api/authApi';
+import { useGetMyJobsQuery, useDeleteJobMutation, usePublishJobMutation, useUpdateJobStatusMutation, JobType, ExperienceLevel } from '@/entities/job';
+import RoleGuard from '@/app/Components/RoleGuard';
 import styles from './my-jobs.module.css';
-
-// Helper functions for displaying data
 const getJobTypeLabel = (type: JobType) => {
   const labels = {
     [JobType.FULL_TIME]: 'Полная занятость',
@@ -17,7 +15,6 @@ const getJobTypeLabel = (type: JobType) => {
   };
   return labels[type] || type;
 };
-
 const getExperienceLevelLabel = (level: ExperienceLevel) => {
   const labels = {
     [ExperienceLevel.NO_EXPERIENCE]: 'Без опыта',
@@ -28,7 +25,6 @@ const getExperienceLevelLabel = (level: ExperienceLevel) => {
   };
   return labels[level] || level;
 };
-
 const getCurrencySymbol = (currency: string) => {
   const symbols = {
     'RUB': '₽',
@@ -37,7 +33,6 @@ const getCurrencySymbol = (currency: string) => {
   };
   return symbols[currency as keyof typeof symbols] || currency;
 };
-
 const getModerationStatusLabel = (status: string) => {
   const labels = {
     'PENDING': 'На модерации',
@@ -46,7 +41,6 @@ const getModerationStatusLabel = (status: string) => {
   };
   return labels[status as keyof typeof labels] || status;
 };
-
 const getModerationStatusColor = (status: string) => {
   const colors = {
     'PENDING': '#f59e0b',
@@ -55,7 +49,6 @@ const getModerationStatusColor = (status: string) => {
   };
   return colors[status as keyof typeof colors] || '#666';
 };
-
 const getJobStatusLabel = (status: string) => {
   switch (status) {
     case 'DRAFT': return 'Черновик';
@@ -65,7 +58,6 @@ const getJobStatusLabel = (status: string) => {
     default: return status;
   }
 };
-
 const getJobStatusColor = (status: string) => {
   switch (status) {
     case 'DRAFT': return '#6b7280';
@@ -76,8 +68,6 @@ const getJobStatusColor = (status: string) => {
     default: return '#666';
   }
 };
-
-// Available job statuses
 const JOB_STATUSES = [
   { value: 'DRAFT', label: 'Черновик', color: '#6b7280' },
   { value: 'ACTIVE', label: 'Активна', color: '#10b981' },
@@ -85,63 +75,43 @@ const JOB_STATUSES = [
   { value: 'CLOSED', label: 'Закрыта', color: '#ef4444' },
   { value: 'ARCHIVED', label: 'Архивирована', color: '#8b5cf6' },
 ];
-
 export default function MyJobsPage() {
   const router = useRouter();
   const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
   const [showStatusModal, setShowStatusModal] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
-  
-  // Check if user is HR
-  useEffect(() => {
-    const userRole = getUserRole();
-    if (!userRole || userRole !== 'HR') {
-      router.push('/auth/login');
-    }
-  }, [router]);
-
   const { data: jobs = [], error, isLoading, refetch } = useGetMyJobsQuery();
   const [deleteJob, { isLoading: isDeleting }] = useDeleteJobMutation();
   const [publishJob, { isLoading: isPublishing }] = usePublishJobMutation();
   const [updateJobStatus, { isLoading: isUpdatingStatus }] = useUpdateJobStatusMutation();
-
   const handleDeleteClick = (jobId: string) => {
     setShowDeleteModal(jobId);
   };
-
   const handleDeleteConfirm = async () => {
     if (!showDeleteModal) return;
-    
     try {
       await deleteJob(showDeleteModal).unwrap();
       setShowDeleteModal(null);
-      refetch(); // Refresh the list after deletion
+      refetch(); 
     } catch (error) {
-      console.error('Failed to delete job:', error);
-    }
+          }
   };
-
   const handleDeleteCancel = () => {
     setShowDeleteModal(null);
   };
-
   const handlePublishJob = async (jobId: string) => {
     try {
       await publishJob(jobId).unwrap();
-      refetch(); // Refresh the list after publishing
+      refetch(); 
     } catch (error) {
-      console.error('Failed to publish job:', error);
-    }
+          }
   };
-
   const handleStatusChangeClick = (jobId: string, currentStatus: string) => {
     setShowStatusModal(jobId);
     setSelectedStatus(currentStatus);
   };
-
   const handleStatusUpdate = async () => {
     if (!showStatusModal || !selectedStatus) return;
-    
     try {
       await updateJobStatus({ 
         jobId: showStatusModal, 
@@ -149,20 +119,18 @@ export default function MyJobsPage() {
       }).unwrap();
       setShowStatusModal(null);
       setSelectedStatus('');
-      refetch(); // Refresh the list after status update
+      refetch(); 
     } catch (error) {
-      console.error('Failed to update job status:', error);
-    }
+          }
   };
-
   const handleStatusModalCancel = () => {
     setShowStatusModal(null);
     setSelectedStatus('');
   };
-
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
+    <RoleGuard allowedRoles={['HR', 'ADMIN']}>
+      <div className={styles.container}>
+        <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerTop}>
             <button 
@@ -174,7 +142,6 @@ export default function MyJobsPage() {
               </svg>
               Назад
             </button>
-            
             <Link href="/jobs/create" className={styles.createButton}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -182,7 +149,6 @@ export default function MyJobsPage() {
               Создать вакансию
             </Link>
           </div>
-          
           <h1 className={styles.title}>
             Мои <span className={styles.highlight}>вакансии</span>
           </h1>
@@ -191,7 +157,6 @@ export default function MyJobsPage() {
           </p>
         </div>
       </div>
-
       <div className={styles.content}>
         {isLoading ? (
           <div className={styles.loading}>
@@ -236,7 +201,6 @@ export default function MyJobsPage() {
                 </div>
               </div>
             </div>
-            
             <div className={styles.jobsList}>
               {jobs.map((job) => (
                 <div key={job.id} className={styles.jobCard}>
@@ -323,14 +287,12 @@ export default function MyJobsPage() {
                       </button>
                     </div>
                   </div>
-
                   <p className={styles.jobDescription}>
                     {job.description.length > 150 
                       ? `${job.description.substring(0, 150)}...` 
                       : job.description
                     }
                   </p>
-
                   <div className={styles.jobTags}>
                     {job.skills?.slice(0, 4).map((skill) => (
                       <span key={skill.id} className={styles.tag}>
@@ -343,7 +305,6 @@ export default function MyJobsPage() {
                       </span>
                     )}
                   </div>
-
                   <div className={styles.jobCardFooter}>
                     <div className={styles.jobSalary}>
                       {(job.salaryMin || job.salaryMax) ? (
@@ -387,8 +348,7 @@ export default function MyJobsPage() {
           </>
         )}
       </div>
-
-      {/* Delete Confirmation Modal */}
+      {}
       {showDeleteModal && (
         <div className={styles.modal}>
           <div className={styles.modalOverlay} onClick={handleDeleteCancel}></div>
@@ -420,8 +380,7 @@ export default function MyJobsPage() {
           </div>
         </div>
       )}
-
-      {/* Status Change Modal */}
+      {}
       {showStatusModal && (
         <div className={styles.modal}>
           <div className={styles.modalOverlay} onClick={handleStatusModalCancel}></div>
@@ -472,7 +431,7 @@ export default function MyJobsPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </RoleGuard>
   );
 }
-

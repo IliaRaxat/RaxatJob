@@ -1,9 +1,7 @@
 'use client';
-
 import { User } from 'lucide-react';
 import { PersonalInfoSectionProps } from '../../../types';
 import styles from './PersonalInfoSection.module.css';
-
 export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: PersonalInfoSectionProps) {
   return (
     <div className={styles.personalInfoSection}>
@@ -12,7 +10,6 @@ export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: P
           <User size={20} /> Личная информация
         </h2>
       </div>
-
       <div className={styles.formGrid}>
         <div className={styles.inputGroup}>
           <label>Полное имя *</label>
@@ -24,7 +21,6 @@ export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: P
             placeholder="Иван Иванов"
           />
         </div>
-        
         <div className={styles.inputGroup}>
           <label>Желаемая должность *</label>
           <input
@@ -35,7 +31,6 @@ export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: P
             placeholder="Frontend Developer"
           />
         </div>
-        
         <div className={styles.inputGroup}>
           <label>Email *</label>
           <input
@@ -46,7 +41,6 @@ export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: P
             placeholder="ivan@example.com"
           />
         </div>
-        
         <div className={styles.inputGroup}>
           <label>Телефон</label>
           <input
@@ -57,7 +51,6 @@ export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: P
             placeholder="+7 (999) 999-99-99"
           />
         </div>
-        
         <div className={styles.inputGroup}>
           <label>Местоположение</label>
           <input
@@ -69,7 +62,6 @@ export default function PersonalInfoSection({ personalInfo, setPersonalInfo }: P
           />
         </div>
       </div>
-
       <div className={styles.inputGroup}>
         <label>О себе</label>
         <textarea

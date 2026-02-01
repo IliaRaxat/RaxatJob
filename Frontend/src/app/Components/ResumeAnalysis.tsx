@@ -1,31 +1,24 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { X, Brain, Clock, CheckCircle, AlertTriangle, Lightbulb, Wrench, FileText } from 'lucide-react';
-import { analyzeResume, convertResumeToText, ResumeAnalysisResponse } from '../../lib/api/aiApi';
-import { Resume } from '../../lib/api/resumesApi';
+import { analyzeResume, convertResumeToText, ResumeAnalysisResponse } from '@/entities/ai';
+import { Resume } from '@/entities/resume';
 import styles from './ResumeAnalysis.module.css';
-
 interface ResumeAnalysisProps {
   isOpen: boolean;
   onClose: () => void;
   resume: Resume | null;
 }
-
 export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalysisProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<ResumeAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [resumeText, setResumeText] = useState<string>('');
-
-  // Запуск анализа при открытии модального окна
   useEffect(() => {
     if (isOpen && resume && !isAnalyzing && !analysisResult) {
       startAnalysis();
     }
   }, [isOpen, resume]);
-
-  // Сброс состояния при закрытии
   useEffect(() => {
     if (!isOpen) {
       setIsAnalyzing(false);
@@ -34,53 +27,33 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
       setResumeText('');
     }
   }, [isOpen]);
-
   const startAnalysis = async () => {
     if (!resume) return;
-
     setIsAnalyzing(true);
     setError(null);
-
     try {
-      // Конвертируем резюме в текст и сохраняем для отображения
       const text = convertResumeToText(resume);
       setResumeText(text);
-      
-      // Небольшая задержка для показа эффекта переливания
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Анализируем резюме с помощью AI
       const result = await analyzeResume(text, 'gemma3:latest');
-      
-      // Отладочная информация (только в development)
       if (process.env.NODE_ENV === 'development') {
-        console.log('AI Analysis Result:', result);
-        console.log('Resume Text Length:', text.length);
-        console.log('Model used: gemma3:latest');
-      }
-      
+                              }
       setAnalysisResult(result);
     } catch (err) {
-      console.error('Ошибка анализа резюме:', err);
-      setError('Произошла ошибка при анализе резюме. Попробуйте еще раз.');
+            setError('Произошла ошибка при анализе резюме. Попробуйте еще раз.');
     } finally {
       setIsAnalyzing(false);
     }
   };
-
-
   const handleClose = () => {
     onClose();
   };
-
   const handleRetry = () => {
     setError(null);
     setAnalysisResult(null);
     startAnalysis();
   };
-
   if (!isOpen) return null;
-
   return (
     <div className={styles.analysisContainer}>
       <div className={styles.analysisModal}>
@@ -96,9 +69,8 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
             <X size={20} />
           </button>
         </div>
-
         <div className={styles.analysisContent}>
-          {/* Отображение текста резюме */}
+          {}
           {resumeText && (
             <div className={styles.resumeTextContainer}>
               <h3 className={styles.resumeTextTitle}>
@@ -110,7 +82,6 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
               </div>
             </div>
           )}
-
           {isAnalyzing && (
             <div className={styles.loadingContainer}>
               <div className={styles.shimmerContainer}>
@@ -126,7 +97,6 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
               </div>
             </div>
           )}
-
           {error && (
             <div className={styles.analysisResults}>
               <div className={styles.analysisSection}>
@@ -154,10 +124,9 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
               </div>
             </div>
           )}
-
           {analysisResult && analysisResult.success && (
             <div className={styles.analysisResults}>
-              {/* Общая оценка */}
+              {}
               {analysisResult.data?.overall_score !== undefined && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -174,8 +143,7 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Сильные стороны */}
+              {}
               {analysisResult.data?.strengths && analysisResult.data.strengths.length > 0 && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -191,8 +159,7 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Области для улучшения */}
+              {}
               {analysisResult.data?.weaknesses && analysisResult.data.weaknesses.length > 0 && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -208,8 +175,7 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Предложения по улучшению */}
+              {}
               {analysisResult.data?.improvements && analysisResult.data.improvements.length > 0 && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -225,8 +191,7 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Рекомендации по структуре */}
+              {}
               {analysisResult.data?.structure_recommendations && analysisResult.data.structure_recommendations.length > 0 && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -242,8 +207,7 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Советы по содержанию */}
+              {}
               {analysisResult.data?.content_recommendations && analysisResult.data.content_recommendations.length > 0 && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -259,8 +223,7 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Ключевые слова для добавления */}
+              {}
               {analysisResult.data?.keywords_to_add && analysisResult.data.keywords_to_add.length > 0 && (
                 <div className={styles.analysisSection}>
                   <h3 className={styles.sectionTitle}>
@@ -278,15 +241,13 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
                   </div>
                 </div>
               )}
-
-              {/* Время обработки */}
+              {}
               {analysisResult.processingTime > 0 && (
                 <div className={styles.processingTime}>
                   <Clock size={16} />
                   Время анализа: {(analysisResult.processingTime / 1000).toFixed(2)}с
                 </div>
               )}
-
               <div className={styles.analysisActions}>
                 <button 
                   className={`${styles.actionButton} ${styles.secondaryButton}`}
@@ -303,7 +264,6 @@ export default function ResumeAnalysis({ isOpen, onClose, resume }: ResumeAnalys
               </div>
             </div>
           )}
-
           {analysisResult && !analysisResult.success && (
             <div className={styles.analysisResults}>
               <div className={styles.analysisSection}>

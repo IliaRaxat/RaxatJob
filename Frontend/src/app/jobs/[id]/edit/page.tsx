@@ -8,34 +8,29 @@ import {
   useCreateSkillMutation,
   JobType, 
   ExperienceLevel
-} from '../../../../lib/api/jobsApi';
-import { getUserRole } from '../../../../lib/api/authApi';
+} from '@/entities/job';
+import { getUserRole } from '@/entities/user';
 import styles from './edit.module.css';
-
 interface CustomSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }
-
 function CustomSelect({ options, value, onChange, placeholder }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   return (
     <div className={styles.customSelect} ref={selectRef}>
       <button 
@@ -74,14 +69,12 @@ function CustomSelect({ options, value, onChange, placeholder }: CustomSelectPro
     </div>
   );
 }
-
 interface SkillSelectProps {
   selectedSkills: string[];
   onChange: (skillIds: string[]) => void;
   availableSkills: { skill: { id: string; name: string; category: string }; candidateCount: number; studentCount: number; totalCount: number }[];
   onSkillCreated?: (newSkill: { id: string; name: string; category: string; description: string }) => void;
 }
-
 function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated }: SkillSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -93,25 +86,21 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
   });
   const selectRef = useRef<HTMLDivElement>(null);
   const [createSkill, { isLoading: isCreatingSkill }] = useCreateSkillMutation();
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   const filteredSkills = availableSkills.filter(popularSkill =>
     popularSkill.skill.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     !selectedSkills.includes(popularSkill.skill.id)
   );
-
   const toggleSkill = (skillId: string) => {
     if (selectedSkills.includes(skillId)) {
       onChange(selectedSkills.filter(id => id !== skillId));
@@ -119,50 +108,38 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
       onChange([...selectedSkills, skillId]);
     }
   };
-
   const removeSkill = (skillId: string) => {
     onChange(selectedSkills.filter(id => id !== skillId));
   };
-
   const getSkillName = (skillId: string) => {
     return availableSkills.find(popularSkill => popularSkill.skill.id === skillId)?.skill.name || skillId;
   };
-
   const handleCreateSkill = async () => {
     if (!newSkillData.name.trim()) {
-      console.error('Skill name is required');
-      return;
+            return;
     }
-    
     if (!newSkillData.category.trim()) {
-      console.error('Skill category is required');
-      return;
+            return;
     }
-
     try {
       const skillData = {
         name: newSkillData.name.trim(),
         category: newSkillData.category.trim(),
         description: newSkillData.description.trim() || ''
       };
-      
-      console.log('Creating skill with data:', skillData);
-      const newSkill = await createSkill(skillData).unwrap();
+            const newSkill = await createSkill(skillData).unwrap();
       onSkillCreated?.(newSkill);
       onChange([...selectedSkills, newSkill.id]);
       setShowCreateModal(false);
       setNewSkillData({ name: '', category: '', description: '' });
       setSearchQuery('');
     } catch (error) {
-      console.error('Failed to create skill:', error);
-    }
+          }
   };
-
   const handleCreateModalClose = () => {
     setShowCreateModal(false);
     setNewSkillData({ name: '', category: '', description: '' });
   };
-
   const handleCreateClick = () => {
     if (searchQuery.trim()) {
       setNewSkillData(prev => ({ ...prev, name: searchQuery.trim() }));
@@ -170,7 +147,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
     setShowCreateModal(true);
     setIsOpen(false);
   };
-
   return (
     <div className={styles.skillSelect} ref={selectRef}>
       <div className={styles.skillContainer}>
@@ -188,7 +164,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
             </span>
           ))}
         </div>
-        
         <button
           type="button"
           className={styles.skillDropdownButton}
@@ -206,7 +181,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
           </svg>
         </button>
       </div>
-
       {isOpen && (
         <div className={styles.skillDropdown}>
           <div className={styles.skillSearch}>
@@ -218,7 +192,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
               className={styles.skillSearchInput}
             />
           </div>
-          
           <div className={styles.skillList}>
             {filteredSkills.length === 0 ? (
               <div className={styles.noSkillsContainer}>
@@ -275,12 +248,10 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
           </div>
         </div>
       )}
-      
       <div className={styles.skillHint}>
         Выберите навыки, необходимые для этой позиции
       </div>
-
-      {/* Create Skill Modal */}
+      {}
       {showCreateModal && (
         <div className={styles.skillModal}>
           <div className={styles.skillModalOverlay} onClick={handleCreateModalClose}></div>
@@ -298,7 +269,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                 </svg>
               </button>
             </div>
-            
             <div className={styles.skillModalBody}>
               <div className={styles.skillModalGroup}>
                 <label className={styles.skillModalLabel}>
@@ -313,7 +283,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                   required
                 />
               </div>
-
               <div className={styles.skillModalGroup}>
                 <label className={styles.skillModalLabel}>
                   Категория *
@@ -337,7 +306,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                   <option value="Other">Другое</option>
                 </select>
               </div>
-
               <div className={styles.skillModalGroup}>
                 <label className={styles.skillModalLabel}>
                   Описание
@@ -351,7 +319,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                 />
               </div>
             </div>
-
             <div className={styles.skillModalActions}>
               <button
                 type="button"
@@ -387,17 +354,13 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
     </div>
   );
 }
-
 export default function EditJobPage() {
   const router = useRouter();
   const params = useParams();
   const jobId = params.id as string;
-  
   const [updateJob, { isLoading, error }] = useUpdateJobMutation();
   const { data: skills = [], isLoading: skillsLoading, refetch: refetchSkills } = useGetPopularSkillsQuery();
   const [localSkills, setLocalSkills] = useState<typeof skills>([]);
-
-  // Form state
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -414,27 +377,19 @@ export default function EditJobPage() {
     deadline: '',
     skillIds: [] as string[]
   });
-
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  // Update local skills when API data changes
   useEffect(() => {
     if (skills && skills.length > 0) {
       setLocalSkills(skills);
     }
   }, [skills]);
-
-  // Check if user is HR
   useEffect(() => {
     const userRole = getUserRole();
     if (!userRole || userRole !== 'HR') {
       router.push('/auth/login');
     }
   }, [router]);
-
   const { data: job, error: jobError, isLoading: jobLoading } = useGetJobByIdQuery(jobId);
-
-  // Initialize form data when job is loaded
   useEffect(() => {
     if (job && job.id === jobId) {
       setFormData({
@@ -455,7 +410,6 @@ export default function EditJobPage() {
       });
     }
   }, [job, jobId]);
-
   const jobTypeOptions = useMemo(() => [
     { value: JobType.FULL_TIME, label: 'Полная занятость' },
     { value: JobType.PART_TIME, label: 'Частичная занятость' },
@@ -463,7 +417,6 @@ export default function EditJobPage() {
     { value: JobType.FREELANCE, label: 'Фриланс' },
     { value: JobType.INTERNSHIP, label: 'Стажировка' }
   ], []);
-
   const experienceLevelOptions = useMemo(() => [
     { value: ExperienceLevel.NO_EXPERIENCE, label: 'Без опыта' },
     { value: ExperienceLevel.JUNIOR, label: 'Junior (1-3 года)' },
@@ -471,61 +424,47 @@ export default function EditJobPage() {
     { value: ExperienceLevel.SENIOR, label: 'Senior (5+ лет)' },
     { value: ExperienceLevel.LEAD, label: 'Lead/Architect' }
   ], []);
-
   const currencyOptions = useMemo(() => [
     { value: 'RUB', label: '₽ Рубли' },
     { value: 'USD', label: '$ Доллары' },
     { value: 'EUR', label: '€ Евро' }
   ], []);
-
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
     if (!formData.title.trim()) {
       newErrors.title = 'Название должности обязательно';
     }
-
     if (!formData.description.trim()) {
       newErrors.description = 'Описание обязательно';
     } else if (formData.description.trim().length < 50) {
       newErrors.description = 'Описание должно содержать минимум 50 символов';
     }
-
     if (!formData.location.trim()) {
       newErrors.location = 'Местоположение обязательно';
     }
-
     if (!formData.type) {
       newErrors.type = 'Тип занятости обязателен';
     }
-
     if (!formData.experienceLevel) {
       newErrors.experienceLevel = 'Уровень опыта обязателен';
     }
-
     if (formData.skillIds.length === 0) {
       newErrors.skillIds = 'Выберите хотя бы один навык';
     }
-
     if (formData.salaryMin && formData.salaryMax && formData.salaryMin >= formData.salaryMax) {
       newErrors.salaryMax = 'Максимальная зарплата должна быть больше минимальной';
     }
-
     if (formData.deadline && new Date(formData.deadline) <= new Date()) {
       newErrors.deadline = 'Дедлайн должен быть в будущем';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
-
     try {
       const jobData = {
         title: formData.title,
@@ -543,28 +482,21 @@ export default function EditJobPage() {
         deadline: formData.deadline || undefined,
         skillIds: formData.skillIds
       };
-      
-      console.log('Updating job with data:', jobData);
-      await updateJob({ id: jobId, data: jobData }).unwrap();
+            await updateJob({ id: jobId, data: jobData }).unwrap();
       router.push('/jobs/my');
     } catch (error) {
-      console.error('Failed to update job:', error);
-    }
+          }
   };
-
   const handleInputChange = (field: keyof typeof formData, value: string | string[] | number | boolean | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
-
   const handleNumberChange = (field: 'salaryMin' | 'salaryMax', value: string) => {
     const numValue = value ? parseInt(value) : undefined;
     handleInputChange(field, numValue);
   };
-
   const handleSkillCreated = useCallback((newSkill: { id: string; name: string; category: string; description: string }) => {
     const popularSkill = {
       skill: {
@@ -579,7 +511,6 @@ export default function EditJobPage() {
     setLocalSkills(prev => [...prev, popularSkill]);
     refetchSkills();
   }, [refetchSkills]);
-
   if (jobLoading) {
     return (
       <div className={styles.container}>
@@ -590,7 +521,6 @@ export default function EditJobPage() {
       </div>
     );
   }
-
   if (jobError || !job) {
     return (
       <div className={styles.container}>
@@ -609,7 +539,6 @@ export default function EditJobPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -622,7 +551,6 @@ export default function EditJobPage() {
           </svg>
           Назад
         </button>
-        
         <div className={styles.headerContent}>
           <h1 className={styles.title}>
             Редактировать <span className={styles.highlight}>вакансию</span>
@@ -632,11 +560,9 @@ export default function EditJobPage() {
           </p>
         </div>
       </div>
-
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formSection}>
           <h2 className={styles.sectionTitle}>Основная информация</h2>  
-          
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="title">
@@ -652,7 +578,6 @@ export default function EditJobPage() {
               />
               {errors.title && <span className={styles.error}>{errors.title}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="location">
                 Местоположение *
@@ -667,7 +592,6 @@ export default function EditJobPage() {
               />
               {errors.location && <span className={styles.error}>{errors.location}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Тип занятости *
@@ -683,7 +607,6 @@ export default function EditJobPage() {
               />
               {errors.type && <span className={styles.error}>{errors.type}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Уровень опыта *
@@ -699,7 +622,6 @@ export default function EditJobPage() {
               />
               {errors.experienceLevel && <span className={styles.error}>{errors.experienceLevel}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Зарплата (от)
@@ -714,7 +636,6 @@ export default function EditJobPage() {
               />
               {errors.salaryMin && <span className={styles.error}>{errors.salaryMin}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Зарплата (до)
@@ -729,7 +650,6 @@ export default function EditJobPage() {
               />
               {errors.salaryMax && <span className={styles.error}>{errors.salaryMax}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Валюта
@@ -744,7 +664,6 @@ export default function EditJobPage() {
                 placeholder="Выберите валюту"
               />
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.checkboxLabel}>
                 <input
@@ -756,7 +675,6 @@ export default function EditJobPage() {
                 Удаленная работа
               </label>
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="deadline">
                 Дедлайн подачи заявок
@@ -773,10 +691,8 @@ export default function EditJobPage() {
             </div>
           </div>
         </div>
-
         <div className={styles.formSection}>
           <h2 className={styles.sectionTitle}>Описание и требования</h2>
-          
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="description">
               Общее описание вакансии *
@@ -794,7 +710,6 @@ export default function EditJobPage() {
             </div>
             {errors.description && <span className={styles.error}>{errors.description}</span>}
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="responsibilities">
               Обязанности
@@ -808,7 +723,6 @@ export default function EditJobPage() {
               rows={4}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="requirements">
               Требования
@@ -822,7 +736,6 @@ export default function EditJobPage() {
               rows={4}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="benefits">
               Что мы предлагаем
@@ -836,7 +749,6 @@ export default function EditJobPage() {
               rows={4}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label}>
               Необходимые навыки *
@@ -854,7 +766,6 @@ export default function EditJobPage() {
             {errors.skillIds && <span className={styles.error}>{errors.skillIds}</span>}
           </div>
         </div>
-
         {error && (
           <div className={styles.errorAlert}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -865,7 +776,6 @@ export default function EditJobPage() {
             Произошла ошибка при обновлении вакансии. Попробуйте еще раз.
           </div>
         )}
-
         <div className={styles.formActions}>
           <button
             type="button"

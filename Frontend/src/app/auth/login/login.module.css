@@ -1,11 +1,18 @@
-/* Container */
+﻿/* Container */
 .container {
-  min-height: 100vh;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   padding: 2rem;
+  box-sizing: border-box;
+  z-index: 9999 !important;
+  overflow-y: auto;
 }
 
 /* Auth Card */
@@ -71,9 +78,9 @@
 }
 
 .input:focus {
-  border-color: #ffc9c9;
-  background: #fff5f5;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #86efac;
+  background: #f0fdf4;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .input::placeholder {
@@ -98,7 +105,7 @@
 .checkbox {
   width: 16px;
   height: 16px;
-  accent-color: #e10600;
+  accent-color: #1db954;
 }
 
 .checkboxText {
@@ -108,20 +115,20 @@
 
 .forgotLink {
   font-size: 0.875rem;
-  color: #e10600;
+  color: #1db954;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .forgotLink:hover {
-  color: #ba0500;
+  color: #1aa34a;
 }
 
 /* Submit Button */
 .submitButton {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -133,9 +140,9 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.2);
 }
 
 .submitButton:disabled {
@@ -147,9 +154,9 @@
 /* Error Message */
 .errorMessage {
   padding: 0.75rem 1rem;
-  background: #ffecec;
-  color: #e10600;
-  border: 1px solid #ffd5d5;
+  background: #dcfce7;
+  color: #1db954;
+  border: 1px solid #bbf7d0;
   border-radius: 8px;
   font-size: 0.875rem;
   text-align: center;
@@ -170,14 +177,14 @@
 }
 
 .link {
-  color: #e10600;
+  color: #1db954;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
 .link:hover {
-  color: #ba0500;
+  color: #1aa34a;
 }
 
 /* Responsive */
@@ -200,3 +207,6 @@
     gap: 0.75rem;
   }
 }
+
+
+

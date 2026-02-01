@@ -1,6 +1,5 @@
 'use client';
 import styles from './privacy.module.css';
-
 export default function PrivacyPage() {
   return (
     <div className={styles.container}>
@@ -9,7 +8,6 @@ export default function PrivacyPage() {
           <h1 className={styles.title}>Политика конфиденциальности</h1>
           <p className={styles.lastUpdated}>Последнее обновление: {new Date().toLocaleDateString('ru-RU')}</p>
         </div>
-
         <div className={styles.sections}>
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>1. Общие положения</h2>
@@ -20,7 +18,6 @@ export default function PrivacyPage() {
               персональные данные в соответствии с действующим законодательством.
             </p>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>2. Какие данные мы собираем</h2>
             <div className={styles.dataTypes}>
@@ -56,7 +53,6 @@ export default function PrivacyPage() {
               </div>
             </div>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>3. Цели обработки данных</h2>
             <p className={styles.text}>Мы используем ваши персональные данные для следующих целей:</p>
@@ -70,7 +66,6 @@ export default function PrivacyPage() {
               <li>Маркетинговые коммуникации (при вашем согласии)</li>
             </ul>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>4. Правовые основания обработки</h2>
             <div className={styles.legalBases}>
@@ -94,7 +89,6 @@ export default function PrivacyPage() {
               </div>
             </div>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>5. Передача данных третьим лицам</h2>
             <p className={styles.text}>
@@ -107,7 +101,6 @@ export default function PrivacyPage() {
               <li>При слиянии или продаже компании (с уведомлением пользователей)</li>
             </ul>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>6. Безопасность данных</h2>
             <p className={styles.text}>
@@ -121,7 +114,6 @@ export default function PrivacyPage() {
               <li>Обучение сотрудников вопросам защиты данных</li>
             </ul>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>7. Сроки хранения данных</h2>
             <div className={styles.retentionPeriods}>
@@ -145,7 +137,6 @@ export default function PrivacyPage() {
               </div>
             </div>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>8. Ваши права</h2>
             <p className={styles.text}>В соответствии с законодательством о защите данных вы имеете право:</p>
@@ -159,7 +150,6 @@ export default function PrivacyPage() {
               <li><strong>Отзыв согласия</strong> — отозвать согласие на обработку данных</li>
             </ul>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>9. Cookies и аналогичные технологии</h2>
             <p className={styles.text}>
@@ -186,7 +176,6 @@ export default function PrivacyPage() {
               </div>
             </div>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>10. Международные передачи данных</h2>
             <p className={styles.text}>
@@ -195,7 +184,6 @@ export default function PrivacyPage() {
               законодательства о защите персональных данных.
             </p>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>11. Изменения в Политике</h2>
             <p className={styles.text}>
@@ -204,7 +192,6 @@ export default function PrivacyPage() {
               для ознакомления с актуальной версией Политики.
             </p>
           </section>
-
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>12. Контактная информация</h2>
             <p className={styles.text}>
@@ -223,7 +210,6 @@ export default function PrivacyPage() {
             </p>
           </section>
         </div>
-
         <div className={styles.footer}>
           <p className={styles.footerText}>
             Используя наш сервис, вы подтверждаете, что ознакомились с данной Политикой конфиденциальности 

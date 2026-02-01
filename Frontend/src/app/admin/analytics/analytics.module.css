@@ -35,7 +35,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -59,7 +59,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -71,7 +71,7 @@
 }
 
 .refreshButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -84,13 +84,13 @@
 .headerIcon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  box-shadow: 0 4px 12px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.2);
 }
 
 /* Content */
@@ -133,15 +133,15 @@
 }
 
 .tab:hover {
-  background: #fff5f5;
-  border-color: #ffc9c9;
+  background: #f0fdf4;
+  border-color: #86efac;
   color: #111;
 }
 
 .tabActive {
-  background: linear-gradient(135deg, #fff5f5, #ffecec);
-  border: 1px solid rgba(225, 6, 0, 0.2);
-  color: #e10600;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid rgba(29, 185, 84, 0.2);
+  color: #1db954;
   font-weight: 600;
 }
 
@@ -168,15 +168,15 @@
 }
 
 .statCard:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
   transform: translateY(-2px);
 }
 
 .statNumber {
   font-size: 2rem;
   font-weight: 800;
-  color: #e10600;
+  color: #1db954;
   line-height: 1;
   margin-bottom: 0.5rem;
 }
@@ -199,8 +199,8 @@
 }
 
 .card:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
 }
 
 .cardHeader {
@@ -222,7 +222,7 @@
 .cardIcon {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -257,7 +257,7 @@
 }
 
 .tableBody tr:hover {
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .tableBody td {
@@ -279,9 +279,9 @@
 }
 
 .badgeActive {
-  background: #fff5f5;
-  color: #e10600;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  color: #1db954;
+  border: 1px solid #bbf7d0;
 }
 
 .badgePending {
@@ -311,7 +311,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #f0f0f0;
-  border-top: 3px solid #e10600;
+  border-top: 3px solid #1db954;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -434,3 +434,5 @@
     justify-content: center;
   }
 }
+
+

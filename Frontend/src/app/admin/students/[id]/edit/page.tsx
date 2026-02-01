@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -9,29 +8,23 @@ import {
   validateStudent,
   UpdateStudentDto,
   getStudentFullName
-} from '../../../../../lib/api/studentsApi';
-import { useAuth } from '../../../../../contexts/AuthContext';
+} from '@/entities/student';
+import { useAuth } from '@/features/auth';
 import styles from './edit.module.css';
-
 export default function EditStudentPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
   const studentId = params.id as string;
-
-  // Проверяем роль пользователя
   const isUniversityUser = user?.role === 'UNIVERSITY';
   const isAdminUser = user?.role === 'ADMIN';
   const canEditStudents = isUniversityUser || isAdminUser;
-
   const { 
     data: student, 
     isLoading: studentLoading, 
     error: studentError 
   } = useGetStudentQuery(studentId, { skip: !canEditStudents });
-
   const [updateStudent, { isLoading: updateLoading }] = useUpdateStudentMutation();
-
   const [formData, setFormData] = useState<UpdateStudentDto>({
     firstName: '',
     lastName: '',
@@ -42,11 +35,8 @@ export default function EditStudentPage() {
     gpa: undefined,
     phone: '',
   });
-
   const [errors, setErrors] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState<string>('');
-
-  // Заполняем форму данными студента при загрузке
   useEffect(() => {
     if (student) {
       setFormData({
@@ -61,14 +51,11 @@ export default function EditStudentPage() {
       });
     }
   }, [student]);
-
   const handleInputChange = (field: keyof UpdateStudentDto, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
-    
-    // Очищаем ошибки при изменении формы
     if (errors.length > 0) {
       setErrors([]);
     }
@@ -76,37 +63,25 @@ export default function EditStudentPage() {
       setSubmitError('');
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Валидация (используем функцию валидации для создания, так как поля те же)
     const validationErrors = validateStudent(formData as Parameters<typeof validateStudent>[0]);
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     try {
       setErrors([]);
       setSubmitError('');
-      
-      // Подготавливаем данные (убираем пустые необязательные поля)
       const updateData: UpdateStudentDto = {
         ...formData,
         gpa: formData.gpa || undefined,
         phone: formData.phone?.trim() || undefined,
       };
-
       await updateStudent({ id: studentId, data: updateData }).unwrap();
-      
-      // Перенаправляем на страницу студента
       router.push(`/admin/students/${studentId}`);
     } catch (error: unknown) {
-      console.error('Ошибка обновления студента:', error);
-      
-      const apiError = error as { data?: { message?: string; details?: Array<{ message: string }> } };
-      
+            const apiError = error as { data?: { message?: string; details?: Array<{ message: string }> } };
       if (apiError?.data?.message) {
         setSubmitError(apiError.data.message);
       } else if (apiError?.data?.details) {
@@ -117,7 +92,6 @@ export default function EditStudentPage() {
       }
     }
   };
-
   if (!canEditStudents) {
     return (
       <div className={styles.accessDenied}>
@@ -129,7 +103,6 @@ export default function EditStudentPage() {
       </div>
     );
   }
-
   if (studentLoading) {
     return (
       <div className={styles.loading}>
@@ -138,7 +111,6 @@ export default function EditStudentPage() {
       </div>
     );
   }
-
   if (studentError || !student) {
     return (
       <div className={styles.error}>
@@ -150,10 +122,9 @@ export default function EditStudentPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.editStudentPage}>
-      {/* Header */}
+      {}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <Link href={`/admin/students/${studentId}`} className={styles.backLink}>
@@ -168,11 +139,10 @@ export default function EditStudentPage() {
           </p>
         </div>
       </div>
-
-      {/* Form */}
+      {}
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* Error Messages */}
+          {}
           {(errors.length > 0 || submitError) && (
             <div className={styles.errorContainer}>
               <div className={styles.errorIcon}>
@@ -191,11 +161,9 @@ export default function EditStudentPage() {
               </div>
             </div>
           )}
-
-          {/* Personal Information */}
+          {}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Личная информация</h2>
-            
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label htmlFor="firstName" className={styles.label}>
@@ -211,7 +179,6 @@ export default function EditStudentPage() {
                   maxLength={50}
                 />
               </div>
-
               <div className={styles.field}>
                 <label htmlFor="lastName" className={styles.label}>
                   Фамилия <span className={styles.required}>*</span>
@@ -227,7 +194,6 @@ export default function EditStudentPage() {
                 />
               </div>
             </div>
-
             <div className={styles.field}>
               <label htmlFor="email" className={styles.label}>
                 Email <span className={styles.required}>*</span>
@@ -241,7 +207,6 @@ export default function EditStudentPage() {
                 placeholder="student@university.edu"
               />
             </div>
-
             <div className={styles.field}>
               <label htmlFor="phone" className={styles.label}>
                 Телефон
@@ -256,11 +221,9 @@ export default function EditStudentPage() {
               />
             </div>
           </div>
-
-          {/* Academic Information */}
+          {}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Академическая информация</h2>
-            
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label htmlFor="studentId" className={styles.label}>
@@ -275,7 +238,6 @@ export default function EditStudentPage() {
                   placeholder="2024001"
                 />
               </div>
-
               <div className={styles.field}>
                 <label htmlFor="yearOfStudy" className={styles.label}>
                   Курс <span className={styles.required}>*</span>
@@ -295,7 +257,6 @@ export default function EditStudentPage() {
                 </select>
               </div>
             </div>
-
             <div className={styles.field}>
               <label htmlFor="major" className={styles.label}>
                 Специальность <span className={styles.required}>*</span>
@@ -310,7 +271,6 @@ export default function EditStudentPage() {
                 maxLength={100}
               />
             </div>
-
             <div className={styles.field}>
               <label htmlFor="gpa" className={styles.label}>
                 Средний балл (GPA)
@@ -331,8 +291,7 @@ export default function EditStudentPage() {
               </p>
             </div>
           </div>
-
-          {/* Form Actions */}
+          {}
           <div className={styles.actions}>
             <Link href={`/admin/students/${studentId}`} className={styles.cancelButton}>
               Отмена
@@ -358,8 +317,7 @@ export default function EditStudentPage() {
             </button>
           </div>
         </form>
-
-        {/* Info Panel */}
+        {}
         <div className={styles.infoPanel}>
           <div className={styles.infoPanelHeader}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,23 +325,19 @@ export default function EditStudentPage() {
             </svg>
             <h3>Информация</h3>
           </div>
-          
           <div className={styles.infoPanelContent}>
             <div className={styles.infoItem}>
               <h4>Студенческий билет</h4>
               <p>Номер {student.studentId} был присвоен при создании профиля.</p>
             </div>
-            
             <div className={styles.infoItem}>
               <h4>Изменение email</h4>
               <p>При изменении email студент получит уведомление на новый адрес.</p>
             </div>
-            
             <div className={styles.infoItem}>
               <h4>Навыки</h4>
               <p>Навыки студента можно изменить в разделе Навыки на странице профиля.</p>
             </div>
-            
             <div className={styles.infoItem}>
               <h4>История изменений</h4>
               <p>Все изменения сохраняются с отметкой времени.</p>

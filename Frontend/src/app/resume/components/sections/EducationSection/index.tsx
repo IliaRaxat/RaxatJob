@@ -1,10 +1,8 @@
 'use client';
-
 import { GraduationCap, Plus, X } from 'lucide-react';
 import { EducationSectionProps, Education } from '../../../types';
 import MonthYearSelect from '../../ui/MonthYearSelect';
 import styles from './EducationSection.module.css';
-
 export default function EducationSection({ education, setEducation }: EducationSectionProps) {
   const addEducation = () => {
     const newEdu: Education = {
@@ -18,17 +16,14 @@ export default function EducationSection({ education, setEducation }: EducationS
     };
     setEducation([...education, newEdu]);
   };
-
   const updateEducation = (id: string, field: keyof Education, value: string | boolean) => {
     setEducation(education.map(edu => 
       edu.id === id ? { ...edu, [field]: value } : edu
     ));
   };
-
   const removeEducation = (id: string) => {
     setEducation(education.filter(edu => edu.id !== id));
   };
-
   return (
     <div className={styles.educationSection}>
       <div className={styles.sectionHeader}>
@@ -39,13 +34,11 @@ export default function EducationSection({ education, setEducation }: EducationS
           <Plus size={16} /> Добавить образование
         </button>
       </div>
-
       {education.map((edu) => (
         <div key={edu.id} className={styles.educationItem}>
           <button onClick={() => removeEducation(edu.id)} className={styles.removeButton}>
             <X size={16} />
           </button>
-          
           <div className={styles.formGrid}>
             <div className={styles.inputGroup}>
               <label>Учебное заведение *</label>
@@ -57,7 +50,6 @@ export default function EducationSection({ education, setEducation }: EducationS
                 placeholder="Название университета/колледжа"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Степень/Уровень *</label>
               <input
@@ -68,7 +60,6 @@ export default function EducationSection({ education, setEducation }: EducationS
                 placeholder="Бакалавр, Магистр, Специалист"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Специальность *</label>
               <input
@@ -79,7 +70,6 @@ export default function EducationSection({ education, setEducation }: EducationS
                 placeholder="Информатика и вычислительная техника"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Дата поступления *</label>
               <MonthYearSelect
@@ -88,7 +78,6 @@ export default function EducationSection({ education, setEducation }: EducationS
                 placeholder="Выберите дату поступления"
               />
             </div>
-            
             <div className={styles.inputGroup}>
               <label>Дата окончания</label>
               <MonthYearSelect

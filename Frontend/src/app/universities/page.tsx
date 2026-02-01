@@ -1,19 +1,13 @@
 'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@/features/auth';
 import { useStudentStats } from '../Components/StudentsHooks';
 import styles from './universities-dashboard.module.css';
-
 export default function UniversitiesDashboard() {
   const { user, isAuthenticated } = useAuth();
   const { stats, isLoading: statsLoading } = useStudentStats();
-
-  // Проверяем, что пользователь - университет
   const isUniversityUser = user?.role === 'UNIVERSITY';
-
-  // Если пользователь не авторизован или не университет
   if (!isAuthenticated || !isUniversityUser) {
     return (
       <div className={styles.accessDenied}>
@@ -31,10 +25,9 @@ export default function UniversitiesDashboard() {
       </div>
     );
   }
-
   return (
     <div className={styles.universitiesDashboard}>
-      {/* Welcome Header */}
+      {}
       <div className={styles.welcomeSection}>
         <div className={styles.welcomeContent}>
           <h1 className={styles.welcomeTitle}>
@@ -65,11 +58,9 @@ export default function UniversitiesDashboard() {
           </svg>
         </div>
       </div>
-
-      {/* Quick Stats */}
+      {}
       <div className={styles.statsSection}>
         <h2 className={styles.sectionTitle}>Статистика студентов</h2>
-        
         {statsLoading ? (
           <div className={styles.statsLoading}>
             <div className={styles.spinner}></div>
@@ -91,7 +82,6 @@ export default function UniversitiesDashboard() {
                 </Link>
               </div>
             </div>
-
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +97,6 @@ export default function UniversitiesDashboard() {
                 </span>
               </div>
             </div>
-
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,11 +115,9 @@ export default function UniversitiesDashboard() {
           </div>
         )}
       </div>
-
-      {/* Quick Actions */}
+      {}
       <div className={styles.actionsSection}>
         <h2 className={styles.sectionTitle}>Быстрые действия</h2>
-        
         <div className={styles.actionsGrid}>
           <Link href="/universities/students" className={styles.actionCard}>
             <div className={styles.actionIcon}>
@@ -149,7 +136,6 @@ export default function UniversitiesDashboard() {
               </svg>
             </div>
           </Link>
-
           <Link href="/admin/students/create" className={styles.actionCard}>
             <div className={styles.actionIcon}>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +152,6 @@ export default function UniversitiesDashboard() {
               </svg>
             </div>
           </Link>
-
           <Link href="/admin/students" className={styles.actionCard}>
             <div className={styles.actionIcon}>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +169,6 @@ export default function UniversitiesDashboard() {
               </svg>
             </div>
           </Link>
-
           <Link href="/profile" className={styles.actionCard}>
             <div className={styles.actionIcon}>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,11 +187,9 @@ export default function UniversitiesDashboard() {
           </Link>
         </div>
       </div>
-
-      {/* Getting Started */}
+      {}
       <div className={styles.gettingStartedSection}>
         <h2 className={styles.sectionTitle}>Начало работы</h2>
-        
         <div className={styles.gettingStartedContent}>
           <div className={styles.stepsList}>
             <div className={styles.step}>
@@ -218,7 +200,6 @@ export default function UniversitiesDashboard() {
                 <Link href="/profile" className={styles.stepLink}>Настроить профиль</Link>
               </div>
             </div>
-
             <div className={styles.step}>
               <div className={styles.stepNumber}>2</div>
               <div className={styles.stepContent}>
@@ -227,7 +208,6 @@ export default function UniversitiesDashboard() {
                 <Link href="/universities/students" className={styles.stepLink}>Управлять студентами</Link>
               </div>
             </div>
-
             <div className={styles.step}>
               <div className={styles.stepNumber}>3</div>
               <div className={styles.stepContent}>

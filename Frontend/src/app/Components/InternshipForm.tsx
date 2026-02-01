@@ -1,20 +1,16 @@
 'use client';
-
 import React, { useState } from 'react';
-import { useCreateInternshipMutation } from '@/lib/api/internshipsApi';
+import { useCreateInternshipMutation } from '@/entities/internship';
 import styles from './InternshipForm.module.css';
-
 interface InternshipFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
 }
-
 const InternshipForm: React.FC<InternshipFormProps> = ({ 
   onSuccess, 
   onCancel 
 }) => {
   const [createInternship, { isLoading, error }] = useCreateInternshipMutation();
-  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -34,13 +30,10 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
     skills: [] as string[],
     tags: [] as string[],
   });
-
   const [currentSkill, setCurrentSkill] = useState('');
   const [currentTag, setCurrentTag] = useState('');
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
@@ -48,7 +41,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
-
   const handleAddSkill = () => {
     if (currentSkill.trim() && !formData.skills.includes(currentSkill.trim())) {
       setFormData(prev => ({
@@ -58,14 +50,12 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
       setCurrentSkill('');
     }
   };
-
   const handleRemoveSkill = (skillToRemove: string) => {
     setFormData(prev => ({
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove)
     }));
   };
-
   const handleAddTag = () => {
     if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
       setFormData(prev => ({
@@ -75,17 +65,14 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
       setCurrentTag('');
     }
   };
-
   const handleRemoveTag = (tagToRemove: string) => {
     setFormData(prev => ({
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       const internshipData = {
         ...formData,
@@ -94,14 +81,11 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
         duration: parseInt(formData.duration),
         maxParticipants: parseInt(formData.maxParticipants),
       };
-      
       await createInternship(internshipData).unwrap();
       onSuccess?.();
     } catch (err) {
-      console.error('Failed to create internship:', err);
-    }
+          }
   };
-
   const isFormValid = () => {
     return (
       formData.title.trim() &&
@@ -118,7 +102,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
       formData.skills.length > 0
     );
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -127,12 +110,10 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
           Заполните форму для создания предложения стажировки
         </p>
       </div>
-
       <form onSubmit={handleSubmit} className={styles.form}>
-        {/* Основная информация */}
+        {}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Основная информация</h3>
-          
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label htmlFor="title" className={styles.label}>
@@ -149,7 +130,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 required
               />
             </div>
-
             <div className={styles.formGroup}>
               <label htmlFor="location" className={styles.label}>
                 Локация *
@@ -166,7 +146,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
               />
             </div>
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.checkboxLabel}>
               <input
@@ -180,11 +159,9 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
             </label>
           </div>
         </div>
-
-        {/* Описание и требования */}
+        {}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Описание и требования</h3>
-          
           <div className={styles.formGroup}>
             <label htmlFor="description" className={styles.label}>
               Описание стажировки *
@@ -200,7 +177,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
               required
             />
           </div>
-
           <div className={styles.formGroup}>
             <label htmlFor="requirements" className={styles.label}>
               Требования к кандидату *
@@ -216,7 +192,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
               required
             />
           </div>
-
           <div className={styles.formGroup}>
             <label htmlFor="responsibilities" className={styles.label}>
               Обязанности стажера *
@@ -232,7 +207,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
               required
             />
           </div>
-
           <div className={styles.formGroup}>
             <label htmlFor="benefits" className={styles.label}>
               Преимущества и условия *
@@ -249,11 +223,9 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
             />
           </div>
         </div>
-
-        {/* Финансовые условия */}
+        {}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Финансовые условия</h3>
-          
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label htmlFor="salaryMin" className={styles.label}>
@@ -270,7 +242,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 min="0"
               />
             </div>
-
             <div className={styles.formGroup}>
               <label htmlFor="salaryMax" className={styles.label}>
                 Максимальная зарплата
@@ -286,7 +257,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 min="0"
               />
             </div>
-
             <div className={styles.formGroup}>
               <label htmlFor="currency" className={styles.label}>
                 Валюта
@@ -305,11 +275,9 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Временные рамки */}
+        {}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Временные рамки</h3>
-          
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label htmlFor="startDate" className={styles.label}>
@@ -325,7 +293,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 required
               />
             </div>
-
             <div className={styles.formGroup}>
               <label htmlFor="endDate" className={styles.label}>
                 Дата окончания *
@@ -340,7 +307,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 required
               />
             </div>
-
             <div className={styles.formGroup}>
               <label htmlFor="duration" className={styles.label}>
                 Продолжительность (дни) *
@@ -357,7 +323,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 required
               />
             </div>
-
             <div className={styles.formGroup}>
               <label htmlFor="deadline" className={styles.label}>
                 Дедлайн подачи заявок *
@@ -373,7 +338,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
               />
             </div>
           </div>
-
           <div className={styles.formGroup}>
             <label htmlFor="maxParticipants" className={styles.label}>
               Максимальное количество участников *
@@ -392,11 +356,9 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
             />
           </div>
         </div>
-
-        {/* Навыки */}
+        {}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Навыки и технологии</h3>
-          
           <div className={styles.formGroup}>
             <label className={styles.label}>
               Навыки *
@@ -439,11 +401,9 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Теги */}
+        {}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Теги</h3>
-          
           <div className={styles.formGroup}>
             <label className={styles.label}>
               Теги для поиска
@@ -486,15 +446,13 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Ошибки */}
+        {}
         {error && (
           <div className={styles.errorMessage}>
             Ошибка при создании стажировки. Попробуйте еще раз.
           </div>
         )}
-
-        {/* Кнопки */}
+        {}
         <div className={styles.buttonGroup}>
           {onCancel && (
             <button
@@ -518,5 +476,4 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
     </div>
   );
 };
-
 export default InternshipForm;

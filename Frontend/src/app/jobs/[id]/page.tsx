@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useGetJobByIdQuery, useCreateApplicationMutation } from '../../../lib/api/jobsApi';
-import { getUserRole } from '../../../lib/api/authApi';
+import { useGetJobByIdQuery, useCreateApplicationMutation } from '@/entities/job';
+import { getUserRole } from '@/entities/user';
 import { useNotificationContext } from '../../Components/NotificationProvider';
 import { 
   MapPin, 
@@ -19,44 +19,35 @@ import {
   AlertCircle
 } from 'lucide-react';
 import styles from './page.module.css';
-
 export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
-  
   const { data: job, error, isLoading, refetch } = useGetJobByIdQuery(jobId);
   const [createApplication, { isLoading: isCreatingApplication }] = useCreateApplicationMutation();
   const { showSuccess, showError } = useNotificationContext();
-
   useEffect(() => {
     setUserRole(getUserRole());
   }, []);
-
   const handleApply = async () => {
     if (!job || (job.hasApplied && job.applicationStatus !== 'REJECTED')) return;
-    
     setIsApplying(true);
     try {
       await createApplication({ jobId: job.id }).unwrap();
       showSuccess('Отклик отправлен!', 'Ваш отклик успешно отправлен на рассмотрение');
-      // Принудительно обновляем данные вакансии
       await refetch();
     } catch (error) {
-      console.error('Failed to apply:', error);
-      showError('Ошибка отправки', 'Произошла ошибка при отправке отклика. Попробуйте еще раз.');
+            showError('Ошибка отправки', 'Произошла ошибка при отправке отклика. Попробуйте еще раз.');
     } finally {
       setIsApplying(false);
     }
   };
-
   const getApplicationButtonText = () => {
     if (!job?.hasApplied) {
       return 'Подать заявку';
     }
-    
     switch (job.applicationStatus) {
       case 'PENDING':
         return 'Ожидает рассмотрения';
@@ -76,10 +67,8 @@ export default function JobDetailPage() {
         return 'Отклик отправлен';
     }
   };
-
   const getApplicationButtonClass = () => {
     if (!job?.hasApplied) return styles.applyButton;
-    
     switch (job.applicationStatus) {
       case 'PENDING':
         return `${styles.applyButton} ${styles.pendingButton}`;
@@ -95,7 +84,6 @@ export default function JobDetailPage() {
         return `${styles.applyButton} ${styles.appliedButton}`;
     }
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE': return '#10b981';
@@ -104,7 +92,6 @@ export default function JobDetailPage() {
       default: return '#6b7280';
     }
   };
-
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'ACTIVE': return 'Активна';
@@ -113,7 +100,6 @@ export default function JobDetailPage() {
       default: return status;
     }
   };
-
   const getModerationStatusColor = (status: string) => {
     switch (status) {
       case 'APPROVED': return '#10b981';
@@ -122,7 +108,6 @@ export default function JobDetailPage() {
       default: return '#6b7280';
     }
   };
-
   const getModerationStatusLabel = (status: string) => {
     switch (status) {
       case 'APPROVED': return 'Одобрена';
@@ -131,7 +116,6 @@ export default function JobDetailPage() {
       default: return status;
     }
   };
-
   const getApplicationStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING': return '#f59e0b';
@@ -140,7 +124,6 @@ export default function JobDetailPage() {
       default: return '#6b7280';
     }
   };
-
   const getApplicationStatusLabel = (status: string) => {
     switch (status) {
       case 'PENDING': return 'На рассмотрении';
@@ -149,7 +132,6 @@ export default function JobDetailPage() {
       default: return status;
     }
   };
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -162,7 +144,6 @@ export default function JobDetailPage() {
       </div>
     );
   }
-
   if (error || !job) {
     return (
       <div className={styles.container}>
@@ -178,10 +159,9 @@ export default function JobDetailPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Back Tab */}
+      {}
       <button 
         onClick={() => router.back()}
         className={styles.backTab}
@@ -191,8 +171,7 @@ export default function JobDetailPage() {
           <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
-      
-      {/* Header */}
+      {}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <h1 className={styles.title}>{job.title}</h1>
@@ -213,9 +192,8 @@ export default function JobDetailPage() {
           </div>
         </div>
       </div>
-
       <div className={styles.content}>
-        {/* Main Info */}
+        {}
         <div className={styles.mainInfo}>
           <div className={styles.jobCard}>
             <div className={styles.jobHeader}>
@@ -238,7 +216,6 @@ export default function JobDetailPage() {
                   )}
                 </div>
               </div>
-              
               <div className={styles.jobDetails}>
                 <div className={styles.detailItem}>
                   <Briefcase size={16} />
@@ -262,33 +239,28 @@ export default function JobDetailPage() {
                 )}
               </div>
             </div>
-
             <div className={styles.jobDescription}>
               <h3>Описание</h3>
               <p>{job.description}</p>
             </div>
-
             {job.responsibilities && (
               <div className={styles.jobSection}>
                 <h3>Обязанности</h3>
                 <p>{job.responsibilities}</p>
               </div>
             )}
-
             {job.requirements && (
               <div className={styles.jobSection}>
                 <h3>Требования</h3>
                 <p>{job.requirements}</p>
               </div>
             )}
-
             {job.benefits && (
               <div className={styles.jobSection}>
                 <h3>Что мы предлагаем</h3>
                 <p>{job.benefits}</p>
               </div>
             )}
-
             {job.skills && job.skills.length > 0 && (
               <div className={styles.jobSection}>
                 <h3>Необходимые навыки</h3>
@@ -304,10 +276,9 @@ export default function JobDetailPage() {
             )}
           </div>
         </div>
-
-        {/* Sidebar */}
+        {}
         <div className={styles.sidebar}>
-          {/* HR Info */}
+          {}
           {job.hr && (
             <div className={styles.hrCard}>
               <h3>Контактное лицо</h3>
@@ -327,8 +298,7 @@ export default function JobDetailPage() {
               </div>
             </div>
           )}
-
-          {/* Applications (for HR only) */}
+          {}
           {userRole === 'HR' && job.applications && job.applications.length > 0 && (
             <div className={styles.applicationsCard}>
               <h3>Заявки ({job.applications.length})</h3>
@@ -358,8 +328,7 @@ export default function JobDetailPage() {
               </div>
             </div>
           )}
-
-          {/* Apply Button (for candidates) */}
+          {}
           {userRole === 'CANDIDATE' && (
             <div className={styles.applyCard}>
               <button 
@@ -390,7 +359,6 @@ export default function JobDetailPage() {
           )}
         </div>
       </div>
-
     </div>
   );
 }

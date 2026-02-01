@@ -1,19 +1,15 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import RoleGuard from '../Components/RoleGuard';
 import styles from './hr.module.css';
-
 interface HRLayoutProps {
   children: React.ReactNode;
 }
-
 export default function HRLayout({ children }: HRLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-
   const navigation = [
     {
       name: 'Все заявки',
@@ -25,11 +21,10 @@ export default function HRLayout({ children }: HRLayoutProps) {
       ),
     },
   ];
-
   return (
     <RoleGuard allowedRoles={['HR']}>
       <div className={styles.hrLayout}>
-        {/* Sidebar */}
+        {}
         <div className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
           <div className={styles.sidebarHeader}>
             <Link href="/hr" className={styles.sidebarLogo}>
@@ -72,12 +67,10 @@ export default function HRLayout({ children }: HRLayoutProps) {
               </svg>
             </button>
           </div>
-
           <nav className={styles.sidebarNav}>
             <ul className={styles.navList}>
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
-                
                 return (
                   <li key={item.name}>
                     <Link
@@ -92,7 +85,6 @@ export default function HRLayout({ children }: HRLayoutProps) {
               })}
             </ul>
           </nav>
-
           <div className={styles.sidebarFooter}>
             <Link href="/" className={styles.backToSite}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -102,10 +94,9 @@ export default function HRLayout({ children }: HRLayoutProps) {
             </Link>
           </div>
         </div>
-
-        {/* Main Content */}
+        {}
         <div className={styles.mainContent}>
-          {/* Top Bar */}
+          {}
           <header className={styles.topBar}>
             <button
               className={styles.mobileMenuButton}
@@ -115,7 +106,6 @@ export default function HRLayout({ children }: HRLayoutProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            
             <div className={styles.topBarRight}>
               <div className={styles.hrBadge}>
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -125,14 +115,12 @@ export default function HRLayout({ children }: HRLayoutProps) {
               </div>
             </div>
           </header>
-
-          {/* Page Content */}
+          {}
           <main className={styles.pageContent}>
             {children}
           </main>
         </div>
-
-        {/* Mobile Overlay */}
+        {}
         {sidebarOpen && (
           <div
             className={styles.mobileOverlay}

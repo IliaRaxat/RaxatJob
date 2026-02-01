@@ -3,62 +3,48 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLogoutMutation, getUserData, User } from '../../lib/api/authApi';
-import { RootState } from '../../lib/store';
-import { setUser, setLoading } from '../../lib/slices/authSlice';
+import { useLogoutMutation, getUserData, User } from '@/entities/user';
+import { RootState } from '@/shared/lib/store';
+import { setUser, setLoading } from '@/features/auth/model/authSlice';
 import styles from './Header.module.css';
-
 function HeaderContent() {
+  const pathname = usePathname();
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [logout] = useLogoutMutation();
-
   useEffect(() => {
     const userData = getUserData();
-    
-    // Обновляем состояние в RTK store
     dispatch(setUser(userData));
     dispatch(setLoading(false));
-
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target.closest(`.${styles.profileDropdown}`) && !target.closest(`.${styles.profileMenuButton}`)) {
         setIsProfileMenuOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleProfileMenu = () => setIsProfileMenuOpen(!isProfileMenuOpen);
-
   const handleLogout = async () => {
     try {
       await logout().unwrap();
       setIsMenuOpen(false);
       setIsProfileMenuOpen(false);
-      
-      // Очищаем состояние в RTK store
       dispatch(setUser(null));
-      
       window.location.href = '/';
     } catch (error) {
-      console.error('Logout failed:', error);
-      
-      // Очищаем состояние в RTK store даже при ошибке
-      dispatch(setUser(null));
-      
+            dispatch(setUser(null));
       window.location.href = '/';
     }
   };
-
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -66,8 +52,8 @@ function HeaderContent() {
           <Image 
             src="/logo1.png" 
             alt="Logo" 
-            width={320}
-            height={368}
+            width={480}
+            height={552}
             className={styles.logoIcon}
             priority
           />
@@ -95,22 +81,22 @@ function HeaderContent() {
               <>
                 <li>
                   <Link href="/hr" className={styles.navLink}>
-                    HR Панель
+                    Панель HR
                   </Link>
                 </li>
                 <li>
                   <Link href="/jobs/my" className={styles.navLink}>
-                    Мои вакансии
+                    Вакансии
                   </Link>
                 </li>
                 <li>
                   <Link href="/companies/internships" className={styles.navLink}>
-                    Мои стажировки
+                    Стажировки
                   </Link>
                 </li>
                 <li>
                   <Link href="/companies/internship-requests" className={styles.navLink}>
-                    Заявки от вузов
+                    Заявки вузов
                   </Link>
                 </li>
               </>
@@ -195,7 +181,6 @@ function HeaderContent() {
                       </svg>
                       Профиль
                     </Link>
-                    
                     {user?.role === 'HR' && (
                       <Link 
                         href="/jobs/my" 
@@ -210,7 +195,6 @@ function HeaderContent() {
                         Мои вакансии
                       </Link>
                     )}
-                    
                     {user?.role === 'ADMIN' && (
                       <Link 
                         href="/admin" 
@@ -224,7 +208,6 @@ function HeaderContent() {
                         Админ-панель
                       </Link>
                     )}
-                    
                     {user?.role === 'CANDIDATE' && (
                       <Link 
                         href="/resume" 
@@ -241,7 +224,6 @@ function HeaderContent() {
                         Резюме
                       </Link>
                     )}
-                    
                     {user?.role === 'UNIVERSITY' && (
                       <Link 
                         href="/universities" 
@@ -255,9 +237,7 @@ function HeaderContent() {
                         Панель университета
                       </Link>
                     )}
-                    
                     <div className={styles.profileDropdownDivider}></div>
-                    
                     <button 
                       onClick={handleLogout}
                       className={`${styles.profileDropdownItem} ${styles.profileDropdownItemDanger}`}
@@ -272,7 +252,6 @@ function HeaderContent() {
                   </div>
                 )}
               </div>
-              
               {user?.role === 'HR' && (
                 <Link href="/jobs/create" className={styles.primaryBtn}>
                   <span>Создать вакансию</span>
@@ -332,8 +311,7 @@ function HeaderContent() {
                   <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-
-              {/* Выпадающее меню для мобильных */}
+              {}
               {isProfileMenuOpen && (
                 <div className={styles.profileDropdown}>
                   <Link 
@@ -347,7 +325,6 @@ function HeaderContent() {
                     </svg>
                     Профиль
                   </Link>
-                  
                   {user?.role === 'HR' && (
                     <>
                       <Link 
@@ -362,7 +339,6 @@ function HeaderContent() {
                         </svg>
                         Мои вакансии
                       </Link>
-                      
                       <Link 
                         href="/jobs/create" 
                         className={styles.profileDropdownItem}
@@ -375,7 +351,6 @@ function HeaderContent() {
                       </Link>
                     </>
                   )}
-                  
                   {user?.role === 'CANDIDATE' && (
                     <Link 
                       href="/resume" 
@@ -392,7 +367,6 @@ function HeaderContent() {
                       Резюме
                     </Link>
                   )}
-                  
                   {user?.role === 'UNIVERSITY' && (
                     <Link 
                       href="/universities" 
@@ -406,7 +380,6 @@ function HeaderContent() {
                       Панель университета
                     </Link>
                   )}
-                  
                   {user?.role === 'ADMIN' && (
                     <Link 
                       href="/admin" 
@@ -420,9 +393,7 @@ function HeaderContent() {
                       Админ-панель
                     </Link>
                   )}
-                  
                   <div className={styles.profileDropdownDivider}></div>
-                  
                   <button 
                     onClick={handleLogout}
                     className={`${styles.profileDropdownItem} ${styles.profileDropdownItemDanger}`}
@@ -439,7 +410,6 @@ function HeaderContent() {
             </div>
           )}
         </div>
-
         <button 
           className={`${styles.mobileMenu} ${isMenuOpen ? styles.active : ''}`}
           onClick={toggleMenu}
@@ -452,7 +422,6 @@ function HeaderContent() {
           </div>
         </button>
       </div>
-
       {isMenuOpen && (
         <div className={styles.mobileNav}>
           <ul className={styles.mobileNavList}>
@@ -541,8 +510,6 @@ function HeaderContent() {
     </header>
   );
 }
-
-// Экспортируем компонент с отключенным SSR для избежания проблем с гидратацией
 export default dynamic(() => Promise.resolve(HeaderContent), {
   ssr: false,
   loading: () => (
@@ -552,8 +519,8 @@ export default dynamic(() => Promise.resolve(HeaderContent), {
           <Image 
             src="/logo1.png" 
             alt="Logo" 
-            width={320}
-            height={368}
+            width={480}
+            height={552}
             className={styles.logoIcon}
             priority
           />

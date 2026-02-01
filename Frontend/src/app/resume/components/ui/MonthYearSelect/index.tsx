@@ -1,44 +1,35 @@
 'use client';
-
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { MonthYearSelectProps } from '../../../types';
 import styles from './MonthYearSelect.module.css';
-
 export default function MonthYearSelect({ value, onChange, placeholder, disabled }: MonthYearSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [viewDate, setViewDate] = useState(new Date());
   const selectRef = useRef<HTMLDivElement>(null);
-  
   const today = new Date();
   const selectedDate = useMemo(() => {
     return value ? new Date(value) : null;
   }, [value]);
-  
   const months = [
     'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
     'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
   ];
-
   const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
   useEffect(() => {
     if (selectedDate) {
       setViewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
     }
   }, [selectedDate]);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
   const formatDisplayValue = () => {
     if (!selectedDate) return placeholder || 'Выберите дату';
     const day = selectedDate.getDate();
@@ -46,7 +37,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
     const year = selectedDate.getFullYear();
     return `${day} ${month} ${year}`;
   };
-
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(viewDate);
     if (direction === 'next') {
@@ -56,7 +46,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
     }
     setViewDate(newDate);
   };
-
   const handleDateSelect = (day: number) => {
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth() + 1;
@@ -65,7 +54,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
     onChange(`${year}-${formattedMonth}-${formattedDay}`);
     setIsOpen(false);
   };
-
   const handleTodayClick = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -75,36 +63,23 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
     setViewDate(new Date(now.getFullYear(), now.getMonth(), 1));
     setIsOpen(false);
   };
-
   const getDaysInMonth = () => {
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
-    
-    // Получаем первый день месяца и количество дней
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    
-    // Получаем день недели первого дня (0 = воскресенье, нужно преобразовать в понедельник = 0)
     let firstWeekDay = firstDay.getDay();
     firstWeekDay = firstWeekDay === 0 ? 6 : firstWeekDay - 1;
-    
-    // Создаем массив дней
     const days = [];
-    
-    // Добавляем пустые ячейки для дней предыдущего месяца
     for (let i = 0; i < firstWeekDay; i++) {
       days.push(null);
     }
-    
-    // Добавляем дни текущего месяца
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(day);
     }
-    
     return days;
   };
-
   const isToday = (day: number | null) => {
     if (!day) return false;
     return (
@@ -113,7 +88,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
       day === today.getDate()
     );
   };
-
   const isSelected = (day: number | null) => {
     if (!day || !selectedDate) return false;
     return (
@@ -122,7 +96,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
       day === selectedDate.getDate()
     );
   };
-
   return (
     <div className={styles.customSelectContainer} ref={selectRef}>
       <button
@@ -140,7 +113,7 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
       </button>
       {isOpen && !disabled && (
         <div className={styles.fullCalendarDropdown}>
-          {/* Header with month/year navigation */}
+          {}
           <div className={styles.calendarHeader}>
             <button
               onClick={() => navigateMonth('prev')}
@@ -149,7 +122,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
             >
               <ChevronLeft size={16} />
             </button>
-            
             <div className={styles.monthYearDisplay}>
               <span className={styles.monthName}>{months[viewDate.getMonth()]}</span>
               <div className={styles.yearControl}>
@@ -182,7 +154,6 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
                 </button>
               </div>
             </div>
-            
             <button
               onClick={() => navigateMonth('next')}
               className={styles.navButton}
@@ -191,8 +162,7 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
               <ChevronRight size={16} />
             </button>
           </div>
-
-          {/* Quick Today Button */}
+          {}
           <div className={styles.todaySection}>
             <button
               onClick={handleTodayClick}
@@ -202,8 +172,7 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
               Сегодня: {today.getDate()} {months[today.getMonth()]}
             </button>
           </div>
-
-          {/* Days of week header */}
+          {}
           <div className={styles.weekHeader}>
             {weekDays.map((day) => (
               <div key={day} className={styles.weekDay}>
@@ -211,8 +180,7 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
               </div>
             ))}
           </div>
-
-          {/* Calendar grid */}
+          {}
           <div className={styles.calendarGrid}>
             {getDaysInMonth().map((day, index) => (
               <button
@@ -232,8 +200,7 @@ export default function MonthYearSelect({ value, onChange, placeholder, disabled
               </button>
             ))}
           </div>
-
-          {/* Footer */}
+          {}
           <div className={styles.calendarFooter}>
             <button
               onClick={() => setIsOpen(false)}

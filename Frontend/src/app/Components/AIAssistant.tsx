@@ -4,10 +4,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { sendAIChatMessage, checkAIServiceHealth } from '../../lib/api/aiApi';
-import { useAuth } from '../../contexts/AuthContext';
+import { sendAIChatMessage, checkAIServiceHealth } from '@/entities/ai';
+import { useAuth } from '@/features/auth';
 import styles from './AIAssistant.module.css';
-
 interface Job {
   id: string;
   title: string;
@@ -19,7 +18,6 @@ interface Job {
   tags: string[];
   postedAt: string;
 }
-
 interface Message {
   id: string;
   text: string;
@@ -28,11 +26,9 @@ interface Message {
   results?: Job[];
   isError?: boolean;
 }
-
 interface AIAssistantProps {
   jobs: Job[];
 }
-
 export default function AIAssistant({ jobs }: AIAssistantProps) {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
@@ -42,18 +38,13 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [aiServiceAvailable, setAiServiceAvailable] = useState<boolean | null>(null);
   const [isCheckingAI, setIsCheckingAI] = useState(true);
-
-  // Получаем контекст сайта для AI
   const getSiteContext = () => {
     const currentPath = window.location.pathname;
     const userRole = user?.role;
     const userName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'Пользователь';
-    
     let context = `Ты - AI помощник платформы для поиска работы и стажировок. `;
-    
     if (isAuthenticated && user) {
       context += `Пользователь: ${userName} (${userRole}). `;
-      
       switch (userRole) {
         case 'CANDIDATE':
           context += `Пользователь - кандидат, ищет работу или стажировки. Может создавать резюме, подавать заявки на вакансии. `;
@@ -71,8 +62,6 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
     } else {
       context += `Пользователь не авторизован. `;
     }
-    
-    // Добавляем контекст текущей страницы
     if (currentPath.includes('/jobs')) {
       context += `Сейчас пользователь на странице вакансий. `;
     } else if (currentPath.includes('/companies')) {
@@ -86,24 +75,18 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
     } else if (currentPath.includes('/universities')) {
       context += `Сейчас пользователь в панели университета. `;
     }
-    
     context += `Доступно ${jobs.length} вакансий и стажировок. `;
     context += `Помогай пользователю с вопросами о поиске работы, создании резюме, публикации вакансий, стажировках и других функциях платформы. `;
     context += `Отвечай на русском языке, будь дружелюбным и полезным.`;
-    
     return context;
   };
-
-  // Инициализируем приветственное сообщение с учетом контекста
   useEffect(() => {
     const getWelcomeMessage = () => {
       if (!isAuthenticated) {
         return 'Привет! Я AI помощник платформы для поиска работы и стажировок. Я помогу вам найти подходящие вакансии, создать резюме или ответить на вопросы о платформе.';
       }
-      
       const userName = user?.firstName ? `, ${user.firstName}` : '';
       const currentPath = window.location.pathname;
-      
       switch (user?.role) {
         case 'CANDIDATE':
           if (currentPath.includes('/resume')) {
@@ -123,7 +106,6 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
           return `Привет${userName}! Я помогу вам с вопросами о платформе.`;
       }
     };
-
     setMessages([{
       id: '1',
       text: getWelcomeMessage(),
@@ -131,8 +113,6 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
       timestamp: new Date()
     }]);
   }, [user, isAuthenticated]);
-
-  // Проверяем доступность AI сервиса при монтировании компонента
   useEffect(() => {
     const checkAI = async () => {
       setIsCheckingAI(true);
@@ -142,44 +122,32 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
     };
     checkAI();
   }, []);
-
   const searchByPrompt = (prompt: string): Job[] => {
     const keywords = prompt.toLowerCase().split(' ');
-    
     return jobs.filter(job => {
       const searchText = `${job.title} ${job.description} ${job.tags.join(' ')} ${job.company}`.toLowerCase();
-      
-      // Простая логика поиска по ключевым словам
       return keywords.some(keyword => 
         keyword.length > 2 && searchText.includes(keyword)
       );
-    }).slice(0, 3); // Показываем топ 3 результата
+    }).slice(0, 3); 
   };
-
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
       isUser: true,
       timestamp: new Date()
     };
-
     setMessages(prev => [...prev, userMessage]);
     const currentInput = inputValue;
     setInputValue('');
     setIsLoading(true);
-
     try {
-      // Если AI сервис доступен, используем его
       if (aiServiceAvailable) {
-        // Добавляем контекст сайта к сообщению
         const contextualMessage = `${getSiteContext()}\n\nВопрос пользователя: ${currentInput}`;
         const aiResponse = await sendAIChatMessage(contextualMessage);
-        
         if (aiResponse.success && aiResponse.data) {
-          // AI ответил успешно
           const aiMessage: Message = {
             id: (Date.now() + 1).toString(),
             text: aiResponse.data.response,
@@ -188,24 +156,17 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
           };
           setMessages(prev => [...prev, aiMessage]);
         } else {
-          // Ошибка AI сервиса, используем fallback
           throw new Error(aiResponse.error || 'AI сервис недоступен');
         }
       } else {
-        // AI сервис недоступен, используем локальный поиск
         throw new Error('AI сервис недоступен');
       }
     } catch (error) {
-      console.error('AI Chat Error:', error);
-      
-      // Fallback к локальному поиску с контекстными ответами
-      const results = searchByPrompt(currentInput);
-      
+            const results = searchByPrompt(currentInput);
       let fallbackText = '';
       if (results.length > 0) {
         fallbackText = `Нашел ${results.length} подходящих ${results.length === 1 ? 'вакансию' : 'вакансии'}:`;
       } else {
-        // Контекстные ответы в зависимости от роли пользователя
         if (user?.role === 'CANDIDATE') {
           fallbackText = 'К сожалению, не нашел подходящих вакансий по вашему запросу. Попробуйте изменить критерии поиска или создать резюме для лучшего поиска.';
         } else if (user?.role === 'HR') {
@@ -216,7 +177,6 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
           fallbackText = 'К сожалению, не нашел подходящих вакансий по вашему запросу. Попробуйте изменить критерии поиска.';
         }
       }
-      
       const fallbackMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: fallbackText,
@@ -224,28 +184,22 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
         timestamp: new Date(),
         results: results.length > 0 ? results : undefined
       };
-
       setMessages(prev => [...prev, fallbackMessage]);
     } finally {
       setIsLoading(false);
     }
   };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
-
-  // Получаем контекстный placeholder в зависимости от роли и страницы
   const getPlaceholderText = () => {
     const currentPath = window.location.pathname;
-    
     if (!isAuthenticated) {
       return 'Задайте вопрос о платформе или поиске работы...';
     }
-    
     switch (user?.role) {
       case 'CANDIDATE':
         if (currentPath.includes('/resume')) {
@@ -265,11 +219,8 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
         return 'Задайте вопрос о платформе...';
     }
   };
-
-  // Получаем быстрые действия в зависимости от роли
   const getQuickActions = () => {
     const currentPath = window.location.pathname;
-    
     switch (user?.role) {
       case 'CANDIDATE':
         if (currentPath.includes('/resume')) {
@@ -310,16 +261,13 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
         ];
     }
   };
-
-  // Обработка быстрых действий
   const handleQuickAction = (actionText: string) => {
     setInputValue(actionText);
     handleSend();
   };
-
   return (
     <>
-      {/* Floating AI Button - показывается только когда AI активен */}
+      {}
       {!isCheckingAI && aiServiceAvailable && (
         <button 
           className={`${styles.floatingButton} ${isOpen ? styles.floatingButtonActive : ''}`}
@@ -346,8 +294,7 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
         )}
       </button>
       )}
-
-      {/* AI Modal - показывается только когда AI активен и модал открыт */}
+      {}
       {!isCheckingAI && aiServiceAvailable && isOpen && (
         <div className={styles.aiModal}>
           <div className={styles.aiModalHeader}>
@@ -384,7 +331,6 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
               </svg>
             </button>
           </div>
-
           <div className={styles.aiMessages}>
             {messages.map((message) => (
               <div key={message.id} className={`${styles.aiMessage} ${message.isUser ? styles.aiMessageUser : styles.aiMessageBot}`}>
@@ -458,8 +404,7 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
                 </div>
               </div>
             )}
-            
-            {/* Быстрые действия для разных ролей */}
+            {}
             {messages.length === 1 && isAuthenticated && user && (
               <div className={styles.quickActions}>
                 <div className={styles.quickActionsTitle}>Быстрые действия:</div>
@@ -477,7 +422,6 @@ export default function AIAssistant({ jobs }: AIAssistantProps) {
               </div>
             )}
           </div>
-
           <div className={styles.aiInput}>
             <textarea
               value={inputValue}

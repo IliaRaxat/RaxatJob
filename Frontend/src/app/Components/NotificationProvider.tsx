@@ -1,9 +1,7 @@
 'use client';
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Notification, NotificationItem, useNotifications } from './Notification';
 import styles from './Notification.module.css';
-
 interface NotificationContextType {
   showNotification: (notification: Omit<NotificationItem, 'id'>) => void;
   showSuccess: (title: string, message?: string) => void;
@@ -11,12 +9,9 @@ interface NotificationContextType {
   showWarning: (title: string, message?: string) => void;
   showInfo: (title: string, message?: string) => void;
 }
-
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
-
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const { notifications, showNotification, showSuccess, showError, showWarning, showInfo, removeNotification } = useNotifications();
-
   const contextValue: NotificationContextType = {
     showNotification,
     showSuccess,
@@ -24,7 +19,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     showWarning,
     showInfo,
   };
-
   return (
     <NotificationContext.Provider value={contextValue}>
       {children}
@@ -40,7 +34,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     </NotificationContext.Provider>
   );
 }
-
 export function useNotificationContext() {
   const context = useContext(NotificationContext);
   if (context === undefined) {

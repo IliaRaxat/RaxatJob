@@ -1,9 +1,7 @@
 'use client';
-
 import React from 'react';
 import HRResponsesPanel from '@/app/Components/HRResponsesPanel';
 import RoleGuard from '@/app/Components/RoleGuard';
-
 const HRResponsesPage: React.FC = () => {
   return (
     <RoleGuard allowedRoles={['ADMIN']}>
@@ -13,5 +11,4 @@ const HRResponsesPage: React.FC = () => {
     </RoleGuard>
   );
 };
-
 export default HRResponsesPage;

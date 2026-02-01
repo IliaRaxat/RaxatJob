@@ -1,8 +1,21 @@
-/* Container */
+﻿/* Container */
 .container {
   min-height: 100vh;
   background: #f8f9fa;
   overflow-x: hidden;
+  padding-top: 250px !important;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: 220px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-top: 200px !important;
+  }
 }
 
 /* Hide scrollbar for the page but allow scrolling */
@@ -18,7 +31,7 @@ body::-webkit-scrollbar {
 /* Hero Section */
 .hero {
   background: #ffffff;
-  padding: 4em 0 3rem;
+  padding: 0 0 3rem;
   border-bottom: 1px solid #eaeaea;
   position: relative;
   overflow: hidden;
@@ -32,7 +45,7 @@ body::-webkit-scrollbar {
   transform: translate(-50%, -50%);
   width: 800px;
   height: 600px;
-  background: radial-gradient(ellipse, rgba(225, 6, 0, 0.3) 0%, rgba(225, 6, 0, 0.2) 25%, rgba(225, 6, 0, 0.1) 50%, transparent 75%);
+  background: radial-gradient(ellipse, rgba(29, 185, 84, 0.3) 0%, rgba(29, 185, 84, 0.2) 25%, rgba(29, 185, 84, 0.1) 50%, transparent 75%);
   border-radius: 50%;
   z-index: 1;
   pointer-events: none;
@@ -57,7 +70,7 @@ body::-webkit-scrollbar {
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -86,7 +99,7 @@ body::-webkit-scrollbar {
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -94,18 +107,18 @@ body::-webkit-scrollbar {
   transition: all 0.2s ease;
   border: 1px solid transparent;
   font-size: 1rem;
-  box-shadow: 0 4px 15px rgba(225, 6, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
 }
 
 .createJobBtn:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(225, 6, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
 }
 
 /* Search Section */
 .searchSection {
-  padding: 2rem 0;
+  padding: 1rem 0;
   background: #ffffff;
   margin-bottom: 1.5rem;
 }
@@ -137,8 +150,8 @@ body::-webkit-scrollbar {
 
 .searchInput:focus {
   outline: none;
-  border-color: #ffc9c9;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #86efac;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .searchIcon {
@@ -187,13 +200,13 @@ body::-webkit-scrollbar {
 }
 
 .selectButton:hover {
-  border-color: #ffc9c9;
+  border-color: #86efac;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .selectButton:focus {
   outline: none;
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .selectIcon {
@@ -222,7 +235,7 @@ body::-webkit-scrollbar {
   max-height: 300px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #e10600 #f5f5f5;
+  scrollbar-color: #1db954 #f5f5f5;
 }
 
 .selectDropdown::-webkit-scrollbar {
@@ -235,13 +248,13 @@ body::-webkit-scrollbar {
 }
 
 .selectDropdown::-webkit-scrollbar-thumb {
-  background: #e10600;
+  background: #1db954;
   border-radius: 3px;
   transition: background 0.2s;
 }
 
 .selectDropdown::-webkit-scrollbar-thumb:hover {
-  background: #ba0500;
+  background: #1aa34a;
 }
 
 @keyframes dropdownSlide {
@@ -269,16 +282,16 @@ body::-webkit-scrollbar {
 }
 
 .selectOption:hover {
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .selectOptionActive {
-  background: #ffecec;
-  color: #e10600;
+  background: #dcfce7;
+  color: #1db954;
 }
 
 .selectOptionActive:hover {
-  background: #ffecec;
+  background: #dcfce7;
 }
 
 /* Skills Input */
@@ -315,8 +328,8 @@ body::-webkit-scrollbar {
 }
 
 .skillsInput:focus {
-  border-color: #ffc9c9;
-  background: #fff5f5;
+  border-color: #86efac;
+  background: #f0fdf4;
 }
 
 
@@ -340,13 +353,13 @@ body::-webkit-scrollbar {
 }
 
 .remoteCheckbox:hover {
-  color: #e10600;
+  color: #1db954;
 }
 
 .remoteCheckbox input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #e10600;
+  accent-color: #1db954;
   cursor: pointer;
   border-radius: 6px;
 }
@@ -398,7 +411,7 @@ body::-webkit-scrollbar {
 }
 
 .jobCard:hover {
-  border-color: #ffc9c9;
+  border-color: #86efac;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
@@ -447,14 +460,14 @@ body::-webkit-scrollbar {
 .jobType {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: #fff5f5;
-  color: #e10600;
+  background: #f0fdf4;
+  color: #1db954;
   font-size: 0.75rem;
   font-weight: 500;
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.025em;
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .jobDescription {
@@ -483,12 +496,12 @@ body::-webkit-scrollbar {
 
 .tag {
   padding: 0.25rem 0.75rem;
-  background: #fff5f5;
-  color: #e10600;
+  background: #f0fdf4;
+  color: #1db954;
   font-size: 0.75rem;
   font-weight: 500;
   border-radius: 16px;
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .jobCardFooter {
@@ -524,7 +537,7 @@ body::-webkit-scrollbar {
   align-items: center;
   gap: 0.375rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-size: 0.875rem;
@@ -535,7 +548,7 @@ body::-webkit-scrollbar {
 }
 
 .applyBtn:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateX(2px);
 }
 
@@ -652,7 +665,7 @@ body::-webkit-scrollbar {
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -662,7 +675,7 @@ body::-webkit-scrollbar {
 }
 
 .ctaBtn:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -699,7 +712,7 @@ body::-webkit-scrollbar {
   }
   
   .hero {
-    padding: 3rem 0 2rem;
+    padding: 0 0 2rem;
   }
   
   .hero::before {
@@ -717,7 +730,7 @@ body::-webkit-scrollbar {
   }
   
   .searchSection {
-    padding: 1.5rem 0;
+    padding: 0.5rem 0;
   }
   
   .searchContainer {
@@ -876,3 +889,6 @@ body::-webkit-scrollbar {
   border-radius: 6px;
   margin-top: 1rem;
 }
+
+
+

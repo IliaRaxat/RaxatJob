@@ -35,7 +35,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -59,7 +59,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -71,7 +71,7 @@
 }
 
 .refreshButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -84,13 +84,13 @@
 .headerIcon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  box-shadow: 0 4px 12px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.2);
 }
 
 /* Content */
@@ -119,15 +119,15 @@
 }
 
 .statCard:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
   transform: translateY(-2px);
 }
 
 .statNumber {
   font-size: 2rem;
   font-weight: 800;
-  color: #e10600;
+  color: #1db954;
   line-height: 1;
   margin-bottom: 0.5rem;
 }
@@ -182,9 +182,9 @@
 }
 
 .searchInput:focus {
-  border-color: #ffc9c9;
-  background: #fff5f5;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #86efac;
+  background: #f0fdf4;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 .searchInput::placeholder {
@@ -239,12 +239,12 @@
 }
 
 .filterSelect:hover {
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .filterSelect:focus {
-  border-color: #e10600;
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.1);
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
 }
 
 /* Кастомный дропдаун для статуса */
@@ -274,12 +274,12 @@
 }
 
 .statusSelectButton:hover {
-  border-color: #ffc9c9;
-  background: #fff5f5;
+  border-color: #86efac;
+  background: #f0fdf4;
 }
 
 .statusSelectButton:focus {
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .statusSelectButton.disabled {
@@ -288,8 +288,8 @@
 }
 
 .statusSelectButtonOpen {
-  border-color: #ffc9c9;
-  background: #fff5f5;
+  border-color: #86efac;
+  background: #f0fdf4;
 }
 
 .statusSelectText {
@@ -354,17 +354,17 @@
 }
 
 .statusSelectOption:hover {
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .statusSelectOptionActive {
-  background: #ffecec;
-  color: #e10600;
+  background: #dcfce7;
+  color: #1db954;
   font-weight: 500;
 }
 
 .statusSelectOptionActive:hover {
-  background: #ffecec;
+  background: #dcfce7;
 }
 
 /* Адаптивность для кастомного дропдауна */
@@ -412,7 +412,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -420,12 +420,12 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
   border: 1px solid transparent;
 }
 
 .bulkActionsTrigger:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -481,7 +481,7 @@
 .modalContent {
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
   max-width: 480px;
   width: 90%;
   max-height: 90vh;
@@ -522,7 +522,7 @@
 }
 
 .modalTitle svg {
-  color: #e10600;
+  color: #1db954;
 }
 
 .modalCloseButton {
@@ -554,9 +554,9 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: #fff5f5;
+  background: #f0fdf4;
   border-radius: 8px;
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .modalInfoIcon {
@@ -564,12 +564,12 @@
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: #fff5f5;
+  background: #f0fdf4;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #e10600;
-  border: 1px solid #ffd5d5;
+  color: #1db954;
+  border: 1px solid #bbf7d0;
 }
 
 .modalInfoText h3 {
@@ -758,8 +758,8 @@
 }
 
 .jobCard:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 20px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.08);
   transform: translateY(-2px);
 }
 
@@ -785,7 +785,7 @@
 .jobCheckbox input {
   width: 18px;
   height: 18px;
-  accent-color: #e10600;
+  accent-color: #1db954;
   cursor: pointer;
 }
 
@@ -849,9 +849,9 @@
 }
 
 .badgeReturned {
-  background: #fff5f5;
-  color: #e10600;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  color: #1db954;
+  border: 1px solid #bbf7d0;
 }
 
 .jobDescription {
@@ -876,12 +876,12 @@
 
 .skillTag {
   padding: 0.25rem 0.5rem;
-  background: #fff5f5;
-  color: #e10600;
+  background: #f0fdf4;
+  color: #1db954;
   font-size: 0.75rem;
   font-weight: 500;
   border-radius: 12px;
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .jobFooter {
@@ -972,7 +972,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #f0f0f0;
-  border-top: 3px solid #e10600;
+  border-top: 3px solid #1db954;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -1037,20 +1037,20 @@
 }
 
 .paginationButton:hover {
-  border-color: #e10600;
-  background: #fff5f5;
-  color: #e10600;
+  border-color: #1db954;
+  background: #f0fdf4;
+  color: #1db954;
 }
 
 .paginationButtonActive {
-  background: #e10600;
-  border-color: #e10600;
+  background: #1db954;
+  border-color: #1db954;
   color: #fff;
 }
 
 .paginationButtonActive:hover {
-  background: #ba0500;
-  border-color: #ba0500;
+  background: #1aa34a;
+  border-color: #1aa34a;
 }
 
 .paginationButton:disabled {
@@ -1142,3 +1142,5 @@
     justify-content: center;
   }
 }
+
+

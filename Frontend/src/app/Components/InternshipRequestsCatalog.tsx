@@ -1,16 +1,13 @@
 'use client';
-
 import React, { useState } from 'react';
 import { 
   useGetPublicInternshipRequestsQuery,
   useRespondToInternshipRequestMutation 
-} from '@/lib/api/internshipRequestsApi';
+} from '@/entities/internship-request';
 import styles from './InternshipRequestsCatalog.module.css';
-
 interface InternshipRequestsCatalogProps {
   onRespond?: (requestId: string) => void;
 }
-
 const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({ 
   onRespond 
 }) => {
@@ -21,24 +18,20 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
     isRemote: undefined as boolean | undefined,
     page: 1,
   });
-
   const [showResponseForm, setShowResponseForm] = useState<string | null>(null);
   const [responseData, setResponseData] = useState({
     message: '',
     contactEmail: '',
   });
-
   const { data: requestsData, isLoading, error, refetch } = useGetPublicInternshipRequestsQuery(filters);
   const [respondToRequest, { isLoading: isResponding }] = useRespondToInternshipRequestMutation();
-
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({
       ...prev,
       [key]: value,
-      page: 1, // Reset to first page when filters change
+      page: 1, 
     }));
   };
-
   const handleResponseSubmit = async (requestId: string) => {
     try {
       await respondToRequest({
@@ -46,15 +39,12 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
         message: responseData.message,
         contactEmail: responseData.contactEmail,
       }).unwrap();
-      
       setShowResponseForm(null);
       setResponseData({ message: '', contactEmail: '' });
       onRespond?.(requestId);
     } catch (err) {
-      console.error('Failed to respond to internship request:', err);
-    }
+          }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -62,7 +52,6 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
       day: 'numeric'
     });
   };
-
   const clearFilters = () => {
     setFilters({
       search: '',
@@ -72,7 +61,6 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
       page: 1,
     });
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -81,8 +69,7 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
           Найдите подходящие заявки на стажировки от университетов
         </p>
       </div>
-
-      {/* Фильтры */}
+      {}
       <div className={styles.filters}>
         <div className={styles.filterRow}>
           <div className={styles.filterGroup}>
@@ -95,7 +82,6 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
               placeholder="Поиск по описанию или требованиям"
             />
           </div>
-
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>Специальность</label>
             <input
@@ -106,7 +92,6 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
               placeholder="Например: Информатика"
             />
           </div>
-
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>Локация</label>
             <input
@@ -117,7 +102,6 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
               placeholder="Например: Москва"
             />
           </div>
-
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>Тип работы</label>
             <select
@@ -130,14 +114,12 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
               <option value="false">В офисе</option>
             </select>
           </div>
-
           <button onClick={clearFilters} className={styles.clearFiltersButton}>
             Очистить
           </button>
         </div>
       </div>
-
-      {/* Результаты */}
+      {}
       <div className={styles.content}>
         {isLoading ? (
           <div className={styles.loading}>
@@ -182,18 +164,15 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
                     </button>
                   </div>
                 </div>
-
                 <div className={styles.requestContent}>
                   <div className={styles.requestDescription}>
                     <h4>Описание:</h4>
                     <p>{request.description}</p>
                   </div>
-
                   <div className={styles.requestRequirements}>
                     <h4>Требования:</h4>
                     <p>{request.requirements}</p>
                   </div>
-
                   {request.skills && request.skills.length > 0 && (
                     <div className={styles.requestSkills}>
                       <h4>Навыки:</h4>
@@ -206,7 +185,6 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
                       </div>
                     </div>
                   )}
-
                   <div className={styles.requestDates}>
                     <div className={styles.dateItem}>
                       <span className={styles.dateLabel}>Начало:</span>
@@ -227,8 +205,7 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
           </div>
         )}
       </div>
-
-      {/* Форма отклика */}
+      {}
       {showResponseForm && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -287,5 +264,4 @@ const InternshipRequestsCatalog: React.FC<InternshipRequestsCatalogProps> = ({
     </div>
   );
 };
-
 export default InternshipRequestsCatalog;

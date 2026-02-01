@@ -1,0 +1,1 @@
+import { createApi } from '@reduxjs/toolkit/query/react';import { baseQuery } from './base';export const resumesApi = createApi({  reducerPath: 'resumesApi',  baseQuery,  tagTypes: ['Resume'],  endpoints: () => ({}),});

@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 import { 
   Resume, 
@@ -10,7 +9,7 @@ import {
   ResumeAchievement, 
   ResumeLanguage, 
   ResumeCertification 
-} from '../../lib/api/resumesApi';
+} from '@/entities/resume';
 import { 
   Star, 
   Globe, 
@@ -29,7 +28,6 @@ import {
   Brain
 } from 'lucide-react';
 import styles from './ResumeViewer.module.css';
-
 interface ResumeViewerProps {
   resume: Resume;
   onEdit?: () => void;
@@ -39,7 +37,6 @@ interface ResumeViewerProps {
   onAIAnalysis?: () => void;
   showActions?: boolean;
 }
-
 export default function ResumeViewer({ 
   resume, 
   onEdit, 
@@ -49,7 +46,6 @@ export default function ResumeViewer({
   onAIAnalysis,
   showActions = true 
 }: ResumeViewerProps) {
-  
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -64,7 +60,6 @@ export default function ResumeViewer({
       return 'Некорректная дата';
     }
   };
-
   const formatDateRange = (startDate: string, endDate?: string, isCurrent?: boolean) => {
     const start = formatDate(startDate);
     if (isCurrent) {
@@ -76,12 +71,10 @@ export default function ResumeViewer({
     }
     return start;
   };
-
   const getSkillLevelText = (level: number) => {
     const levels = ['Новичок', 'Начальный', 'Средний', 'Продвинутый', 'Эксперт'];
     return levels[level - 1] || 'Не указан';
   };
-
   const getLanguageLevelText = (level: string) => {
     const levelMap: { [key: string]: string } = {
       'Basic': 'Базовый',
@@ -94,15 +87,13 @@ export default function ResumeViewer({
     };
     return levelMap[level] || level;
   };
-
   const getSkillLevelColor = (level: number) => {
     const colors = ['#ff6b6b', '#ffa726', '#ffeb3b', '#66bb6a', '#42a5f5'];
     return colors[level - 1] || '#e0e0e0';
   };
-
   return (
     <div className={styles.resumeViewer}>
-      {/* Заголовок резюме */}
+      {}
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <h1 className={styles.title}>{resume.title}</h1>
@@ -126,7 +117,6 @@ export default function ResumeViewer({
             )}
           </div>
         </div>
-        
         {showActions && (
           <div className={styles.actions}>
             {onAIAnalysis && (
@@ -158,24 +148,21 @@ export default function ResumeViewer({
           </div>
         )}
       </div>
-
-      {/* Краткое описание */}
+      {}
       {resume.summary && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>О себе</h2>
           <p className={styles.summary}>{resume.summary}</p>
         </div>
       )}
-
-      {/* Цель */}
+      {}
       {resume.objective && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Цель</h2>
           <p className={styles.objective}>{resume.objective}</p>
         </div>
       )}
-
-      {/* Навыки */}
+      {}
       {resume.skills && resume.skills.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -211,8 +198,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Опыт работы */}
+      {}
       {resume.experiences && resume.experiences.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -231,11 +217,9 @@ export default function ResumeViewer({
                     </span>
                   </div>
                 </div>
-                
                 {exp.description && (
                   <p className={styles.experienceDescription}>{exp.description}</p>
                 )}
-                
                 {exp.achievements && exp.achievements.length > 0 && (
                   <div className={styles.achievements}>
                     <h4>Достижения:</h4>
@@ -246,7 +230,6 @@ export default function ResumeViewer({
                     </ul>
                   </div>
                 )}
-                
                 {exp.technologies && exp.technologies.length > 0 && (
                   <div className={styles.technologies}>
                     <h4>Технологии:</h4>
@@ -262,8 +245,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Образование */}
+      {}
       {resume.educations && resume.educations.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -292,8 +274,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Проекты */}
+      {}
       {resume.projects && resume.projects.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -309,9 +290,7 @@ export default function ResumeViewer({
                     {formatDateRange(project.startDate, project.endDate, project.isCurrent)}
                   </div>
                 </div>
-                
                 <p className={styles.projectDescription}>{project.description}</p>
-                
                 {project.technologies && project.technologies.length > 0 && (
                   <div className={styles.projectTechnologies}>
                     <div className={styles.techTags}>
@@ -321,7 +300,6 @@ export default function ResumeViewer({
                     </div>
                   </div>
                 )}
-                
                 <div className={styles.projectLinks}>
                   {project.url && (
                     <a href={project.url} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
@@ -341,8 +319,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Достижения */}
+      {}
       {resume.achievements && resume.achievements.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -363,8 +340,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Языки */}
+      {}
       {resume.languages && resume.languages.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -384,8 +360,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Сертификаты */}
+      {}
       {resume.certifications && resume.certifications.length > 0 && (
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
@@ -416,8 +391,7 @@ export default function ResumeViewer({
           </div>
         </div>
       )}
-
-      {/* Метаданные */}
+      {}
       <div className={styles.metadata}>
         <div className={styles.metadataItem}>
           <Calendar size={16} />

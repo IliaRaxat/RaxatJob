@@ -1,19 +1,15 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import RoleGuard from '../Components/RoleGuard';
 import styles from './admin.module.css';
-
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
-
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-
   const navigation = [
     {
       name: 'Аналитика',
@@ -91,11 +87,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       ),
     },
   ];
-
   return (
     <RoleGuard allowedRoles={['ADMIN']}>
       <div className={styles.adminLayout}>
-      {/* Sidebar */}
+      {}
       <div className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
           <Link href="/admin" className={styles.sidebarLogo}>
@@ -138,12 +133,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </svg>
           </button>
         </div>
-
         <nav className={styles.sidebarNav}>
           <ul className={styles.navList}>
             {navigation.map((item) => {
               const isActive = pathname === item.href || (item.href === '/admin/analytics' && pathname === '/admin');
-              
               return (
                 <li key={item.name}>
                   <Link
@@ -158,7 +151,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             })}
           </ul>
         </nav>
-
         <div className={styles.sidebarFooter}>
           <Link href="/" className={styles.backToSite}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -168,10 +160,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Link>
         </div>
       </div>
-
-      {/* Main Content */}
+      {}
       <div className={styles.mainContent}>
-        {/* Top Bar */}
+        {}
         <header className={styles.topBar}>
           <button
             className={styles.mobileMenuButton}
@@ -181,7 +172,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          
           <div className={styles.topBarRight}>
             <div className={styles.adminBadge}>
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -191,14 +181,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
         </header>
-
-        {/* Page Content */}
+        {}
         <main className={styles.pageContent}>
           {children}
         </main>
       </div>
-
-      {/* Mobile Overlay */}
+      {}
       {sidebarOpen && (
         <div
           className={styles.mobileOverlay}

@@ -1,8 +1,6 @@
 'use client';
 import { useState } from 'react';
 import AIAssistant from '../Components/AIAssistant';
-
-// Тестовые данные вакансий
 const testJobs = [
   {
     id: '1',
@@ -38,25 +36,19 @@ const testJobs = [
     postedAt: '2024-01-13'
   }
 ];
-
 export default function TestAIEnhancedPage() {
   const [currentRole, setCurrentRole] = useState<'CANDIDATE' | 'HR' | 'UNIVERSITY' | 'ADMIN'>('CANDIDATE');
   const [currentPage, setCurrentPage] = useState('/jobs');
-
-  // Имитируем изменение URL для тестирования
   const mockLocation = {
     pathname: currentPage,
     href: `http://localhost:3000${currentPage}`
   };
-
-  // Переопределяем window.location для тестирования
   if (typeof window !== 'undefined') {
     Object.defineProperty(window, 'location', {
       value: mockLocation,
       writable: true
     });
   }
-
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -79,14 +71,13 @@ export default function TestAIEnhancedPage() {
         }}>
           🤖 Тестирование улучшенного AI ассистента
         </h1>
-
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
           gap: '2rem',
           marginBottom: '2rem'
         }}>
-          {/* Панель управления */}
+          {}
           <div style={{
             background: '#f8f9fa',
             padding: '1.5rem',
@@ -94,7 +85,6 @@ export default function TestAIEnhancedPage() {
             border: '1px solid #e9ecef'
           }}>
             <h3 style={{ marginBottom: '1rem', color: '#495057' }}>Настройки тестирования</h3>
-            
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
                 Роль пользователя:
@@ -116,7 +106,6 @@ export default function TestAIEnhancedPage() {
                 <option value="ADMIN">Администратор</option>
               </select>
             </div>
-
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
                 Текущая страница:
@@ -141,8 +130,7 @@ export default function TestAIEnhancedPage() {
               </select>
             </div>
           </div>
-
-          {/* Информация о контексте */}
+          {}
           <div style={{
             background: '#e8f5e8',
             padding: '1.5rem',
@@ -161,8 +149,7 @@ export default function TestAIEnhancedPage() {
             </div>
           </div>
         </div>
-
-        {/* Демонстрация возможностей */}
+        {}
         <div style={{
           background: '#fff3cd',
           padding: '1.5rem',
@@ -180,8 +167,7 @@ export default function TestAIEnhancedPage() {
             <li><strong>Markdown поддержка:</strong> AI ответы отображаются с форматированием (списки, жирный текст, код)</li>
           </ul>
         </div>
-
-        {/* Демонстрация Markdown */}
+        {}
         <div style={{
           background: '#e8f5e8',
           padding: '1.5rem',
@@ -211,13 +197,11 @@ export default function TestAIEnhancedPage() {
             </ul>
           </div>
         </div>
-
-        {/* AI ассистент */}
+        {}
         <div style={{ position: 'relative', minHeight: '400px' }}>
           <AIAssistant jobs={testJobs} />
         </div>
-
-        {/* Инструкции */}
+        {}
         <div style={{
           marginTop: '2rem',
           padding: '1.5rem',
@@ -235,7 +219,6 @@ export default function TestAIEnhancedPage() {
             <li><strong>Протестируйте Markdown:</strong> Попросите AI составить список или выделить важные моменты</li>
             <li>Попробуйте разные комбинации ролей и страниц</li>
           </ol>
-          
           <div style={{
             marginTop: '1rem',
             padding: '1rem',

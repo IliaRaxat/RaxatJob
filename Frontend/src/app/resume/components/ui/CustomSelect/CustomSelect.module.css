@@ -1,4 +1,4 @@
-/* CustomSelect компонент стили */
+﻿/* CustomSelect компонент стили */
 
 .customSelectContainer {
   position: relative;
@@ -29,7 +29,7 @@
 
 .customSelectButton:focus {
   outline: none;
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .customSelectButton.disabled {
@@ -38,7 +38,7 @@
 }
 
 .selectOpen {
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .selectArrow {
@@ -98,10 +98,13 @@
 }
 
 .selectOption:hover {
-  background: #fff5f5;
+  background: #f0fdf4;
 }
 
 .selectOptionActive {
-  background: #ffecec;
-  color: #e10600;
+  background: #dcfce7;
+  color: #1db954;
 }
+
+
+

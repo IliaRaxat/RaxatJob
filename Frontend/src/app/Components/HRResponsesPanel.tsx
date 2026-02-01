@@ -1,44 +1,35 @@
 'use client';
-
 import React, { useState } from 'react';
 import { 
   useGetHRCompanyResponsesQuery, 
   useUpdateCompanyResponseStatusMutation
-} from '@/lib/api/internshipRequestsApi';
+} from '@/entities/internship-request';
 import ResponseDetailsModal from './ResponseDetailsModal';
 import styles from './HRResponsesPanel.module.css';
-
 interface HRResponsesPanelProps {
   onClose?: () => void;
 }
-
 const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
     page: 1,
   });
-
   const [selectedResponse, setSelectedResponse] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-
   const { data: responses, isLoading, error, refetch } = useGetHRCompanyResponsesQuery(filters);
   const [updateStatus, { isLoading: isUpdating }] = useUpdateCompanyResponseStatusMutation();
-
   const handleStatusUpdate = async (responseId: string, newStatus: 'ACCEPTED' | 'REJECTED') => {
     try {
       await updateStatus({ id: responseId, status: newStatus }).unwrap();
       setShowDetailsModal(false);
     } catch (err) {
-      console.error('Failed to update response status:', err);
-    }
+          }
   };
-
   const handleShowDetails = (response: any) => {
     setSelectedResponse(response);
     setShowDetailsModal(true);
   };
-
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({
       ...prev,
@@ -46,7 +37,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
       page: 1,
     }));
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -56,7 +46,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
       minute: '2-digit'
     });
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -69,7 +58,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -82,7 +70,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
         return status;
     }
   };
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -93,7 +80,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -107,7 +93,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -123,8 +108,7 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
           </button>
         )}
       </div>
-
-      {/* Статистика */}
+      {}
       {responses && (
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
@@ -151,8 +135,7 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
           </div>
         </div>
       )}
-
-      {/* Фильтры */}
+      {}
       <div className={styles.filters}>
         <div className={styles.searchBox}>
           <input
@@ -163,7 +146,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
             className={styles.searchInput}
           />
         </div>
-        
         <div className={styles.statusFilter}>
           <select
             value={filters.status}
@@ -177,8 +159,7 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
           </select>
         </div>
       </div>
-
-      {/* Список откликов */}
+      {}
       <div className={styles.responsesList}>
         {responses && responses.length === 0 ? (
           <div className={styles.empty}>
@@ -206,13 +187,11 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
                   </span>
                 </div>
               </div>
-
               <div className={styles.responseContent}>
                 <div className={styles.responseMessage}>
                   <h4>Сообщение от компании:</h4>
                   <p>{response.message}</p>
                 </div>
-
                 {response.internshipRequest && (
                   <div className={styles.requestInfo}>
                     <h4>Заявка на стажировку:</h4>
@@ -227,7 +206,6 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
                   </div>
                 )}
               </div>
-
               <div className={styles.responseActions}>
                 {response.status === 'PENDING' && (
                   <>
@@ -258,8 +236,7 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
           ))
         )}
       </div>
-
-      {/* Модальное окно с деталями отклика */}
+      {}
       {selectedResponse && (
         <ResponseDetailsModal
           response={selectedResponse}
@@ -272,5 +249,4 @@ const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
     </div>
   );
 };
-
 export default HRResponsesPanel;

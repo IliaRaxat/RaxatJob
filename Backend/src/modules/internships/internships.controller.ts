@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Re
 import { InternshipsService } from './internships.service';
 import { CreateInternshipDto, UpdateInternshipDto, InternshipQueryDto, InternshipApplicationDto } from '../../dto/internship.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 
@@ -20,10 +21,10 @@ export class InternshipsController {
   }
 
   /**
-   * Получить все стажировки (публичный доступ)
+   * Получить все стажировки (публичный доступ с опциональной аутентификацией)
    */
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard)
   findAll(@Query() query: InternshipQueryDto, @Request() req) {
     return this.internshipsService.findAll(query, req.user?.id);
   }
@@ -49,10 +50,10 @@ export class InternshipsController {
   }
 
   /**
-   * Получить стажировку по ID
+   * Получить стажировку по ID (публичный доступ с опциональной аутентификацией)
    */
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard)
   findOne(@Param('id') id: string, @Request() req) {
     return this.internshipsService.findOne(id, req.user?.id);
   }

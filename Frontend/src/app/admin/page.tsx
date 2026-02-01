@@ -1,9 +1,7 @@
 'use client';
-
 import React from 'react';
 import HRDashboard from '../Components/HRDashboard';
 import RoleGuard from '../Components/RoleGuard';
-
 export default function AdminPage() {
   return (
     <RoleGuard allowedRoles={['ADMIN']}>
@@ -17,7 +15,6 @@ export default function AdminPage() {
               Управление системой стажировок и откликами компаний
             </p>
           </div>
-          
           <HRDashboard />
         </div>
       </div>

@@ -1,10 +1,8 @@
 'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { Student, getStudentFullName, getStudentYear, formatGPA } from '../../lib/api/studentsApi';
+import { Student, getStudentFullName, getStudentYear, formatGPA } from '@/entities/student';
 import styles from './StudentCard.module.css';
-
 interface StudentCardProps {
   student: Student;
   onEdit?: (student: Student) => void;
@@ -14,7 +12,6 @@ interface StudentCardProps {
   className?: string;
   size?: 'small' | 'medium' | 'large';
 }
-
 export default function StudentCard({
   student,
   onEdit,
@@ -29,43 +26,36 @@ export default function StudentCard({
     e.stopPropagation();
     onEdit?.(student);
   };
-
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
     const confirmed = window.confirm(
       `Вы уверены, что хотите удалить студента ${getStudentFullName(student)}?`
     );
-    
     if (confirmed) {
       onDelete?.(student);
     }
   };
-
   const cardClasses = [
     styles.studentCard,
     styles[size],
     className
   ].filter(Boolean).join(' ');
-
   return (
     <div className={cardClasses}>
-      {/* Student Header */}
+      {}
       <div className={styles.studentHeader}>
         <div className={styles.studentAvatar}>
           <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L12 2L3 7V9C3 10.1 3.9 11 5 11V17C5 18.1 5.9 19 7 19H17C18.1 19 19 18.1 19 17V11C20.1 11 21 10.1 21 9Z"/>
           </svg>
         </div>
-        
         <div className={styles.studentInfo}>
           <h3 className={styles.studentName}>
             {getStudentFullName(student)}
           </h3>
           <p className={styles.studentId}>№ {student.studentId}</p>
         </div>
-
         {showActions && (
           <div className={styles.quickActions}>
             <Link 
@@ -81,8 +71,7 @@ export default function StudentCard({
           </div>
         )}
       </div>
-
-      {/* Student Details */}
+      {}
       <div className={styles.studentDetails}>
         <div className={styles.detailRow}>
           <span className={styles.detailLabel}>Email:</span>
@@ -90,21 +79,18 @@ export default function StudentCard({
             {student.email}
           </span>
         </div>
-        
         <div className={styles.detailRow}>
           <span className={styles.detailLabel}>Курс:</span>
           <span className={styles.detailValue}>
             {getStudentYear(student.yearOfStudy)}
           </span>
         </div>
-        
         <div className={styles.detailRow}>
           <span className={styles.detailLabel}>Специальность:</span>
           <span className={styles.detailValue} title={student.major}>
             {student.major}
           </span>
         </div>
-        
         {student.gpa !== undefined && (
           <div className={styles.detailRow}>
             <span className={styles.detailLabel}>Средний балл:</span>
@@ -113,7 +99,6 @@ export default function StudentCard({
             </span>
           </div>
         )}
-        
         {student.phone && (
           <div className={styles.detailRow}>
             <span className={styles.detailLabel}>Телефон:</span>
@@ -123,7 +108,6 @@ export default function StudentCard({
           </div>
         )}
       </div>
-
       {showSkills && (
         <div className={styles.skillsSection}>
           <div className={styles.skillsBadge}>
@@ -132,7 +116,6 @@ export default function StudentCard({
             </svg>
             {student.skills.length} навыков
           </div>
-          
           {student.skills.length > 0 && (
             <div className={styles.skillsList}>
               {student.skills.slice(0, 3).map((studentSkill) => (
@@ -154,7 +137,6 @@ export default function StudentCard({
           )}
         </div>
       )}
-
       {showActions && (onEdit || onDelete) && (
         <div className={styles.studentActions}>
           {onEdit && (
@@ -168,7 +150,6 @@ export default function StudentCard({
               </svg>
             </button>
           )}
-          
           {onDelete && (
             <button 
               onClick={handleDelete}
@@ -182,8 +163,7 @@ export default function StudentCard({
           )}
         </div>
       )}
-
-      {/* Creation Date Footer */}
+      {}
       <div className={styles.studentFooter}>
         <span className={styles.creationDate}>
           Создан {new Date(student.createdAt).toLocaleDateString('ru-RU')}
@@ -192,8 +172,6 @@ export default function StudentCard({
     </div>
   );
 }
-
-// Компонент списка студентов
 interface StudentCardListProps {
   students: Student[];
   onEdit?: (student: Student) => void;
@@ -203,7 +181,6 @@ interface StudentCardListProps {
   className?: string;
   cardSize?: 'small' | 'medium' | 'large';
 }
-
 export function StudentCardList({
   students,
   onEdit,
@@ -223,7 +200,6 @@ export function StudentCardList({
       </div>
     );
   }
-
   if (students.length === 0) {
     return (
       <div className={`${styles.studentCardList} ${className}`}>
@@ -238,7 +214,6 @@ export function StudentCardList({
       </div>
     );
   }
-
   return (
     <div className={`${styles.studentCardList} ${styles.grid} ${className}`}>
       {students.map((student) => (

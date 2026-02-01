@@ -1,31 +1,25 @@
 'use client';
-
 import React, { useState } from 'react';
 import { 
   useGetMyApplicationsQuery, 
   useUpdateApplicationStatusMutation,
   DetailedApplication 
-} from '@/lib/api/jobsApi';
+} from '@/entities/job';
 import styles from './JobApplicationsPanel.module.css';
-
 interface JobApplicationsPanelProps {
   onClose?: () => void;
 }
-
 const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) => {
   const [filters, setFilters] = useState({
     search: '',
     status: 'all',
     jobId: 'all',
   });
-
   const [selectedApplication, setSelectedApplication] = useState<DetailedApplication | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [notes, setNotes] = useState('');
-
   const { data: applications, isLoading, error, refetch } = useGetMyApplicationsQuery();
   const [updateStatus, { isLoading: isUpdating }] = useUpdateApplicationStatusMutation();
-
   const handleStatusUpdate = async (applicationId: string, newStatus: 'ACCEPTED' | 'REJECTED' | 'INTERVIEW_SCHEDULED' | 'HIRED') => {
     try {
       await updateStatus({ 
@@ -36,22 +30,18 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
       setShowDetailsModal(false);
       setNotes('');
     } catch (err) {
-      console.error('Failed to update application status:', err);
-    }
+          }
   };
-
   const handleShowDetails = (application: DetailedApplication) => {
     setSelectedApplication(application);
     setShowDetailsModal(true);
   };
-
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({
       ...prev,
       [key]: value,
     }));
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -61,7 +51,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
       minute: '2-digit'
     });
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -78,7 +67,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -95,29 +83,22 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
         return status;
     }
   };
-
-  // Фильтрация заявок
   const filteredApplications = applications?.filter(application => {
     const matchesSearch = 
       application.candidate.firstName.toLowerCase().includes(filters.search.toLowerCase()) ||
       application.candidate.lastName.toLowerCase().includes(filters.search.toLowerCase()) ||
       application.candidate.email.toLowerCase().includes(filters.search.toLowerCase()) ||
       application.job.title.toLowerCase().includes(filters.search.toLowerCase());
-    
     const matchesStatus = filters.status === 'all' || application.status === filters.status;
     const matchesJob = filters.jobId === 'all' || application.job.id === filters.jobId;
-    
     return matchesSearch && matchesStatus && matchesJob;
   }) || [];
-
-  // Получаем уникальные вакансии для фильтра
   const uniqueJobs = applications?.reduce((acc, app) => {
     if (!acc.find(job => job.id === app.job.id)) {
       acc.push(app.job);
     }
     return acc;
   }, [] as any[]) || [];
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -128,7 +109,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -142,7 +122,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -158,8 +137,7 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
           </button>
         )}
       </div>
-
-      {/* Статистика */}
+      {}
       {applications && (
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
@@ -198,8 +176,7 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
           </div>
         </div>
       )}
-
-      {/* Фильтры */}
+      {}
       <div className={styles.filters}>
         <div className={styles.searchBox}>
           <input
@@ -210,7 +187,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
             className={styles.searchInput}
           />
         </div>
-        
         <div className={styles.statusFilter}>
           <select
             value={filters.status}
@@ -225,7 +201,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
             <option value="HIRED">Нанятые</option>
           </select>
         </div>
-
         <div className={styles.jobFilter}>
           <select
             value={filters.jobId}
@@ -241,8 +216,7 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
           </select>
         </div>
       </div>
-
-      {/* Список откликов */}
+      {}
       <div className={styles.applicationsList}>
         {filteredApplications.length === 0 ? (
           <div className={styles.empty}>
@@ -278,7 +252,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                   </span>
                 </div>
               </div>
-
               <div className={styles.applicationContent}>
                 {application.coverLetter && (
                   <div className={styles.coverLetter}>
@@ -286,7 +259,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                     <p>{application.coverLetter}</p>
                   </div>
                 )}
-
                 <div className={styles.candidateProfile}>
                   <h4>Профиль кандидата:</h4>
                   <div className={styles.profileInfo}>
@@ -306,7 +278,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                     )}
                   </div>
                 </div>
-
                 {application.resumeUrl && (
                   <div className={styles.resumeSection}>
                     <h4>Резюме:</h4>
@@ -320,7 +291,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                   </div>
                 )}
               </div>
-
               <div className={styles.applicationActions}>
                 {application.status === 'PENDING' && (
                   <>
@@ -355,8 +325,7 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
           ))
         )}
       </div>
-
-      {/* Модальное окно с деталями отклика */}
+      {}
       {selectedApplication && (
         <div className={styles.modalOverlay} onClick={() => setShowDetailsModal(false)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -366,7 +335,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                 ✕
               </button>
             </div>
-
             <div className={styles.modalContent}>
               <div className={styles.candidateDetails}>
                 <h3>{selectedApplication.candidate.firstName} {selectedApplication.candidate.lastName}</h3>
@@ -375,20 +343,17 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                   <p>📞 {selectedApplication.candidate.phone}</p>
                 )}
               </div>
-
               <div className={styles.jobDetails}>
                 <h4>Вакансия: {selectedApplication.job.title}</h4>
                 <p><strong>Локация:</strong> {selectedApplication.job.location}</p>
                 <p><strong>Тип:</strong> {selectedApplication.job.type}</p>
               </div>
-
               {selectedApplication.coverLetter && (
                 <div className={styles.coverLetterDetails}>
                   <h4>Сопроводительное письмо:</h4>
                   <p>{selectedApplication.coverLetter}</p>
                 </div>
               )}
-
               <div className={styles.notesSection}>
                 <label htmlFor="notes">Заметки HR:</label>
                 <textarea
@@ -400,7 +365,6 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
                 />
               </div>
             </div>
-
             <div className={styles.modalActions}>
               {selectedApplication.status === 'PENDING' && (
                 <>
@@ -443,5 +407,4 @@ const JobApplicationsPanel: React.FC<JobApplicationsPanelProps> = ({ onClose }) 
     </div>
   );
 };
-
 export default JobApplicationsPanel;

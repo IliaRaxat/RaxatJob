@@ -1,22 +1,17 @@
 'use client';
-
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useCreateStudentMutation, validateStudent, CreateStudentDto } from '../../../../lib/api/studentsApi';
-import { useAuth } from '../../../../contexts/AuthContext';
+import { useCreateStudentMutation, validateStudent, CreateStudentDto } from '@/entities/student';
+import { useAuth } from '@/features/auth';
 import styles from './create.module.css';
-
 export default function CreateStudentPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [createStudent, { isLoading }] = useCreateStudentMutation();
-
-  // Проверяем роль пользователя
   const isUniversityUser = user?.role === 'UNIVERSITY';
   const isAdminUser = user?.role === 'ADMIN';
   const canCreateStudents = isUniversityUser || isAdminUser;
-
   const [formData, setFormData] = useState<CreateStudentDto>({
     firstName: '',
     lastName: '',
@@ -27,17 +22,13 @@ export default function CreateStudentPage() {
     gpa: undefined,
     phone: '',
   });
-
   const [errors, setErrors] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState<string>('');
-
   const handleInputChange = (field: keyof CreateStudentDto, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
-    
-    // Очищаем ошибки при изменении формы
     if (errors.length > 0) {
       setErrors([]);
     }
@@ -45,37 +36,25 @@ export default function CreateStudentPage() {
       setSubmitError('');
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Валидация
     const validationErrors = validateStudent(formData);
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     try {
       setErrors([]);
       setSubmitError('');
-      
-      // Подготавливаем данные (убираем пустые необязательные поля)
       const studentData: CreateStudentDto = {
         ...formData,
         gpa: formData.gpa || undefined,
         phone: formData.phone?.trim() || undefined,
       };
-
       await createStudent(studentData).unwrap();
-      
-      // Перенаправляем на страницу со списком студентов
       router.push('/admin/students');
     } catch (error: unknown) {
-      console.error('Ошибка создания студента:', error);
-      
-      const apiError = error as { data?: { message?: string; details?: Array<{ message: string }> } };
-      
+            const apiError = error as { data?: { message?: string; details?: Array<{ message: string }> } };
       if (apiError?.data?.message) {
         setSubmitError(apiError.data.message);
       } else if (apiError?.data?.details) {
@@ -86,7 +65,6 @@ export default function CreateStudentPage() {
       }
     }
   };
-
   if (!canCreateStudents) {
     return (
       <div className={styles.accessDenied}>
@@ -99,10 +77,9 @@ export default function CreateStudentPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.createStudentPage}>
-      {/* Header */}
+      {}
       <section className={styles.header}>
         <div className={styles.headerWrapper}>
           <Link href="/admin/students" className={styles.backLink}>
@@ -119,12 +96,11 @@ export default function CreateStudentPage() {
           </p>
         </div>
       </section>
-
-      {/* Form Section */}
+      {}
       <section className={styles.formSection}>
         <div className={styles.formContainer}>
           <form onSubmit={handleSubmit} className={styles.form}>
-          {/* Error Messages */}
+          {}
           {(errors.length > 0 || submitError) && (
             <div className={styles.errorContainer}>
               <div className={styles.errorIcon}>
@@ -143,11 +119,9 @@ export default function CreateStudentPage() {
               </div>
             </div>
           )}
-
-          {/* Personal Information */}
+          {}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Личная информация</h2>
-            
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label htmlFor="firstName" className={styles.label}>
@@ -163,7 +137,6 @@ export default function CreateStudentPage() {
                   maxLength={50}
                 />
               </div>
-
               <div className={styles.field}>
                 <label htmlFor="lastName" className={styles.label}>
                   Фамилия <span className={styles.required}>*</span>
@@ -179,7 +152,6 @@ export default function CreateStudentPage() {
                 />
               </div>
             </div>
-
             <div className={styles.field}>
               <label htmlFor="email" className={styles.label}>
                 Email <span className={styles.required}>*</span>
@@ -193,7 +165,6 @@ export default function CreateStudentPage() {
                 placeholder="student@university.edu"
               />
             </div>
-
             <div className={styles.field}>
               <label htmlFor="phone" className={styles.label}>
                 Телефон
@@ -208,11 +179,9 @@ export default function CreateStudentPage() {
               />
             </div>
           </div>
-
-          {/* Academic Information */}
+          {}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Академическая информация</h2>
-            
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label htmlFor="studentId" className={styles.label}>
@@ -227,7 +196,6 @@ export default function CreateStudentPage() {
                   placeholder="2024001"
                 />
               </div>
-
               <div className={styles.field}>
                 <label htmlFor="yearOfStudy" className={styles.label}>
                   Курс <span className={styles.required}>*</span>
@@ -247,7 +215,6 @@ export default function CreateStudentPage() {
                 </select>
               </div>
             </div>
-
             <div className={styles.field}>
               <label htmlFor="major" className={styles.label}>
                 Специальность <span className={styles.required}>*</span>
@@ -262,7 +229,6 @@ export default function CreateStudentPage() {
                 maxLength={100}
               />
             </div>
-
             <div className={styles.field}>
               <label htmlFor="gpa" className={styles.label}>
                 Средний балл (GPA)
@@ -283,8 +249,7 @@ export default function CreateStudentPage() {
               </p>
             </div>
           </div>
-
-          {/* Form Actions */}
+          {}
           <div className={styles.actions}>
             <Link href="/admin/students" className={styles.cancelButton}>
               Отмена
@@ -310,8 +275,7 @@ export default function CreateStudentPage() {
             </button>
           </div>
         </form>
-
-        {/* Info Panel */}
+        {}
         <div className={styles.infoPanel}>
           <div className={styles.infoPanelHeader}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,23 +283,19 @@ export default function CreateStudentPage() {
             </svg>
             <h3>Информация</h3>
           </div>
-          
           <div className={styles.infoPanelContent}>
             <div className={styles.infoItem}>
               <h4>Обязательные поля</h4>
               <p>Поля отмеченные звездочкой (*) обязательны для заполнения.</p>
             </div>
-            
             <div className={styles.infoItem}>
               <h4>Номер студенческого билета</h4>
               <p>Должен быть уникальным в рамках вашего университета.</p>
             </div>
-            
             <div className={styles.infoItem}>
               <h4>Email</h4>
               <p>Используется для входа в систему и уведомлений.</p>
             </div>
-            
             <div className={styles.infoItem}>
               <h4>После создания</h4>
               <p>Вы сможете добавить навыки студенту в его профиле.</p>

@@ -1,21 +1,16 @@
 'use client';
-
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import InternshipForm from '@/app/Components/InternshipForm';
 import styles from './create.module.css';
-
 const CreateInternshipPage: React.FC = () => {
   const router = useRouter();
-
   const handleSuccess = () => {
     router.push('/companies/internships');
   };
-
   const handleCancel = () => {
     router.push('/companies/internships');
   };
-
   return (
     <div className={styles.pageContainer}>
       <div className={styles.header}>
@@ -26,7 +21,6 @@ const CreateInternshipPage: React.FC = () => {
           </p>
         </div>
       </div>
-
       <InternshipForm 
         onSuccess={handleSuccess}
         onCancel={handleCancel}
@@ -34,5 +28,4 @@ const CreateInternshipPage: React.FC = () => {
     </div>
   );
 };
-
 export default CreateInternshipPage;

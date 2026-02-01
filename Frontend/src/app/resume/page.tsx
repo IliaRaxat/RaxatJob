@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Edit2, Search, Filter, ChevronLeft, ChevronRight, Star, Globe, Lock, Eye, Copy, EyeOff, Brain } from 'lucide-react';
 import { 
@@ -10,24 +9,18 @@ import {
   useSetDefaultResumeMutation,
   useDuplicateResumeMutation,
   useGetResumeByIdQuery
-} from '../../lib/api/resumesApi';
-import { Resume, CreateResumeDto, UpdateResumeDto, GetResumesQuery } from '../../lib/api/resumesApi';
-import AuthGuard from '../Components/AuthGuard';
+} from '@/entities/resume';
+import { Resume, CreateResumeDto, UpdateResumeDto, GetResumesQuery } from '@/entities/resume';
+import RoleGuard from '../Components/RoleGuard';
 import { useNotificationContext } from '../Components/NotificationProvider';
 import { ConfirmationDialog } from '../Components/ConfirmationDialog';
 import ResumeViewer from './components/ResumeViewer';
 import ResumeEditor from './components/ResumeEditor';
 import ResumeAnalysis from '../Components/ResumeAnalysis';
-
-// Импорт стилей
 import styles from './styles/page.module.css';
-
 export default function ResumePage() {
-  // Состояние для создания нового резюме
   const [newResumeTitle, setNewResumeTitle] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  
-  // Состояние для поиска и фильтров
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -36,12 +29,8 @@ export default function ResumePage() {
     sortBy: 'createdAt' as 'createdAt' | 'updatedAt' | 'title',
     sortOrder: 'desc' as 'asc' | 'desc'
   });
-  
-  // Состояние для пагинации
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
-  
-  // Состояние для модального окна
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean;
     resumeId: string;
@@ -51,20 +40,14 @@ export default function ResumePage() {
     resumeId: '',
     resumeTitle: ''
   });
-  
-  // Состояние для редактирования
   const [editingResume, setEditingResume] = useState<{
     id: string;
     title: string;
     summary: string;
     objective: string;
   } | null>(null);
-
-  // Состояние для детального просмотра и редактирования
   const [viewingResume, setViewingResume] = useState<string | null>(null);
   const [editingResumeId, setEditingResumeId] = useState<string | null>(null);
-  
-  // Состояние для AI анализа
   const [analysisDialog, setAnalysisDialog] = useState<{
     isOpen: boolean;
     resume: Resume | null;
@@ -83,21 +66,15 @@ export default function ResumePage() {
     resumeTitle: '',
     newTitle: ''
   });
-
-  // API хуки
   const [createResume, { isLoading: isCreatingResume }] = useCreateResumeMutation();
   const [updateResume] = useUpdateResumeMutation();
   const [deleteResume] = useDeleteResumeMutation();
   const [setDefaultResume] = useSetDefaultResumeMutation();
   const [duplicateResume] = useDuplicateResumeMutation();
-  
-  // Получение детальной информации о резюме
   const { data: resumeDetail, isLoading: isLoadingResumeDetail } = useGetResumeByIdQuery(
     viewingResume || editingResumeId || '', 
     { skip: !viewingResume && !editingResumeId }
   );
-  
-  // Параметры запроса
   const queryParams: GetResumesQuery = {
     page: currentPage,
     limit: pageSize,
@@ -107,38 +84,23 @@ export default function ResumePage() {
     sortBy: filters.sortBy,
     sortOrder: filters.sortOrder
   };
-  
   const { data: resumesResponse, isLoading: isLoadingResumes, refetch } = useGetResumesQuery(queryParams);
-  
-  // Уведомления
   const { showSuccess, showError, showWarning } = useNotificationContext();
-  
-  // Обработка данных резюме
   const resumes = resumesResponse?.resumes || [];
   const totalResumes = resumesResponse?.total || 0;
   const totalPages = Math.ceil(totalResumes / pageSize);
-  
-  // Логирование для отладки (только в development)
   if (process.env.NODE_ENV === 'development') {
-    console.log('Ответ API резюме:', resumesResponse);
-    console.log('Список резюме:', resumes);
-  }
-  
-  // Обработка поиска с дебаунсом
+          }
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setCurrentPage(1); // Сброс на первую страницу при поиске
+      setCurrentPage(1); 
     }, 500);
-    
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
-  
-  // Функции для управления фильтрами
   const handleFilterChange = (key: keyof typeof filters, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1); // Сброс на первую страницу при изменении фильтров
+    setCurrentPage(1); 
   };
-  
   const clearFilters = () => {
     setFilters({
       isDefault: undefined,
@@ -149,49 +111,34 @@ export default function ResumePage() {
     setSearchQuery('');
     setCurrentPage(1);
   };
-  
-  // Функции для пагинации
   const goToPage = (page: number) => {
     setCurrentPage(page);
   };
-  
   const goToPreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
-  
   const goToNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
-
-  // Создание нового резюме
   const handleCreateResume = async () => {
     if (!newResumeTitle.trim()) {
       showWarning('Внимание', 'Пожалуйста, введите название резюме');
       return;
     }
-
     try {
       const resumeData: CreateResumeDto = {
         title: newResumeTitle.trim()
       };
-
-      console.log('Отправляем данные для создания резюме:', resumeData);
-      const result = await createResume(resumeData).unwrap();
-      console.log('Резюме успешно создано:', result);
-      
-      setNewResumeTitle('');
+            const result = await createResume(resumeData).unwrap();
+            setNewResumeTitle('');
       setIsCreating(false);
       showSuccess('Успех!', 'Резюме успешно создано');
     } catch (error: any) {
-      console.error('Ошибка при создании резюме:', error);
-      
-      // Более детальная обработка ошибок
-      let errorMessage = 'Ошибка при создании резюме';
-      
+            let errorMessage = 'Ошибка при создании резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
@@ -217,12 +164,9 @@ export default function ResumePage() {
             errorMessage = `Ошибка сервера (${error.status})`;
         }
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-
-  // Открытие диалога удаления
   const handleDeleteClick = (id: string, title: string) => {
     setDeleteDialog({
       isOpen: true,
@@ -230,18 +174,13 @@ export default function ResumePage() {
       resumeTitle: title
     });
   };
-  
-  // Подтверждение удаления
   const handleConfirmDelete = async () => {
     try {
       await deleteResume(deleteDialog.resumeId).unwrap();
       showSuccess('Успех!', 'Резюме удалено');
       setDeleteDialog({ isOpen: false, resumeId: '', resumeTitle: '' });
     } catch (error: any) {
-      console.error('Ошибка при удалении резюме:', error);
-      
-      let errorMessage = 'Ошибка при удалении резюме';
-      
+            let errorMessage = 'Ошибка при удалении резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
@@ -264,17 +203,12 @@ export default function ResumePage() {
             errorMessage = `Ошибка сервера (${error.status})`;
         }
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-  
-  // Отмена удаления
   const handleCancelDelete = () => {
     setDeleteDialog({ isOpen: false, resumeId: '', resumeTitle: '' });
   };
-  
-  // Начало редактирования
   const handleEditClick = (resume: Resume) => {
     setEditingResume({
       id: resume.id,
@@ -283,29 +217,22 @@ export default function ResumePage() {
       objective: resume.objective || ''
     });
   };
-  
-  // Сохранение изменений
   const handleSaveEdit = async () => {
     if (!editingResume || !editingResume.title.trim()) {
       showWarning('Внимание', 'Пожалуйста, введите название резюме');
       return;
     }
-
     try {
       const updateData: UpdateResumeDto = {
         title: editingResume.title.trim(),
         summary: editingResume.summary.trim() || undefined,
         objective: editingResume.objective.trim() || undefined
       };
-
       await updateResume({ id: editingResume.id, data: updateData }).unwrap();
       showSuccess('Успех!', 'Резюме обновлено');
       setEditingResume(null);
     } catch (error: any) {
-      console.error('Ошибка при обновлении резюме:', error);
-      
-      let errorMessage = 'Ошибка при обновлении резюме';
-      
+            let errorMessage = 'Ошибка при обновлении резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
@@ -331,47 +258,32 @@ export default function ResumePage() {
             errorMessage = `Ошибка сервера (${error.status})`;
         }
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-  
-  // Отмена редактирования
   const handleCancelEdit = () => {
     setEditingResume(null);
   };
-
-  // Просмотр резюме
   const handleViewResume = (id: string) => {
     setViewingResume(id);
     setEditingResumeId(null);
   };
-
-  // Редактирование резюме
   const handleEditResume = (id: string) => {
     setEditingResumeId(id);
     setViewingResume(null);
   };
-
-  // Закрытие просмотра/редактирования
   const handleCloseDetail = () => {
     setViewingResume(null);
     setEditingResumeId(null);
   };
-
-  // Сохранение изменений резюме
   const handleSaveResume = async (data: UpdateResumeDto) => {
     if (!editingResumeId) return;
-    
     try {
       await updateResume({ id: editingResumeId, data }).unwrap();
       showSuccess('Успех!', 'Резюме обновлено');
       setEditingResumeId(null);
     } catch (error: any) {
-      console.error('Ошибка при обновлении резюме:', error);
-      
-      let errorMessage = 'Ошибка при обновлении резюме';
-      
+            let errorMessage = 'Ошибка при обновлении резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
@@ -397,32 +309,23 @@ export default function ResumePage() {
             errorMessage = `Ошибка сервера (${error.status})`;
         }
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-
-  // Установка основного резюме
   const handleSetDefault = async (id: string) => {
     try {
       await setDefaultResume(id).unwrap();
       showSuccess('Успех!', 'Резюме установлено как основное');
     } catch (error: any) {
-      console.error('Ошибка при установке основного резюме:', error);
-      
-      let errorMessage = 'Ошибка при установке основного резюме';
-      
+            let errorMessage = 'Ошибка при установке основного резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
         errorMessage = error.message;
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-
-  // Переключение публичности
   const handleTogglePublic = async (id: string, currentPublic: boolean) => {
     try {
       await updateResume({ 
@@ -431,21 +334,15 @@ export default function ResumePage() {
       }).unwrap();
       showSuccess('Успех!', `Резюме ${!currentPublic ? 'сделано публичным' : 'сделано приватным'}`);
     } catch (error: any) {
-      console.error('Ошибка при изменении публичности резюме:', error);
-      
-      let errorMessage = 'Ошибка при изменении публичности резюме';
-      
+            let errorMessage = 'Ошибка при изменении публичности резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
         errorMessage = error.message;
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-
-  // Открытие диалога дублирования
   const handleDuplicateClick = (id: string, title: string) => {
     setDuplicateDialog({
       isOpen: true,
@@ -454,8 +351,6 @@ export default function ResumePage() {
       newTitle: `${title} (копия)`
     });
   };
-
-  // Подтверждение дублирования
   const handleConfirmDuplicate = async () => {
     try {
       await duplicateResume({ 
@@ -465,42 +360,30 @@ export default function ResumePage() {
       showSuccess('Успех!', 'Резюме дублировано');
       setDuplicateDialog({ isOpen: false, resumeId: '', resumeTitle: '', newTitle: '' });
     } catch (error: any) {
-      console.error('Ошибка при дублировании резюме:', error);
-      
-      let errorMessage = 'Ошибка при дублировании резюме';
-      
+            let errorMessage = 'Ошибка при дублировании резюме';
       if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.message) {
         errorMessage = error.message;
       }
-      
       showError('Ошибка', errorMessage);
     }
   };
-
-  // Отмена дублирования
   const handleCancelDuplicate = () => {
     setDuplicateDialog({ isOpen: false, resumeId: '', resumeTitle: '', newTitle: '' });
   };
-
-  // Открытие AI анализа
   const handleAIAnalysis = (resume: Resume) => {
     setAnalysisDialog({
       isOpen: true,
       resume: resume
     });
   };
-
-  // Закрытие AI анализа
   const handleCloseAnalysis = () => {
     setAnalysisDialog({
       isOpen: false,
       resume: null
     });
   };
-
-  // Форматирование даты
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -510,18 +393,16 @@ export default function ResumePage() {
       minute: '2-digit'
     });
   };
-
   return (
-    <AuthGuard>
+    <RoleGuard allowedRoles={['CANDIDATE']}>
       <div className={styles.container}>
-        {/* Заголовок страницы */}
+        {}
         <div className={styles.header}>
           <h1>Мои резюме</h1>
           <p>Создавайте и управляйте своими резюме</p>
         </div>
-
         <div className={styles.content}>
-          {/* Поиск и фильтры */}
+          {}
           <div className={styles.searchSection}>
             <div className={styles.searchBar}>
               <div className={styles.searchInput}>
@@ -542,7 +423,6 @@ export default function ResumePage() {
                 Фильтры
               </button>
             </div>
-            
             {showFilters && (
               <div className={styles.filtersPanel}>
                 <div className={styles.filterGroup}>
@@ -557,7 +437,6 @@ export default function ResumePage() {
                     <option value="false">Нет</option>
                   </select>
                 </div>
-                
                 <div className={styles.filterGroup}>
                   <label>Публичность:</label>
                   <select 
@@ -570,7 +449,6 @@ export default function ResumePage() {
                     <option value="false">Приватные</option>
                   </select>
                 </div>
-                
                 <div className={styles.filterGroup}>
                   <label>Сортировка:</label>
                   <select 
@@ -583,7 +461,6 @@ export default function ResumePage() {
                     <option value="title">По названию</option>
                   </select>
                 </div>
-                
                 <div className={styles.filterGroup}>
                   <label>Порядок:</label>
                   <select 
@@ -595,7 +472,6 @@ export default function ResumePage() {
                     <option value="asc">По возрастанию</option>
                   </select>
                 </div>
-                
                 <button 
                   className={styles.clearFiltersButton}
                   onClick={clearFilters}
@@ -605,8 +481,7 @@ export default function ResumePage() {
               </div>
             )}
           </div>
-
-          {/* Форма создания/редактирования резюме */}
+          {}
           <div className={styles.createSection}>
             {editingResume ? (
               <>
@@ -700,8 +575,7 @@ export default function ResumePage() {
               </>
             )}
           </div>
-
-          {/* Список существующих резюме */}
+          {}
           <div className={styles.resumesSection}>
             <div className={styles.sectionHeader}>
               <h2>Мои резюме ({totalResumes})</h2>
@@ -709,7 +583,6 @@ export default function ResumePage() {
                 <span>Страница {currentPage} из {totalPages}</span>
               </div>
             </div>
-            
             {isLoadingResumes ? (
               <div className={styles.loading}>Загрузка резюме...</div>
             ) : !Array.isArray(resumes) ? (
@@ -757,7 +630,6 @@ export default function ResumePage() {
                             )}
                           </div>
                         </div>
-                        
                         {resume.summary && (
                           <p className={styles.resumeSummary}>{resume.summary}</p>
                         )}
@@ -766,7 +638,6 @@ export default function ResumePage() {
                             <strong>Цель:</strong> {resume.objective}
                           </p>
                         )}
-                        
                         <div className={styles.resumeMeta}>
                           <p className={styles.resumeDate}>
                             Создано: {formatDate(resume.createdAt)}
@@ -778,7 +649,6 @@ export default function ResumePage() {
                           )}
                         </div>
                       </div>
-                      
                       <div className={styles.resumeActions}>
                         <button 
                           onClick={() => handleViewResume(resume.id)}
@@ -820,8 +690,7 @@ export default function ResumePage() {
                     </div>
                   ))}
                 </div>
-                
-                {/* Пагинация */}
+                {}
                 {totalPages > 1 && (
                   <div className={styles.pagination}>
                     <button 
@@ -832,7 +701,6 @@ export default function ResumePage() {
                       <ChevronLeft size={16} />
                       Предыдущая
                     </button>
-                    
                     <div className={styles.pageNumbers}>
                       {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                         const page = i + 1;
@@ -847,7 +715,6 @@ export default function ResumePage() {
                         );
                       })}
                     </div>
-                    
                     <button 
                       className={styles.paginationButton}
                       onClick={goToNextPage}
@@ -862,8 +729,7 @@ export default function ResumePage() {
             )}
             </div>
           </div>
-
-        {/* Детальный просмотр резюме */}
+        {}
         {viewingResume && resumeDetail && (
           <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
@@ -890,8 +756,7 @@ export default function ResumePage() {
             </div>
           </div>
         )}
-
-        {/* Редактирование резюме */}
+        {}
         {editingResumeId && resumeDetail && (
           <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
@@ -915,8 +780,7 @@ export default function ResumePage() {
             </div>
           </div>
         )}
-
-        {/* Модальное окно подтверждения удаления */}
+        {}
         <ConfirmationDialog
           isOpen={deleteDialog.isOpen}
           title="Удалить резюме"
@@ -927,8 +791,7 @@ export default function ResumePage() {
           onCancel={handleCancelDelete}
           type="danger"
         />
-
-        {/* Модальное окно дублирования */}
+        {}
         <ConfirmationDialog
           isOpen={duplicateDialog.isOpen}
           title="Дублировать резюме"
@@ -961,14 +824,13 @@ export default function ResumePage() {
           onCancel={handleCancelDuplicate}
           type="info"
         />
-
-        {/* AI Анализ резюме */}
+        {}
         <ResumeAnalysis
           isOpen={analysisDialog.isOpen}
           onClose={handleCloseAnalysis}
           resume={analysisDialog.resume}
         />
       </div>
-    </AuthGuard>
+    </RoleGuard>
   );
 }

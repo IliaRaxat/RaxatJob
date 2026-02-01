@@ -1,22 +1,16 @@
 'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@/features/auth';
 import styles from './universities-layout.module.css';
-
 interface UniversitiesLayoutProps {
   children: React.ReactNode;
 }
-
 export default function UniversitiesLayout({ children }: UniversitiesLayoutProps) {
   const pathname = usePathname();
   const { user, isAuthenticated } = useAuth();
-
-  // Проверяем, что пользователь - университет
   const isUniversityUser = user?.role === 'UNIVERSITY';
-
   const navigation = [
     {
       name: 'Мои студенты',
@@ -47,15 +41,12 @@ export default function UniversitiesLayout({ children }: UniversitiesLayoutProps
       ),
     },
   ];
-
-  // Если пользователь не авторизован или не университет, показываем только детей
   if (!isAuthenticated || !isUniversityUser) {
     return <>{children}</>;
   }
-
   return (
     <div className={styles.universitiesLayout}>
-      {/* University Header */}
+      {}
       <div className={styles.universityHeader}>
         <div className={styles.headerContent}>
           <Link href="/" className={styles.logo}>
@@ -65,7 +56,6 @@ export default function UniversitiesLayout({ children }: UniversitiesLayoutProps
             </svg>
             <span className={styles.logoText}>Панель университета</span>
           </Link>
-
           <nav className={styles.navigation}>
             {navigation.map((item) => {
               const isActive = pathname === item.href;
@@ -81,7 +71,6 @@ export default function UniversitiesLayout({ children }: UniversitiesLayoutProps
               );
             })}
           </nav>
-
           <div className={styles.headerActions}>
             <Link href="/universities/students" className={styles.adminButton}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,13 +82,11 @@ export default function UniversitiesLayout({ children }: UniversitiesLayoutProps
           </div>
         </div>
       </div>
-
-      {/* Main Content */}
+      {}
       <main className={styles.mainContent}>
         {children}
       </main>
-
-      {/* Footer */}
+      {}
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <p>Система управления студентами университета.</p>

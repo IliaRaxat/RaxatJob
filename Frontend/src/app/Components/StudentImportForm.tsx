@@ -1,11 +1,10 @@
 'use client';
-
 import React, { useState, useRef } from 'react';
 import { 
   useCreateStudentMutation,
   CreateStudentDto,
   validateStudent
-} from '../../lib/api/studentsApi';
+} from '@/entities/student';
 import { 
   Upload, 
   FileText, 
@@ -18,19 +17,16 @@ import {
   Save
 } from 'lucide-react';
 import styles from './StudentImportForm.module.css';
-
 interface StudentImportFormProps {
   onSuccess?: (importedCount: number) => void;
   onCancel?: () => void;
   className?: string;
 }
-
 interface ImportResult {
   success: boolean;
   student?: CreateStudentDto;
   error?: string;
 }
-
 export default function StudentImportForm({ 
   onSuccess, 
   onCancel, 
@@ -44,10 +40,8 @@ export default function StudentImportForm({
   const [showPreview, setShowPreview] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
-  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [createStudent] = useCreateStudentMutation();
-
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -56,24 +50,20 @@ export default function StudentImportForm({
       parseFile(selectedFile);
     }
   };
-
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(true);
   };
-
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
   };
-
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
-
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const droppedFile = files[0];
@@ -81,7 +71,6 @@ export default function StudentImportForm({
                          droppedFile.type === 'application/csv' ||
                          droppedFile.name.endsWith('.csv') ||
                          droppedFile.name.endsWith('.txt');
-      
       if (isValidFile) {
         setFile(droppedFile);
         setErrors([]);
@@ -91,32 +80,24 @@ export default function StudentImportForm({
       }
     }
   };
-
   const parseFile = async (file: File) => {
     try {
       const text = await file.text();
       const lines = text.split('\n').filter(line => line.trim());
       const students: CreateStudentDto[] = [];
       const fileErrors: string[] = [];
-
       if (lines.length < 2) {
         setErrors(['Файл должен содержать заголовок и хотя бы одну строку данных']);
         return;
       }
-
-      // Пропускаем заголовок (первую строку)
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
-
-        // Поддержка разных разделителей
         const columns = line.split(/[,;\t]/).map(col => col.trim().replace(/"/g, ''));
-        
         if (columns.length < 6) {
           fileErrors.push(`Строка ${i + 1}: Недостаточно данных (найдено ${columns.length} колонок, требуется минимум 6)`);
           continue;
         }
-
         const student: CreateStudentDto = {
           firstName: columns[0] || '',
           lastName: columns[1] || '',
@@ -127,38 +108,29 @@ export default function StudentImportForm({
           gpa: columns[6] ? parseFloat(columns[6]) : undefined,
           phone: columns[7] || ''
         };
-
-        // Валидация студента
         const validationErrors = validateStudent(student);
         if (validationErrors.length > 0) {
           fileErrors.push(`Строка ${i + 1}: ${validationErrors.join(', ')}`);
           continue;
         }
-
         students.push(student);
       }
-
       if (students.length === 0) {
         setErrors(['Не найдено валидных записей студентов в файле']);
         return;
       }
-
       setPreviewData(students);
       setShowPreview(true);
       setErrors(fileErrors);
     } catch (error) {
-      console.error('Ошибка парсинга файла:', error);
-      setErrors(['Ошибка чтения файла. Убедитесь, что файл в формате CSV и не поврежден.']);
+            setErrors(['Ошибка чтения файла. Убедитесь, что файл в формате CSV и не поврежден.']);
     }
   };
-
   const handleImport = async () => {
     if (previewData.length === 0) return;
-
     setIsImporting(true);
     setImportProgress(0);
     const results: ImportResult[] = [];
-
     for (let i = 0; i < previewData.length; i++) {
       try {
         await createStudent(previewData[i]).unwrap();
@@ -170,24 +142,19 @@ export default function StudentImportForm({
           error: 'Ошибка создания студента'
         });
       }
-      
       setImportProgress(Math.round(((i + 1) / previewData.length) * 100));
     }
-
     setImportResults(results);
     setIsImporting(false);
-    
     const successCount = results.filter(r => r.success).length;
     onSuccess?.(successCount);
   };
-
   const downloadTemplate = () => {
     const csvContent = [
       'Имя,Фамилия,Email,Номер билета,Курс,Специальность,GPA,Телефон',
       'Иван,Петров,ivan.petrov@university.edu,2024001,3,Информатика,4.2,+7-999-123-45-67',
       'Мария,Сидорова,maria.sidorova@university.edu,2024002,2,Экономика,3.8,+7-999-234-56-78'
     ].join('\n');
-
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -198,7 +165,6 @@ export default function StudentImportForm({
     link.click();
     document.body.removeChild(link);
   };
-
   const handleCancel = () => {
     setFile(null);
     setPreviewData([]);
@@ -207,12 +173,10 @@ export default function StudentImportForm({
     setErrors([]);
     onCancel?.();
   };
-
   const formClasses = [
     styles.importForm,
     className
   ].filter(Boolean).join(' ');
-
   return (
     <div className={formClasses}>
       <div className={styles.formHeader}>
@@ -231,7 +195,6 @@ export default function StudentImportForm({
           </button>
         )}
       </div>
-
       {errors.length > 0 && (
         <div className={styles.errorBanner}>
           <AlertCircle size={20} />
@@ -244,11 +207,10 @@ export default function StudentImportForm({
           </div>
         </div>
       )}
-
       <div className={styles.formContent}>
         {!showPreview ? (
           <>
-            {/* File Upload */}
+            {}
             <div className={styles.uploadSection}>
               <div 
                 className={`${styles.uploadArea} ${isDragOver ? styles.uploadAreaDragOver : ''}`}
@@ -283,7 +245,6 @@ export default function StudentImportForm({
                   </button>
                 </div>
               </div>
-
               {file && (
                 <div className={styles.fileInfo}>
                   <FileText size={20} />
@@ -294,8 +255,7 @@ export default function StudentImportForm({
                 </div>
               )}
             </div>
-
-            {/* Template Download */}
+            {}
             <div className={styles.templateSection}>
               <h3 className={styles.templateTitle}>Нужен шаблон?</h3>
               <p className={styles.templateText}>
@@ -312,12 +272,11 @@ export default function StudentImportForm({
           </>
         ) : (
           <>
-            {/* Preview */}
+            {}
             <div className={styles.previewSection}>
               <h3 className={styles.previewTitle}>
                 Предварительный просмотр ({previewData.length} студентов)
               </h3>
-              
               <div className={styles.previewTable}>
                 <div className={styles.tableHeader}>
                   <div>Имя</div>
@@ -326,7 +285,6 @@ export default function StudentImportForm({
                   <div>Курс</div>
                   <div>Специальность</div>
                 </div>
-                
                 {previewData.slice(0, 5).map((student, index) => (
                   <div key={index} className={styles.tableRow}>
                     <div>{student.firstName}</div>
@@ -336,7 +294,6 @@ export default function StudentImportForm({
                     <div>{student.major}</div>
                   </div>
                 ))}
-                
                 {previewData.length > 5 && (
                   <div className={styles.moreRows}>
                     ... и еще {previewData.length - 5} студентов
@@ -344,8 +301,7 @@ export default function StudentImportForm({
                 )}
               </div>
             </div>
-
-            {/* Import Progress */}
+            {}
             {isImporting && (
               <div className={styles.progressSection}>
                 <div className={styles.progressHeader}>
@@ -360,12 +316,10 @@ export default function StudentImportForm({
                 </div>
               </div>
             )}
-
-            {/* Import Results */}
+            {}
             {importResults.length > 0 && (
               <div className={styles.resultsSection}>
                 <h3 className={styles.resultsTitle}>Результаты импорта</h3>
-                
                 <div className={styles.resultsStats}>
                   <div className={styles.statItem}>
                     <CheckCircle size={20} className={styles.successIcon} />
@@ -376,7 +330,6 @@ export default function StudentImportForm({
                     <span>Ошибки: {importResults.filter(r => !r.success).length}</span>
                   </div>
                 </div>
-
                 {importResults.filter(r => !r.success).length > 0 && (
                   <div className={styles.errorDetails}>
                     <h4>Ошибки импорта:</h4>
@@ -392,8 +345,7 @@ export default function StudentImportForm({
                 )}
               </div>
             )}
-
-            {/* Actions */}
+            {}
             <div className={styles.importActions}>
               <button
                 onClick={() => setShowPreview(false)}
@@ -402,7 +354,6 @@ export default function StudentImportForm({
               >
                 Назад
               </button>
-              
               <button
                 onClick={handleImport}
                 className={styles.importButton}

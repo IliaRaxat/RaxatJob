@@ -1,20 +1,16 @@
 'use client';
-
 import React, { useState } from 'react';
-import { useCreateInternshipRequestMutation } from '@/lib/api/internshipRequestsApi';
+import { useCreateInternshipRequestMutation } from '@/entities/internship-request';
 import styles from './InternshipRequestForm.module.css';
-
 interface InternshipRequestFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
 }
-
 const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({ 
   onSuccess, 
   onCancel 
 }) => {
   const [createInternshipRequest, { isLoading, error }] = useCreateInternshipRequestMutation();
-  
   const [formData, setFormData] = useState({
     specialty: '',
     studentCount: 1,
@@ -27,12 +23,9 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
     location: '',
     isRemote: false,
   });
-
   const [currentSkill, setCurrentSkill] = useState('');
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
@@ -42,7 +35,6 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
-
   const handleAddSkill = () => {
     if (currentSkill.trim() && !formData.skills.includes(currentSkill.trim())) {
       setFormData(prev => ({
@@ -52,25 +44,20 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
       setCurrentSkill('');
     }
   };
-
   const handleRemoveSkill = (skillToRemove: string) => {
     setFormData(prev => ({
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove)
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       await createInternshipRequest(formData).unwrap();
       onSuccess?.();
     } catch (err) {
-      console.error('Failed to create internship request:', err);
-    }
+          }
   };
-
   const isFormValid = () => {
     return (
       formData.specialty.trim() &&
@@ -83,7 +70,6 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
       formData.skills.length > 0
     );
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -92,10 +78,9 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
           Заполните форму для создания заявки на стажировку. Заявка будет доступна компаниям.
         </p>
       </div>
-
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGrid}>
-          {/* Специальность */}
+          {}
           <div className={styles.formGroup}>
             <label htmlFor="specialty" className={styles.label}>
               Специальность *
@@ -111,8 +96,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
               required
             />
           </div>
-
-          {/* Количество студентов */}
+          {}
           <div className={styles.formGroup}>
             <label htmlFor="studentCount" className={styles.label}>
               Количество студентов *
@@ -129,8 +113,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
               required
             />
           </div>
-
-          {/* Период стажировки */}
+          {}
           <div className={styles.formGroup}>
             <label htmlFor="period" className={styles.label}>
               Период стажировки *
@@ -146,8 +129,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
               required
             />
           </div>
-
-          {/* Дата начала */}
+          {}
           <div className={styles.formGroup}>
             <label htmlFor="startDate" className={styles.label}>
               Дата начала *
@@ -162,8 +144,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
               required
             />
           </div>
-
-          {/* Дата окончания */}
+          {}
           <div className={styles.formGroup}>
             <label htmlFor="endDate" className={styles.label}>
               Дата окончания *
@@ -178,8 +159,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
               required
             />
           </div>
-
-          {/* Локация */}
+          {}
           <div className={styles.formGroup}>
             <label htmlFor="location" className={styles.label}>
               Локация *
@@ -196,8 +176,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
             />
           </div>
         </div>
-
-        {/* Удаленная работа */}
+        {}
         <div className={styles.formGroup}>
           <label className={styles.checkboxLabel}>
             <input
@@ -210,8 +189,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
             <span className={styles.checkboxText}>Удаленная работа</span>
           </label>
         </div>
-
-        {/* Описание */}
+        {}
         <div className={styles.formGroup}>
           <label htmlFor="description" className={styles.label}>
             Описание стажировки *
@@ -227,8 +205,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
             required
           />
         </div>
-
-        {/* Требования */}
+        {}
         <div className={styles.formGroup}>
           <label htmlFor="requirements" className={styles.label}>
             Требования к студентам *
@@ -244,8 +221,7 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
             required
           />
         </div>
-
-        {/* Навыки */}
+        {}
         <div className={styles.formGroup}>
           <label className={styles.label}>
             Навыки и технологии *
@@ -287,15 +263,13 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
             )}
           </div>
         </div>
-
-        {/* Ошибки */}
+        {}
         {error && (
           <div className={styles.errorMessage}>
             Ошибка при создании заявки. Попробуйте еще раз.
           </div>
         )}
-
-        {/* Кнопки */}
+        {}
         <div className={styles.buttonGroup}>
           {onCancel && (
             <button
@@ -319,5 +293,4 @@ const InternshipRequestForm: React.FC<InternshipRequestFormProps> = ({
     </div>
   );
 };
-
 export default InternshipRequestForm;

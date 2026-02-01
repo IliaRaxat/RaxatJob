@@ -1,4 +1,4 @@
-/* MonthYearSelect календарь стили */
+﻿/* MonthYearSelect календарь стили */
 
 .customSelectContainer {
   position: relative;
@@ -29,7 +29,7 @@
 
 .customSelectButton:focus {
   outline: none;
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .customSelectButton.disabled {
@@ -38,7 +38,7 @@
 }
 
 .selectOpen {
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .selectArrow {
@@ -90,7 +90,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1rem;
-  background: #fff5f5;
+  background: #f0fdf4;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -100,19 +100,19 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: #fff5f5;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 50%;
-  color: #e10600;
+  color: #1db954;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navButton:hover {
-  background: #ffecec;
-  border-color: #ffc9c9;
+  background: #dcfce7;
+  border-color: #86efac;
   transform: scale(1.05);
-  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.08);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.08);
 }
 
 .navButton:active {
@@ -141,16 +141,16 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: #fff5f5;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 6px;
   padding: 0.125rem;
   transition: all 0.2s ease;
 }
 
 .yearControl:hover {
-  background: #ffecec;
-  border-color: #ffc9c9;
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .yearName {
@@ -182,8 +182,8 @@
 }
 
 .yearButton:hover {
-  background: #ffecec;
-  color: #e10600;
+  background: #dcfce7;
+  color: #1db954;
   transform: scale(1.1);
 }
 
@@ -193,17 +193,17 @@
 
 .todaySection {
   padding: 0.5rem 1rem 0.5rem;
-  background: #fff5f5;
-  border-bottom: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border-bottom: 1px solid #bbf7d0;
 }
 
 .todayButton {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  background: linear-gradient(135deg, rgba(225, 6, 0, 0.12), rgba(225, 6, 0, 0.2));
-  border: 1px solid #ffc9c9;
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.12), rgba(29, 185, 84, 0.2));
+  border: 1px solid #86efac;
   border-radius: 4px;
-  color: #e10600;
+  color: #1db954;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -211,10 +211,10 @@
 }
 
 .todayButton:hover {
-  background: linear-gradient(135deg, rgba(225, 6, 0, 0.2), rgba(225, 6, 0, 0.3));
-  border-color: #ffb3b3;
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(29, 185, 84, 0.3));
+  border-color: #86efac;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(225, 6, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(29, 185, 84, 0.15);
 }
 
 .weekHeader {
@@ -267,7 +267,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at center, rgba(225, 6, 0, 0.08), transparent);
+  background: radial-gradient(circle at center, rgba(29, 185, 84, 0.08), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -277,10 +277,10 @@
 }
 
 .dayButton:hover {
-  background: #fff5f5;
-  border-color: #ffc9c9;
+  background: #f0fdf4;
+  border-color: #86efac;
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(225, 6, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.12);
 }
 
 .dayButton:active {
@@ -302,22 +302,22 @@
 }
 
 .todayDay {
-  background: linear-gradient(135deg, rgba(225, 6, 0, 0.2), rgba(225, 6, 0, 0.35));
-  border-color: #ffc9c9;
-  color: #e10600;
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(29, 185, 84, 0.35));
+  border-color: #86efac;
+  color: #1db954;
   font-weight: 700;
   animation: todayPulse 2s ease-in-out infinite;
 }
 
 .todayDay:hover {
-  background: linear-gradient(135deg, rgba(225, 6, 0, 0.3), rgba(225, 6, 0, 0.45));
-  border-color: #ffb3b3;
-  box-shadow: 0 2px 12px rgba(225, 6, 0, 0.18);
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.3), rgba(29, 185, 84, 0.45));
+  border-color: #86efac;
+  box-shadow: 0 2px 12px rgba(29, 185, 84, 0.18);
 }
 
 @keyframes todayPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(225, 6, 0, 0.25); }
-  50% { box-shadow: 0 0 0 6px rgba(225, 6, 0, 0.08); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(29, 185, 84, 0.08); }
 }
 
 .selectedDay {
@@ -403,3 +403,6 @@
     padding: 0.5rem 1rem;
   }
 }
+
+
+

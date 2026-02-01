@@ -7,6 +7,8 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -32,3 +34,24 @@ a {
 html {
   color-scheme: light;
 }
+
+/* Класс для страниц с отступом под хедер */
+.page-with-header-offset {
+  padding-top: 140px;
+  min-height: 100vh;
+}
+
+/* Responsive padding for mobile */
+@media (max-width: 768px) {
+  .page-with-header-offset {
+    padding-top: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-with-header-offset {
+    padding-top: 110px;
+  }
+}
+
+

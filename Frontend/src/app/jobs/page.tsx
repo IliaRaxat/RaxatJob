@@ -1,36 +1,29 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useGetJobsQuery } from '../../lib/api/jobsApi';
-import { getUserRole } from '../../lib/api/authApi';
+import { useGetJobsQuery } from '@/entities/job';
+import { getUserRole } from '@/entities/user';
 import AIAssistant from '../Components/AIAssistant';
 import styles from './jobs.module.css';
-
-
-
 interface CustomSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
 }
-
 function CustomSelect({ options, value, onChange }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   return (
     <div className={styles.customSelect} ref={selectRef}>
       <button 
@@ -69,7 +62,6 @@ function CustomSelect({ options, value, onChange }: CustomSelectProps) {
     </div>
   );
 }
-
 export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('Тип работы');
@@ -80,14 +72,11 @@ export default function JobsPage() {
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [userRole, setUserRole] = useState<string | null>(null);
-
   useEffect(() => {
     setUserRole(getUserRole());
   }, []);
-
   const getApplicationStatusText = (job: { hasApplied?: boolean; applicationStatus?: string | null }) => {
     if (!job.hasApplied) return null;
-    
     switch (job.applicationStatus) {
       case 'PENDING':
         return 'Ожидает рассмотрения';
@@ -107,10 +96,8 @@ export default function JobsPage() {
         return 'Отклик отправлен';
     }
   };
-
   const getApplicationStatusClass = (job: { hasApplied?: boolean; applicationStatus?: string | null }) => {
     if (!job.hasApplied) return '';
-    
     switch (job.applicationStatus) {
       case 'PENDING':
         return styles.pendingStatus;
@@ -126,7 +113,6 @@ export default function JobsPage() {
         return styles.appliedStatus;
     }
   };
-
   const jobTypes = ['Все', 'Полная занятость', 'Частичная занятость', 'Проектная занятость','Контракт', 'Стажировка', 'Фриланс'];
   const locations = [
     'Все',
@@ -180,40 +166,29 @@ export default function JobsPage() {
   ];
   const experienceLevels = ['Все', 'Без опыта', '1-3 года', '3-6 лет', 'Более 6 лет'];
   const salaryLevels = ['Все', 'До 50 000₽', '50 000₽ - 100 000₽', '100 000₽ - 200 000₽', '200 000₽ - 500 000₽', 'От 500 000₽'];
-
-  // Validate and prepare query parameters
   const queryParams = {
     search: searchQuery.trim() || undefined,
     type: selectedType !== 'Тип работы' ? selectedType : undefined,
     location: selectedLocation !== 'Города' ? selectedLocation : undefined,
     skills: selectedSkills.trim() || undefined,
     remote: remoteOnly || undefined,
-    // Only include pagination if we have valid values
     ...(currentPage > 1 && { page: currentPage })
-    // Removed limit to use API default
   };
-
   const { data: jobsData, error, isLoading } = useGetJobsQuery(queryParams);
-  
-  // Handle validation errors
   useEffect(() => {
     if (error && 'data' in error) {
       const errorData = error.data as { errors?: { page?: string } };
       if (errorData?.errors) {
-        console.error('Validation errors:', errorData.errors);
-        // Reset to valid state if needed
-        if (errorData.errors.page) {
+                if (errorData.errors.page) {
           setCurrentPage(1);
         }
       }
     }
   }, [error]);
-  
   const jobs = jobsData?.jobs || [];
   const filteredJobs = jobs;
-
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ paddingTop: '250px' }}>
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.title}>
@@ -247,32 +222,27 @@ export default function JobsPage() {
             <path d="M19 19L13 13L19 19ZM15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        
         <div className={styles.filters}>
           <CustomSelect
             options={jobTypes}
             value={selectedType}
             onChange={setSelectedType}
           />
-          
           <CustomSelect
             options={locations}
             value={selectedLocation}
             onChange={setSelectedLocation}
           />
-          
           <CustomSelect
             options={experienceLevels}
             value={selectedExperience}
             onChange={setSelectedExperience}
           />
-          
           <CustomSelect
             options={salaryLevels}
             value={selectedSalary}
             onChange={setSelectedSalary}
           />
-          
         </div>
       </section>
       <section className={styles.jobsSection}>
@@ -293,7 +263,6 @@ export default function JobsPage() {
             </p>
           )}
         </div>
-
         <div className={styles.jobsGrid}>
           {isLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
@@ -336,11 +305,9 @@ export default function JobsPage() {
                     )}
                   </div>
                 </div>
-
                 <p className={styles.jobDescription}>
                   {job.description}
                 </p>
-
                 <div className={styles.jobTags}>
                   {job.skills?.map((skill) => (
                     <span key={skill.id} className={styles.tag}>
@@ -348,7 +315,6 @@ export default function JobsPage() {
                     </span>
                   ))}
                 </div>
-
                 <div className={styles.jobCardFooter}>
                   <div className={styles.jobSalary}>
                     {job.salaryMin && job.salaryMax ? 
@@ -380,7 +346,6 @@ export default function JobsPage() {
             ))
           )}
         </div>
-
         {!isLoading && filteredJobs.length === 0 && (
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}>
@@ -393,8 +358,7 @@ export default function JobsPage() {
             <p>Попробуйте изменить параметры поиска или фильтры</p>
           </div>
         )}
-
-        {/* Pagination */}
+        {}
         {!isLoading && jobsData && jobsData.totalPages > 1 && (
           <div className={styles.pagination}>
             <button
@@ -404,11 +368,9 @@ export default function JobsPage() {
             >
               Предыдущая
             </button>
-            
             <div className={styles.paginationInfo}>
               Страница {currentPage} из {jobsData.totalPages}
             </div>
-            
             <button
               onClick={() => setCurrentPage(prev => Math.min(jobsData.totalPages, prev + 1))}
               disabled={currentPage === jobsData.totalPages}
@@ -419,7 +381,6 @@ export default function JobsPage() {
           </div>
         )}
       </section>
-
       <section className={styles.ctaSection}>
         <div className={styles.ctaCard}>
           <h2>Нашли подходящую вакансию?</h2>

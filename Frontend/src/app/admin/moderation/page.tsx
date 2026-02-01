@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import {
   useGetModerationJobsQuery,
@@ -9,13 +8,9 @@ import {
   useBulkApproveJobsMutation,
   useBulkRejectJobsMutation,
   useGetModerationStatsQuery,
-  // useGetModerationHistoryQuery, // Для будущего использования
   ModerationJobsParams,
-} from '../../../lib/api/analyticsApi';
+} from '@/shared/api/analyticsApi';
 import styles from './moderation.module.css';
-
-// Типы теперь импортируются из API файла
-
 export default function ModerationPage() {
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [filter, setFilter] = useState<'PENDING' | 'APPROVED' | 'REJECTED' | 'DRAFT'>('PENDING');
@@ -27,28 +22,19 @@ export default function ModerationPage() {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-
-  // Параметры для API запросов
   const params: ModerationJobsParams = {
     status: filter,
     page,
     limit,
     ...(searchQuery && { search: searchQuery }),
   };
-
-  // RTK Query хуки для данных модерации
   const { data: moderationData, isLoading, error, refetch } = useGetModerationJobsQuery(params);
   const { data: statsData } = useGetModerationStatsQuery();
-  // const { data: historyData } = useGetModerationHistoryQuery({ limit: 10 }); // Для будущего использования
-  
-  // Мутации для действий с вакансиями
   const [approveJob] = useApproveJobMutation();
   const [rejectJob] = useRejectJobMutation();
   const [returnJob] = useReturnJobMutation();
   const [bulkApproveJobs] = useBulkApproveJobsMutation();
   const [bulkRejectJobs] = useBulkRejectJobsMutation();
-
-  // Закрытие дропдауна и модалки при клике вне их
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
@@ -58,93 +44,65 @@ export default function ModerationPage() {
         setIsBulkModalOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  // Закрытие модалки по Escape
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsBulkModalOpen(false);
       }
     };
-
     document.addEventListener('keydown', handleEscapeKey);
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, []);
-
-  // Автоматическое закрытие модалки при отсутствии выбранных вакансий
   useEffect(() => {
     if (selectedJobs.length === 0 && isBulkModalOpen) {
       setIsBulkModalOpen(false);
     }
   }, [selectedJobs.length, isBulkModalOpen]);
-
-  // Обработка действий с отдельной вакансией
   const handleJobAction = async (jobId: string, action: 'approve' | 'reject' | 'return', notes?: string) => {
     setActionLoading(jobId);
-    
     try {
       let result;
-      
       switch (action) {
         case 'approve':
           result = await approveJob({ jobId, notes }).unwrap();
-          console.log('✅ Вакансия одобрена:', result);
-          break;
+                    break;
         case 'reject':
           result = await rejectJob({ jobId, notes }).unwrap();
-          console.log('❌ Вакансия отклонена:', result);
-          break;
+                    break;
         case 'return':
           result = await returnJob({ jobId, notes }).unwrap();
-          console.log('🔄 Вакансия возвращена на доработку:', result);
-          break;
+                    break;
       }
-      
-      // Обновляем данные после успешного действия
       refetch();
     } catch (error) {
-      console.error('❌ Ошибка при выполнении действия:', error);
-    } finally {
+          } finally {
       setActionLoading(null);
     }
   };
-
-  // Обработка массовых действий
   const handleBulkAction = async (action: 'approve' | 'reject') => {
     if (selectedJobs.length === 0) return;
-    
     setActionLoading('bulk');
-    
     try {
       let result;
-      
       if (action === 'approve') {
         result = await bulkApproveJobs({ jobIds: selectedJobs }).unwrap();
-        console.log(`✅ Одобрено ${selectedJobs.length} вакансий:`, result);
-      } else {
+              } else {
         result = await bulkRejectJobs({ jobIds: selectedJobs }).unwrap();
-        console.log(`❌ Отклонено ${selectedJobs.length} вакансий:`, result);
-      }
-      
-      // Очищаем выбор и обновляем данные
+              }
       setSelectedJobs([]);
       refetch();
     } catch (error) {
-      console.error('❌ Ошибка при массовом действии:', error);
-    } finally {
+          } finally {
       setActionLoading(null);
     }
   };
-
-  // Утилиты
   const toggleJobSelection = (jobId: string) => {
     setSelectedJobs(prev => 
       prev.includes(jobId) 
@@ -152,7 +110,6 @@ export default function ModerationPage() {
         : [...prev, jobId]
     );
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('ru-RU', {
       day: '2-digit',
@@ -162,7 +119,6 @@ export default function ModerationPage() {
       minute: '2-digit'
     });
   };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -177,7 +133,6 @@ export default function ModerationPage() {
         return `${styles.badge} ${styles.badgePending}`;
     }
   };
-
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -192,20 +147,17 @@ export default function ModerationPage() {
         return status;
     }
   };
-
   const handleFilterChange = (newFilter: typeof filter) => {
     setFilter(newFilter);
     setPage(1);
     setSelectedJobs([]);
     setIsFilterOpen(false);
   };
-
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setPage(1);
     setSelectedJobs([]);
   };
-
   const getFilterLabel = (filterValue: typeof filter) => {
     switch (filterValue) {
       case 'PENDING':
@@ -220,22 +172,18 @@ export default function ModerationPage() {
         return 'Все статусы';
     }
   };
-
   const filterOptions = [
     { value: 'PENDING' as const, label: 'На модерации' },
     { value: 'APPROVED' as const, label: 'Одобренные' },
     { value: 'REJECTED' as const, label: 'Отклоненные' },
     { value: 'DRAFT' as const, label: 'Черновики' },
   ];
-
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && moderationData && newPage <= moderationData.totalPages) {
       setPage(newPage);
       setSelectedJobs([]);
     }
   };
-
-  // Состояния загрузки и ошибок
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -246,7 +194,6 @@ export default function ModerationPage() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -265,10 +212,9 @@ export default function ModerationPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Header */}
+      {}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerTop}>
@@ -304,10 +250,9 @@ export default function ModerationPage() {
           </div>
         </div>
       </div>
-
-      {/* Content */}
+      {}
       <div className={styles.content}>
-        {/* Stats */}
+        {}
         {statsData && (
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
@@ -336,11 +281,10 @@ export default function ModerationPage() {
             </div>
           </div>
         )}
-
-        {/* Filters */}
+        {}
         <div className={styles.filtersCard}>
           <div className={styles.filters}>
-            {/* Поиск */}
+            {}
             <div className={styles.searchContainer}>
               <div className={styles.searchInputWrapper}>
                 <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -367,10 +311,8 @@ export default function ModerationPage() {
                 )}
               </div>
             </div>
-
             <span className={styles.filterLabel}>Статус:</span>
-            
-            {/* Кастомный дропдаун */}
+            {}
             <div className={styles.customStatusSelect} ref={filterRef}>
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -388,7 +330,6 @@ export default function ModerationPage() {
                   <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-              
               {isFilterOpen && (
                 <div className={styles.statusSelectDropdown}>
                   {filterOptions.map((option) => (
@@ -403,7 +344,6 @@ export default function ModerationPage() {
                 </div>
               )}
             </div>
-            
             {moderationData && (
               <span style={{ fontSize: '0.875rem', color: '#555' }}>
                 Показано {moderationData.jobs.length} из {moderationData.total} вакансий
@@ -411,8 +351,7 @@ export default function ModerationPage() {
             )}
           </div>
         </div>
-
-        {/* Floating Bulk Actions Button */}
+        {}
         {selectedJobs.length > 0 && (
           <div className={styles.floatingBulkButton}>
             <button
@@ -430,8 +369,7 @@ export default function ModerationPage() {
             </button>
           </div>
         )}
-
-        {/* Bulk Actions Modal */}
+        {}
         {isBulkModalOpen && selectedJobs.length > 0 && (
           <div className={styles.modalOverlay}>
             <div className={styles.modalContent} ref={modalRef}>
@@ -451,7 +389,6 @@ export default function ModerationPage() {
                   </svg>
                 </button>
               </div>
-              
               <div className={styles.modalBody}>
                 <div className={styles.modalInfo}>
                   <div className={styles.modalInfoIcon}>
@@ -466,7 +403,6 @@ export default function ModerationPage() {
                     <p>Выберите действие, которое хотите применить ко всем выбранным вакансиям</p>
                   </div>
                 </div>
-                
                 <div className={styles.modalActions}>
                   <button
                     onClick={() => handleBulkAction('approve')}
@@ -482,7 +418,6 @@ export default function ModerationPage() {
                     )}
                     <span>Одобрить все</span>
                   </button>
-                  
                   <button
                     onClick={() => handleBulkAction('reject')}
                     disabled={actionLoading === 'bulk'}
@@ -498,7 +433,6 @@ export default function ModerationPage() {
                     <span>Отклонить все</span>
                   </button>
                 </div>
-                
                 <div className={styles.modalFooter}>
                   <button
                     onClick={() => {
@@ -514,8 +448,7 @@ export default function ModerationPage() {
             </div>
           </div>
         )}
-
-        {/* Jobs List */}
+        {}
         <div className={styles.jobsGrid}>
           {moderationData && moderationData.jobs && moderationData.jobs.length > 0 ? (
             moderationData.jobs.map((job) => (
@@ -545,14 +478,12 @@ export default function ModerationPage() {
                     </span>
                   </div>
                 </div>
-                
                 <p className={styles.jobDescription}>
                   {job.description && job.description.length > 200 
                     ? `${job.description.substring(0, 200)}...` 
                     : job.description || 'Описание не указано'
                   }
                 </p>
-                
                 <div className={styles.jobSkills}>
                   {job.skills?.map((skillItem, index) => (
                     <span key={index} className={styles.skillTag}>
@@ -560,12 +491,10 @@ export default function ModerationPage() {
                     </span>
                   )) || []}
                 </div>
-                
                 <div className={styles.jobFooter}>
                   <div className={styles.jobMeta}>
                     <span>{job._count?.applications || 0} откликов</span>
                   </div>
-                  
                   {filter === 'PENDING' && (
                     <div className={styles.jobActions}>
                       <button
@@ -632,8 +561,7 @@ export default function ModerationPage() {
             </div>
           )}
         </div>
-
-        {/* Pagination */}
+        {}
         {moderationData && moderationData.totalPages > 1 && (
           <div className={styles.pagination}>
             <button
@@ -645,7 +573,6 @@ export default function ModerationPage() {
                 <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            
             {Array.from({ length: moderationData.totalPages }, (_, i) => i + 1)
               .filter(p => {
                 if (moderationData.totalPages <= 7) return true;
@@ -668,7 +595,6 @@ export default function ModerationPage() {
                 );
               })
             }
-            
             <button
               onClick={() => handlePageChange(page + 1)}
               disabled={!moderationData || page >= moderationData.totalPages}

@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,61 +11,49 @@ import {
   getStudentYear,
   formatGPA,
   getSkillLevelText
-} from '../../../../lib/api/studentsApi';
-import { useAuth } from '../../../../contexts/AuthContext';
+} from '@/entities/student';
+import { useAuth } from '@/features/auth';
 import { useNotificationContext } from '../../../Components/NotificationProvider';
 import styles from './student.module.css';
-
 export default function StudentPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
   const { showSuccess, showError } = useNotificationContext();
   const studentId = params.id as string;
-
-  // Проверяем роль пользователя
   const isUniversityUser = user?.role === 'UNIVERSITY';
   const isAdminUser = user?.role === 'ADMIN';
   const canViewStudents = isUniversityUser || isAdminUser;
-
   const { 
     data: student, 
     isLoading, 
     error 
   } = useGetStudentQuery(studentId, { skip: !canViewStudents });
-
   const [deleteStudent] = useDeleteStudentMutation();
   const [addStudentSkill] = useAddStudentSkillMutation();
   const [removeStudentSkill] = useRemoveStudentSkillMutation();
-
   const [showSkillModal, setShowSkillModal] = useState(false);
   const [newSkill, setNewSkill] = useState({ skillId: '', level: 1 });
-
   const handleDeleteStudent = async () => {
     if (!student) return;
-    
     const confirmed = window.confirm(
       `Вы уверены, что хотите удалить студента ${getStudentFullName(student)}? Это действие нельзя отменить.`
     );
-    
     if (confirmed) {
       try {
         await deleteStudent(studentId).unwrap();
         showSuccess('Студент удален', 'Студент успешно удален из системы');
         router.push('/admin/students');
       } catch (error) {
-        console.error('Ошибка при удалении студента:', error);
-        showError('Ошибка удаления', 'Ошибка при удалении студента');
+                showError('Ошибка удаления', 'Ошибка при удалении студента');
       }
     }
   };
-
   const handleAddSkill = async () => {
     if (!newSkill.skillId) {
       showError('Выберите навык', 'Пожалуйста, выберите навык для добавления');
       return;
     }
-
     try {
       await addStudentSkill({
         studentId,
@@ -75,30 +62,24 @@ export default function StudentPage() {
           level: newSkill.level
         }
       }).unwrap();
-      
       setShowSkillModal(false);
       setNewSkill({ skillId: '', level: 1 });
       showSuccess('Навык добавлен', 'Навык успешно добавлен к студенту');
     } catch (error) {
-      console.error('Ошибка при добавлении навыка:', error);
-      showError('Ошибка добавления', 'Ошибка при добавлении навыка');
+            showError('Ошибка добавления', 'Ошибка при добавлении навыка');
     }
   };
-
   const handleRemoveSkill = async (skillId: string, skillName: string) => {
     const confirmed = window.confirm(`Удалить навык "${skillName}"?`);
-    
     if (confirmed) {
       try {
         await removeStudentSkill({ studentId, skillId }).unwrap();
         showSuccess('Навык удален', 'Навык успешно удален у студента');
       } catch (error) {
-        console.error('Ошибка при удалении навыка:', error);
-        showError('Ошибка удаления', 'Ошибка при удалении навыка');
+                showError('Ошибка удаления', 'Ошибка при удалении навыка');
       }
     }
   };
-
   if (!canViewStudents) {
     return (
       <div className={styles.accessDenied}>
@@ -110,7 +91,6 @@ export default function StudentPage() {
       </div>
     );
   }
-
   if (isLoading) {
     return (
       <div className={styles.loading}>
@@ -119,7 +99,6 @@ export default function StudentPage() {
       </div>
     );
   }
-
   if (error || !student) {
     return (
       <div className={styles.error}>
@@ -131,10 +110,9 @@ export default function StudentPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.studentPage}>
-      {/* Header */}
+      {}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <Link href="/admin/students" className={styles.backLink}>
@@ -143,14 +121,12 @@ export default function StudentPage() {
             </svg>
             Назад к списку
           </Link>
-          
           <div className={styles.studentHeader}>
             <div className={styles.studentAvatar}>
               <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L12 2L3 7V9C3 10.1 3.9 11 5 11V17C5 18.1 5.9 19 7 19H17C18.1 19 19 18.1 19 17V11C20.1 11 21 10.1 21 9Z"/>
               </svg>
             </div>
-            
             <div className={styles.studentInfo}>
               <h1 className={styles.studentName}>{getStudentFullName(student)}</h1>
               <p className={styles.studentMeta}>
@@ -159,7 +135,6 @@ export default function StudentPage() {
             </div>
           </div>
         </div>
-        
         <div className={styles.headerActions}>
           <Link 
             href={`/admin/students/${student.id}/edit`}
@@ -170,7 +145,6 @@ export default function StudentPage() {
             </svg>
             Редактировать
           </Link>
-          
           <button 
             onClick={handleDeleteStudent}
             className={styles.deleteButton}
@@ -182,49 +156,41 @@ export default function StudentPage() {
           </button>
         </div>
       </div>
-
       <div className={styles.content}>
-        {/* Student Information */}
+        {}
         <div className={styles.infoCard}>
           <h2 className={styles.cardTitle}>Информация о студенте</h2>
-          
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Email:</span>
               <span className={styles.infoValue}>{student.email}</span>
             </div>
-            
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Курс:</span>
               <span className={styles.infoValue}>{getStudentYear(student.yearOfStudy)}</span>
             </div>
-            
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Специальность:</span>
               <span className={styles.infoValue}>{student.major}</span>
             </div>
-            
             {student.gpa && (
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Средний балл:</span>
                 <span className={styles.infoValue}>{formatGPA(student.gpa)}</span>
               </div>
             )}
-            
             {student.phone && (
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Телефон:</span>
                 <span className={styles.infoValue}>{student.phone}</span>
               </div>
             )}
-            
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Дата создания:</span>
               <span className={styles.infoValue}>
                 {new Date(student.createdAt).toLocaleDateString('ru-RU')}
               </span>
             </div>
-            
             {student.university && (
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Университет:</span>
@@ -233,8 +199,7 @@ export default function StudentPage() {
             )}
           </div>
         </div>
-
-        {/* Skills Section */}
+        {}
         <div className={styles.skillsCard}>
           <div className={styles.skillsHeader}>
             <h2 className={styles.cardTitle}>
@@ -251,7 +216,6 @@ export default function StudentPage() {
               Добавить навык
             </button>
           </div>
-          
           {student.skills.length === 0 ? (
             <div className={styles.emptySkills}>
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
@@ -277,7 +241,6 @@ export default function StudentPage() {
                     <div className={styles.skillName}>{studentSkill.skill.name}</div>
                     <div className={styles.skillCategory}>{studentSkill.skill.category}</div>
                   </div>
-                  
                   <div className={styles.skillLevel}>
                     <span className={styles.skillLevelText}>
                       {getSkillLevelText(studentSkill.level)}
@@ -289,7 +252,6 @@ export default function StudentPage() {
                       ></div>
                     </div>
                   </div>
-                  
                   <button 
                     onClick={() => handleRemoveSkill(studentSkill.skill.id, studentSkill.skill.name)}
                     className={styles.removeSkillButton}
@@ -305,8 +267,7 @@ export default function StudentPage() {
           )}
         </div>
       </div>
-
-      {/* Add Skill Modal */}
+      {}
       {showSkillModal && (
         <div className={styles.modalOverlay} onClick={() => setShowSkillModal(false)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -321,7 +282,6 @@ export default function StudentPage() {
                 </svg>
               </button>
             </div>
-            
             <div className={styles.modalContent}>
               <div className={styles.modalField}>
                 <label className={styles.modalLabel}>Навык:</label>
@@ -331,14 +291,13 @@ export default function StudentPage() {
                   className={styles.modalSelect}
                 >
                   <option value="">Выберите навык</option>
-                  {/* TODO: Загрузить список доступных навыков */}
+                  {}
                   <option value="javascript">JavaScript</option>
                   <option value="python">Python</option>
                   <option value="react">React</option>
                   <option value="nodejs">Node.js</option>
                 </select>
               </div>
-              
               <div className={styles.modalField}>
                 <label className={styles.modalLabel}>Уровень:</label>
                 <select
@@ -354,7 +313,6 @@ export default function StudentPage() {
                 </select>
               </div>
             </div>
-            
             <div className={styles.modalActions}>
               <button 
                 onClick={() => setShowSkillModal(false)}

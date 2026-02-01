@@ -1,9 +1,7 @@
 'use client';
-
 import { Save, Eye } from 'lucide-react';
 import { HeroSectionProps } from '../../../types';
 import styles from './HeroSection.module.css';
-
 export default function HeroSection({ onLoadResume, onShowPreview, showPreview }: HeroSectionProps) {
   return (
     <div className={styles.hero}>

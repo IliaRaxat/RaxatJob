@@ -1,4 +1,4 @@
-/* HeroSection стили */
+﻿/* HeroSection стили */
 
 .hero {
   background: #ffffff;
@@ -22,7 +22,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -73,12 +73,12 @@
 }
 
 .previewButton {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
 }
 
 .previewButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
 }
 
@@ -124,3 +124,6 @@
     font-size: 0.875rem;
   }
 }
+
+
+

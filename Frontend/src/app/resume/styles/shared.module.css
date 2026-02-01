@@ -17,26 +17,26 @@
 }
 
 .buttonPrimary {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   border-color: transparent;
 }
 
 .buttonPrimary:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.2);
 }
 
 .buttonSecondary {
-  background: #fff5f5;
-  color: #e10600;
-  border-color: #ffd5d5;
+  background: #f0fdf4;
+  color: #1db954;
+  border-color: #bbf7d0;
 }
 
 .buttonSecondary:hover {
-  background: #ffecec;
-  border-color: #ffc9c9;
+  background: #dcfce7;
+  border-color: #86efac;
   transform: translateY(-1px);
 }
 
@@ -87,7 +87,7 @@
 
 .input:focus {
   outline: none;
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .textarea {
@@ -111,7 +111,7 @@
 
 .textarea:focus {
   outline: none;
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 /* Секции */
@@ -124,7 +124,7 @@
 }
 
 .section:hover {
-  border-color: #ffc9c9;
+  border-color: #86efac;
 }
 
 .sectionHeader {
@@ -183,21 +183,21 @@
 }
 
 .removeButton:hover {
-  background: #ffecec;
-  border-color: #ffc9c9;
+  background: #dcfce7;
+  border-color: #86efac;
   transform: scale(1.1);
 }
 
 .removeButton svg {
   width: 16px;
   height: 16px;
-  color: #e10600;
+  color: #1db954;
   transition: var(--resume-transition-base);
   display: block;
 }
 
 .removeButton:hover svg {
-  color: #ba0500;
+  color: #1aa34a;
   transform: rotate(90deg);
 }
 
@@ -301,3 +301,5 @@
     height: 13px;
   }
 }
+
+

@@ -2,10 +2,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import AIAssistant from '../Components/AIAssistant';
-import { useGetInternshipsQuery } from '@/lib/api/internshipsApi';
+import { useGetInternshipsQuery } from '@/entities/internship';
 import React from 'react';
 import styles from './companies.module.css';
-
 interface Internship {
   id: string;
   title: string;
@@ -21,7 +20,6 @@ interface Internship {
   companyDescription: string;
   tags: string[];
   salary?: string;
-  // Дополнительные поля для совместимости с API
   companyId?: string;
   isRemote?: boolean;
   startDate?: string;
@@ -29,29 +27,23 @@ interface Internship {
   maxParticipants?: number;
   skills?: string[];
 }
-
 interface CustomSelectProps {
   options: { value: string; label: string }[];
   value: string;
   onChange: (value: string) => void;
 }
-
-
 function CustomSelect({ options, value, onChange }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
   return (
     <div className={styles.selectContainer} ref={selectRef}>
       <button
@@ -90,7 +82,6 @@ function CustomSelect({ options, value, onChange }: CustomSelectProps) {
     </div>
   );
 }
-
 export default function CompaniesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
@@ -99,11 +90,7 @@ export default function CompaniesPage() {
   const [selectedSalary, setSelectedSalary] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('all');
   const [selectedSort, setSelectedSort] = useState('relevance');
-
-  // Получаем данные из API
   const { data: internshipsData, isLoading, error } = useGetInternshipsQuery();
-
-  // Безопасное форматирование даты
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'Дата не указана';
     try {
@@ -114,8 +101,6 @@ export default function CompaniesPage() {
       return 'Ошибка даты';
     }
   };
-
-  // Mock data для стажировок (fallback)
   const mockInternships: Internship[] = [
     {
       id: '1',
@@ -212,16 +197,12 @@ export default function CompaniesPage() {
       tags: ['DevOps', 'Docker', 'Kubernetes', 'AWS']
     }
   ];
-
-  // Используем данные из API или fallback на mock данные
   const internships = Array.isArray(internshipsData?.internships) ? internshipsData.internships : mockInternships;
-
   const internshipTypes = [
     { value: 'all', label: 'Все типы' },
     { value: 'Оплачиваемая', label: 'Оплачиваемая' },
     { value: 'Неоплачиваемая', label: 'Неоплачиваемая' }
   ];
-
   const locations = [
     { value: 'all', label: 'Все города' },
     { value: 'Москва', label: 'Москва' },
@@ -230,7 +211,6 @@ export default function CompaniesPage() {
     { value: 'Новосибирск', label: 'Новосибирск' },
     { value: 'Казань', label: 'Казань' }
   ];
-
   const experienceLevels = [
     { value: 'all', label: 'Любой опыт' },
     { value: 'Без опыта', label: 'Без опыта' },
@@ -238,7 +218,6 @@ export default function CompaniesPage() {
     { value: '3-6 лет', label: '3-6 лет' },
     { value: 'Более 6 лет', label: 'Более 6 лет' }
   ];
-
   const salaryLevels = [
     { value: 'all', label: 'Любая зарплата' },
     { value: 'До 30 000₽', label: 'До 30 000₽' },
@@ -247,7 +226,6 @@ export default function CompaniesPage() {
     { value: 'От 80 000₽', label: 'От 80 000₽' },
     { value: 'Неоплачиваемая', label: 'Неоплачиваемая' }
   ];
-
   const durationOptions = [
     { value: 'all', label: 'Любая продолжительность' },
     { value: '1 месяц', label: '1 месяц' },
@@ -258,33 +236,24 @@ export default function CompaniesPage() {
     { value: '6 месяцев', label: '6 месяцев' },
     { value: 'Более 6 месяцев', label: 'Более 6 месяцев' }
   ];
-
   const sortOptions = [
     { value: 'relevance', label: 'По актуальности' },
     { value: 'date', label: 'По дате' },
     { value: 'salary', label: 'По зарплате' }
   ];
-
   const filteredAndSortedInternships = (() => {
-    // Сначала фильтруем
     const filtered = internships.filter(internship => {
       const matchesSearch = internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            internship.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            internship.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            internship.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
       const matchesType = selectedType === 'all' || internship.type === selectedType;
       const matchesLocation = selectedLocation === 'all' || internship.location === selectedLocation;
-      
-      // Фильтр по опыту работы (для стажировок обычно "Без опыта")
       const matchesExperience = selectedExperience === 'all' || selectedExperience === 'Без опыта';
-      
-      // Фильтр по зарплате
       const matchesSalary = (() => {
         if (selectedSalary === 'all') return true;
         if (selectedSalary === 'Неоплачиваемая') return !internship.salary;
         if (!internship.salary) return selectedSalary === 'Неоплачиваемая';
-        
         const salary = parseInt(internship.salary.replace(/[^\d]/g, ''));
         switch (selectedSalary) {
           case 'До 30 000₽': return salary < 30000;
@@ -294,20 +263,14 @@ export default function CompaniesPage() {
           default: return true;
         }
       })();
-      
-      // Фильтр по продолжительности
       const matchesDuration = selectedDuration === 'all' || internship.duration === selectedDuration;
-      
       return matchesSearch && matchesType && matchesLocation && matchesExperience && matchesSalary && matchesDuration;
     });
-
-    // Затем сортируем
     return filtered.sort((a, b) => {
       switch (selectedSort) {
         case 'date':
           const dateA = a.applicationDeadline ? new Date(a.applicationDeadline).getTime() : 0;
           const dateB = b.applicationDeadline ? new Date(b.applicationDeadline).getTime() : 0;
-          // Если дата невалидна, возвращаем NaN, который будет в конце списка
           if (isNaN(dateA) && isNaN(dateB)) return 0;
           if (isNaN(dateA)) return 1;
           if (isNaN(dateB)) return -1;
@@ -318,12 +281,10 @@ export default function CompaniesPage() {
           return salaryB - salaryA;
         case 'relevance':
         default:
-          return 0; // Оригинальный порядок для актуальности
+          return 0; 
       }
     });
   })();
-
-  // Преобразуем стажировки в формат для AI Assistant
   const internshipsForAI = filteredAndSortedInternships.map(internship => ({
     id: internship.id,
     title: internship.title,
@@ -335,8 +296,6 @@ export default function CompaniesPage() {
     tags: internship.tags,
     postedAt: internship.applicationDeadline
   }));
-
-  // Показываем состояние загрузки
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -349,8 +308,6 @@ export default function CompaniesPage() {
       </div>
     );
   }
-
-  // Показываем ошибку
   if (error) {
     return (
       <div className={styles.container}>
@@ -363,10 +320,9 @@ export default function CompaniesPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Hero секция */}
+      {}
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
@@ -393,7 +349,6 @@ export default function CompaniesPage() {
                 <path d="M19 19L13 13L19 19ZM15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            
             <div className={styles.filters}>
               <CustomSelect
                 options={internshipTypes}
@@ -424,8 +379,7 @@ export default function CompaniesPage() {
           </div>
         </div>
       </div>
-
-      {/* Результаты */}
+      {}
       <div className={styles.results}>
         <div className={styles.resultsHeader}>
           <h2>Найдено {filteredAndSortedInternships.length} стажировок</h2>
@@ -438,7 +392,6 @@ export default function CompaniesPage() {
             />
           </div>
         </div>
-
         <div className={styles.jobsGrid}>
           {filteredAndSortedInternships.map((internship) => (
             <article key={internship.id} className={styles.jobCard}>
@@ -455,11 +408,9 @@ export default function CompaniesPage() {
                   <span className={styles.jobType}>{internship.type}</span>
                 </div>
               </div>
-
               <p className={styles.jobDescription}>
                 {internship.description}
               </p>
-
               <div className={styles.jobTags}>
                 {internship.tags && Array.isArray(internship.tags) && internship.tags.map((tag) => (
                   <span key={tag} className={styles.tag}>
@@ -467,7 +418,6 @@ export default function CompaniesPage() {
                   </span>
                 ))}
               </div>
-
               <div className={styles.jobCardFooter}>
                 <div className={styles.jobSalary}>
                   {internship.salary || 'Не указана'}
@@ -505,7 +455,6 @@ export default function CompaniesPage() {
             </article>
           ))}
         </div>
-
         {filteredAndSortedInternships.length === 0 && (
           <div className={styles.noResults}>
             <h3>Стажировки не найдены</h3>
@@ -513,8 +462,7 @@ export default function CompaniesPage() {
           </div>
         )}
       </div>
-
-      {/* AI Assistant с адаптированными данными */}
+      {}
       <AIAssistant jobs={internshipsForAI} />
     </div>
   );

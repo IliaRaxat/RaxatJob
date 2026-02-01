@@ -1,15 +1,15 @@
 /* Admin Layout Styles */
 .adminLayout {
-  --brand-red: #e10600;
-  --brand-red-dark: #ba0500;
-  --brand-red-light: #ff3b30;
+  --brand-red: #1db954;
+  --brand-red-dark: #1aa34a;
+  --brand-red-light: #1ed760;
   --brand-on-red: #ffffff;
   --surface: #ffffff;
   --text-primary: #111111;
   --text-secondary: #4a4a4a;
   --border: #eaeaea;
-  --shadow-red: rgba(225, 6, 0, 0.3);
-  --shadow-red-strong: rgba(225, 6, 0, 0.5);
+  --shadow-red: rgba(29, 185, 84, 0.3);
+  --shadow-red-strong: rgba(29, 185, 84, 0.5);
   --gray-alpha-200: rgba(0,0,0,0.08);
   --gray-alpha-100: rgba(0,0,0,0.05);
   
@@ -20,7 +20,7 @@
   --sidebar-text-active: #0f172a;
   --sidebar-hover: #f8fafc;
   --sidebar-active: #fef2f2;
-  --sidebar-active-border: #e10600;
+  --sidebar-active-border: #1db954;
   --sidebar-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 
   display: flex;
@@ -71,16 +71,16 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   border-radius: 12px;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(225, 6, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.15);
   transition: all 0.2s ease;
 }
 
 .logoIcon:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(225, 6, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.25);
 }
 
 .logoText {
@@ -92,7 +92,7 @@
 }
 
 .logoTextPrimary {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -109,8 +109,8 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: #fff5f5;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 8px;
   color: var(--brand-red);
   cursor: pointer;
@@ -118,8 +118,8 @@
 }
 
 .sidebarToggle:hover {
-  background: #ffecec;
-  border-color: #ffc9c9;
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .sidebarNav {
@@ -151,7 +151,7 @@
   margin-top: 0.5rem;
   margin-left: 1rem;
   padding-left: 1rem;
-  border-left: 2px solid rgba(225, 6, 0, 0.1);
+  border-left: 2px solid rgba(29, 185, 84, 0.1);
   max-width: calc(100% - 2rem);
 }
 
@@ -193,23 +193,23 @@
 }
 
 .navLink:hover {
-  background: linear-gradient(135deg, #fff9f9, #fff5f5);
+  background: linear-gradient(135deg, #fff9f9, #f0fdf4);
   color: #111;
   transform: translateX(2px);
-  border: 1px solid rgba(225, 6, 0, 0.08);
+  border: 1px solid rgba(29, 185, 84, 0.08);
   box-shadow: 
-    0 2px 10px rgba(225, 6, 0, 0.05),
+    0 2px 10px rgba(29, 185, 84, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .navLinkActive {
-  background: linear-gradient(135deg, #fff5f5, #ffecec);
-  color: #e10600;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #1db954;
   font-weight: 600;
-  border: 1px solid rgba(225, 6, 0, 0.15);
+  border: 1px solid rgba(29, 185, 84, 0.15);
   box-shadow: 
-    0 4px 20px rgba(225, 6, 0, 0.08),
-    0 0 0 1px rgba(225, 6, 0, 0.1),
+    0 4px 20px rgba(29, 185, 84, 0.08),
+    0 0 0 1px rgba(29, 185, 84, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   position: relative;
   transform: translateX(2px);
@@ -223,9 +223,9 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   border-radius: 0 4px 4px 0;
-  box-shadow: 0 2px 8px rgba(225, 6, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.3);
   animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -237,9 +237,9 @@
   transform: translateY(-50%);
   width: 4px;
   height: 24px;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   border-radius: 4px 0 0 4px;
-  box-shadow: 0 2px 4px rgba(225, 6, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(29, 185, 84, 0.3);
   animation: pulseGlow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -258,12 +258,12 @@
   from {
     opacity: 0;
     transform: translateY(-50%) scale(0.8);
-    box-shadow: 0 0 0 rgba(225, 6, 0, 0);
+    box-shadow: 0 0 0 rgba(29, 185, 84, 0);
   }
   to {
     opacity: 1;
     transform: translateY(-50%) scale(1);
-    box-shadow: 0 2px 4px rgba(225, 6, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(29, 185, 84, 0.3);
   }
 }
 
@@ -284,7 +284,7 @@
 }
 
 .navLinkActive .navIcon {
-  color: #e10600;
+  color: #1db954;
   opacity: 1;
 }
 
@@ -305,7 +305,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: #fff;
   text-decoration: none;
   font-size: 0.875rem;
@@ -313,13 +313,13 @@
   border-radius: 8px;
   transition: all 0.2s ease;
   border: 1px solid transparent;
-  box-shadow: 0 2px 4px rgba(225, 6, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(29, 185, 84, 0.1);
 }
 
 .backToSite:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateX(-2px);
-  box-shadow: 0 4px 8px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(29, 185, 84, 0.2);
 }
 
 .backToSite svg {
@@ -381,20 +381,20 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #ffecec;
-  border: 1px solid #e10600;
+  background: #dcfce7;
+  border: 1px solid #1db954;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  color: #e10600;
+  color: #1db954;
   font-size: 0.875rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(225, 6, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.1);
   transition: all 0.2s ease;
 }
 
 .adminBadge:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.2);
 }
 
 .pageContent {
@@ -496,8 +496,8 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: #fff5f5;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 12px;
   color: var(--brand-red);
 }
@@ -590,18 +590,18 @@
 }
 
 .adminButtonSecondary {
-  background: #fff5f5;
+  background: #f0fdf4;
   color: var(--brand-red);
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .adminButtonSecondary:hover {
-  background: #ffecec;
-  border-color: #ffc9c9;
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .adminButtonDanger {
-  background: #fff5f5;
+  background: #f0fdf4;
   color: #ef4444;
   border: 1px solid #fecaca;
 }
@@ -742,3 +742,5 @@
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
+
+

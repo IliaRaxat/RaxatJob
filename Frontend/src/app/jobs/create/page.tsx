@@ -1,34 +1,29 @@
 'use client';
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCreateJobMutation, useGetPopularSkillsQuery, useCreateSkillMutation, JobType, ExperienceLevel } from '../../../lib/api/jobsApi';
-import { getUserRole } from '../../../lib/api/authApi';
+import { useCreateJobMutation, useGetPopularSkillsQuery, useCreateSkillMutation, JobType, ExperienceLevel } from '@/entities/job';
+import RoleGuard from '@/app/Components/RoleGuard';
 import styles from './create.module.css';
-
 interface CustomSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }
-
 function CustomSelect({ options, value, onChange, placeholder }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   return (
     <div className={styles.customSelect} ref={selectRef}>
       <button 
@@ -67,14 +62,12 @@ function CustomSelect({ options, value, onChange, placeholder }: CustomSelectPro
     </div>
   );
 }
-
 interface SkillSelectProps {
   selectedSkills: string[];
   onChange: (skillIds: string[]) => void;
   availableSkills: { skill: { id: string; name: string; category: string }; candidateCount: number; studentCount: number; totalCount: number }[];
   onSkillCreated?: (newSkill: { id: string; name: string; category: string; description: string }) => void;
 }
-
 function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated }: SkillSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,25 +79,21 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
   });
   const selectRef = useRef<HTMLDivElement>(null);
   const [createSkill, { isLoading: isCreatingSkill }] = useCreateSkillMutation();
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   const filteredSkills = availableSkills.filter(popularSkill =>
     popularSkill.skill.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     !selectedSkills.includes(popularSkill.skill.id)
   );
-
   const toggleSkill = (skillId: string) => {
     if (selectedSkills.includes(skillId)) {
       onChange(selectedSkills.filter(id => id !== skillId));
@@ -112,60 +101,38 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
       onChange([...selectedSkills, skillId]);
     }
   };
-
   const removeSkill = (skillId: string) => {
     onChange(selectedSkills.filter(id => id !== skillId));
   };
-
   const getSkillName = (skillId: string) => {
     return availableSkills.find(popularSkill => popularSkill.skill.id === skillId)?.skill.name || skillId;
   };
-
   const handleCreateSkill = async () => {
-    // Validate required fields matching curl format
     if (!newSkillData.name.trim()) {
-      console.error('Skill name is required');
-      return;
+            return;
     }
-    
     if (!newSkillData.category.trim()) {
-      console.error('Skill category is required');
-      return;
+            return;
     }
-
     try {
-      // Prepare data for API - exactly matching the curl format:
-      // curl -X POST http://localhost:3000/skills \
-      //   -H "Authorization: Bearer <token>" \
-      //   -H "Content-Type: application/json" \
-      //   -d '{
-      //     "name": "TypeScript",
-      //     "category": "Programming",
-      //     "description": "TypeScript programming language with static typing"
-      //   }'
       const skillData = {
         name: newSkillData.name.trim(),
         category: newSkillData.category.trim(),
         description: newSkillData.description.trim() || ''
       };
-      
-      console.log('Creating skill with data:', skillData);
-      const newSkill = await createSkill(skillData).unwrap();
+            const newSkill = await createSkill(skillData).unwrap();
       onSkillCreated?.(newSkill);
       onChange([...selectedSkills, newSkill.id]);
       setShowCreateModal(false);
       setNewSkillData({ name: '', category: '', description: '' });
       setSearchQuery('');
     } catch (error) {
-      console.error('Failed to create skill:', error);
-    }
+          }
   };
-
   const handleCreateModalClose = () => {
     setShowCreateModal(false);
     setNewSkillData({ name: '', category: '', description: '' });
   };
-
   const handleCreateClick = () => {
     if (searchQuery.trim()) {
       setNewSkillData(prev => ({ ...prev, name: searchQuery.trim() }));
@@ -173,7 +140,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
     setShowCreateModal(true);
     setIsOpen(false);
   };
-
   return (
     <div className={styles.skillSelect} ref={selectRef}>
       <div className={styles.skillContainer}>
@@ -191,7 +157,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
             </span>
           ))}
         </div>
-        
         <button
           type="button"
           className={styles.skillDropdownButton}
@@ -209,7 +174,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
           </svg>
         </button>
       </div>
-
       {isOpen && (
         <div className={styles.skillDropdown}>
           <div className={styles.skillSearch}>
@@ -221,7 +185,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
               className={styles.skillSearchInput}
             />
           </div>
-          
           <div className={styles.skillList}>
             {filteredSkills.length === 0 ? (
               <div className={styles.noSkillsContainer}>
@@ -278,12 +241,10 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
           </div>
         </div>
       )}
-      
       <div className={styles.skillHint}>
         Выберите навыки, необходимые для этой позиции
       </div>
-
-      {/* Create Skill Modal */}
+      {}
       {showCreateModal && (
         <div className={styles.skillModal}>
           <div className={styles.skillModalOverlay} onClick={handleCreateModalClose}></div>
@@ -301,7 +262,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                 </svg>
               </button>
             </div>
-            
             <div className={styles.skillModalBody}>
               <div className={styles.skillModalGroup}>
                 <label className={styles.skillModalLabel}>
@@ -316,7 +276,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                   required
                 />
               </div>
-
               <div className={styles.skillModalGroup}>
                 <label className={styles.skillModalLabel}>
                   Категория *
@@ -340,7 +299,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                   <option value="Other">Другое</option>
                 </select>
               </div>
-
               <div className={styles.skillModalGroup}>
                 <label className={styles.skillModalLabel}>
                   Описание
@@ -354,7 +312,6 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
                 />
               </div>
             </div>
-
             <div className={styles.skillModalActions}>
               <button
                 type="button"
@@ -390,12 +347,9 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
     </div>
   );
 }
-
 export default function CreateJobPage() {
   const router = useRouter();
   const [createJob, { isLoading, error }] = useCreateJobMutation();
-  
-  // Helper function to get status label
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'ACTIVE': return 'Активна';
@@ -406,8 +360,6 @@ export default function CreateJobPage() {
   };
   const { data: skills = [], isLoading: skillsLoading, refetch: refetchSkills } = useGetPopularSkillsQuery();
   const [localSkills, setLocalSkills] = useState<typeof skills>([]);
-
-  // Form state
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -424,26 +376,14 @@ export default function CreateJobPage() {
     deadline: '',
     skillIds: [] as string[]
   });
-
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [createdJobInfo, setCreatedJobInfo] = useState<{title: string, status: string} | null>(null);
-
-  // Update local skills when API data changes
   useEffect(() => {
     if (skills && skills.length > 0) {
       setLocalSkills(skills);
     }
   }, [skills]);
-
-  // Check if user is HR
-  useEffect(() => {
-    const userRole = getUserRole();
-    if (!userRole || userRole !== 'HR') {
-      router.push('/auth/login');
-    }
-  }, [router]);
-
   const jobTypeOptions = useMemo(() => [
     { value: JobType.FULL_TIME, label: 'Полная занятость' },
     { value: JobType.PART_TIME, label: 'Частичная занятость' },
@@ -451,7 +391,6 @@ export default function CreateJobPage() {
     { value: JobType.FREELANCE, label: 'Фриланс' },
     { value: JobType.INTERNSHIP, label: 'Стажировка' }
   ], []);
-
   const experienceLevelOptions = useMemo(() => [
     { value: ExperienceLevel.NO_EXPERIENCE, label: 'Без опыта' },
     { value: ExperienceLevel.JUNIOR, label: 'Junior (1-3 года)' },
@@ -459,84 +398,48 @@ export default function CreateJobPage() {
     { value: ExperienceLevel.SENIOR, label: 'Senior (5+ лет)' },
     { value: ExperienceLevel.LEAD, label: 'Lead/Architect' }
   ], []);
-
   const currencyOptions = useMemo(() => [
     { value: 'RUB', label: '₽ Рубли' },
     { value: 'USD', label: '$ Доллары' },
     { value: 'EUR', label: '€ Евро' }
   ], []);
-
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    // Required fields matching curl format
     if (!formData.title.trim()) {
       newErrors.title = 'Название должности обязательно';
     }
-
     if (!formData.description.trim()) {
       newErrors.description = 'Описание обязательно';
     } else if (formData.description.trim().length < 50) {
       newErrors.description = 'Описание должно содержать минимум 50 символов';
     }
-
     if (!formData.location.trim()) {
       newErrors.location = 'Местоположение обязательно';
     }
-
     if (!formData.type) {
       newErrors.type = 'Тип занятости обязателен';
     }
-
     if (!formData.experienceLevel) {
       newErrors.experienceLevel = 'Уровень опыта обязателен';
     }
-
     if (formData.skillIds.length === 0) {
       newErrors.skillIds = 'Выберите хотя бы один навык';
     }
-
-    // Optional field validations
     if (formData.salaryMin && formData.salaryMax && formData.salaryMin >= formData.salaryMax) {
       newErrors.salaryMax = 'Максимальная зарплата должна быть больше минимальной';
     }
-
     if (formData.deadline && new Date(formData.deadline) <= new Date()) {
       newErrors.deadline = 'Дедлайн должен быть в будущем';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
-
     try {
-      // Prepare data for API - exactly matching the curl format:
-      // curl -X POST http://localhost:3000/jobs \
-      //   -H "Authorization: Bearer <token>" \
-      //   -H "Content-Type: application/json" \
-      //   -d '{
-      //     "title": "Frontend Developer",
-      //     "description": "Разработка пользовательских интерфейсов",
-      //     "requirements": "React, TypeScript, 2+ года опыта",
-      //     "responsibilities": "Разработка компонентов, оптимизация производительности",
-      //     "benefits": "Удаленная работа, медицинская страховка",
-      //     "salaryMin": 80000,
-      //     "salaryMax": 120000,
-      //     "currency": "RUB",
-      //     "location": "Москва",
-      //     "type": "FULL_TIME",
-      //     "experienceLevel": "MIDDLE",
-      //     "remote": true,
-      //     "deadline": "2024-12-31",
-      //     "skillIds": ["skill1", "skill2"]
-      //   }'
       const jobData = {
         title: formData.title,
         description: formData.description,
@@ -553,49 +456,36 @@ export default function CreateJobPage() {
         deadline: formData.deadline || undefined,
         skillIds: formData.skillIds
       };
-      
-      console.log('Creating job with data:', jobData);
-      const createdJob = await createJob(jobData).unwrap();
-      console.log('Job created successfully:', createdJob);
-      
-      // Show success message with job status
-      setCreatedJobInfo({
+            const createdJob = await createJob(jobData).unwrap();
+            setCreatedJobInfo({
         title: createdJob.title,
         status: createdJob.status
       });
       setShowSuccessMessage(true);
-      
-      // Redirect after 3 seconds
       setTimeout(() => {
         router.push('/jobs');
       }, 3000);
     } catch (error) {
-      console.error('Failed to create job:', error);
-    }
+          }
   };
-
   const handleInputChange = (field: keyof typeof formData, value: string | string[] | number | boolean | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
-
   const handleNumberChange = (field: 'salaryMin' | 'salaryMax', value: string) => {
     const numValue = value ? parseInt(value) : undefined;
     handleInputChange(field, numValue);
   };
-
   const handleSkillCreated = useCallback((newSkill: { id: string; name: string; category: string; description: string }) => {
     setLocalSkills(prev => [...prev, { ...newSkill, skill: { id: newSkill.id, name: newSkill.name, category: newSkill.category }, candidateCount: 0, studentCount: 0, totalCount: 0 }]);
-    refetchSkills(); // Refresh the server data
+    refetchSkills(); 
   }, [refetchSkills]);
-
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
+    <RoleGuard allowedRoles={['HR', 'ADMIN']}>
+      <div className={styles.container}>
+        <div className={styles.header}>
         <button 
           onClick={() => router.back()}
           className={styles.backButton}
@@ -605,7 +495,6 @@ export default function CreateJobPage() {
           </svg>
           Назад
         </button>
-        
         <div className={styles.headerContent}>
           <h1 className={styles.title}>
             Создать <span className={styles.highlight}>вакансию</span>
@@ -615,11 +504,9 @@ export default function CreateJobPage() {
           </p>
         </div>
       </div>
-
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formSection}>
           <h2 className={styles.sectionTitle}>Основная информация</h2>  
-          
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="title">
@@ -635,7 +522,6 @@ export default function CreateJobPage() {
               />
               {errors.title && <span className={styles.error}>{errors.title}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="location">
                 Местоположение *
@@ -650,7 +536,6 @@ export default function CreateJobPage() {
               />
               {errors.location && <span className={styles.error}>{errors.location}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Тип занятости *
@@ -666,7 +551,6 @@ export default function CreateJobPage() {
               />
               {errors.type && <span className={styles.error}>{errors.type}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Уровень опыта *
@@ -682,7 +566,6 @@ export default function CreateJobPage() {
               />
               {errors.experienceLevel && <span className={styles.error}>{errors.experienceLevel}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Зарплата (от)
@@ -697,7 +580,6 @@ export default function CreateJobPage() {
               />
               {errors.salaryMin && <span className={styles.error}>{errors.salaryMin}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Зарплата (до)
@@ -712,7 +594,6 @@ export default function CreateJobPage() {
               />
               {errors.salaryMax && <span className={styles.error}>{errors.salaryMax}</span>}
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Валюта
@@ -727,7 +608,6 @@ export default function CreateJobPage() {
                 placeholder="Выберите валюту"
               />
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.checkboxLabel}>
                 <input
@@ -739,7 +619,6 @@ export default function CreateJobPage() {
                 Удаленная работа
               </label>
             </div>
-
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="deadline">
                 Дедлайн подачи заявок
@@ -756,10 +635,8 @@ export default function CreateJobPage() {
             </div>
           </div>
         </div>
-
         <div className={styles.formSection}>
           <h2 className={styles.sectionTitle}>Описание и требования</h2>
-          
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="description">
               Общее описание вакансии *
@@ -777,7 +654,6 @@ export default function CreateJobPage() {
             </div>
             {errors.description && <span className={styles.error}>{errors.description}</span>}
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="responsibilities">
               Обязанности
@@ -791,7 +667,6 @@ export default function CreateJobPage() {
               rows={4}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="requirements">
               Требования
@@ -805,7 +680,6 @@ export default function CreateJobPage() {
               rows={4}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label} htmlFor="benefits">
               Что мы предлагаем
@@ -819,7 +693,6 @@ export default function CreateJobPage() {
               rows={4}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label}>
               Необходимые навыки *
@@ -837,7 +710,6 @@ export default function CreateJobPage() {
             {errors.skillIds && <span className={styles.error}>{errors.skillIds}</span>}
           </div>
         </div>
-
         {error && (
           <div className={styles.errorAlert}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -848,7 +720,6 @@ export default function CreateJobPage() {
             Произошла ошибка при создании вакансии. Попробуйте еще раз.
           </div>
         )}
-
         <div className={styles.formActions}>
           <button
             type="button"
@@ -877,8 +748,7 @@ export default function CreateJobPage() {
           </button>
         </div>
       </form>
-
-      {/* Success Message */}
+      {}
       {showSuccessMessage && createdJobInfo && (
         <div className={styles.successOverlay}>
           <div className={styles.successMessage}>
@@ -906,6 +776,7 @@ export default function CreateJobPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </RoleGuard>
   );
 }

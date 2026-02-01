@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { 
@@ -9,36 +8,30 @@ import {
   getStudentFullName,
   getStudentYear,
   formatGPA
-} from '../../../lib/api/studentsApi';
-import { useAuth } from '../../../contexts/AuthContext';
+} from '@/entities/student';
+import { useAuth } from '@/features/auth';
 import { useNotificationContext } from '../../Components/NotificationProvider';
 import styles from './students.module.css';
-
 interface CustomYearSelectProps {
   options: { value: number | '', label: string }[];
   value: number | '';
   onChange: (value: number | '') => void;
 }
-
 function CustomYearSelect({ options, value, onChange }: CustomYearSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   const selectedOption = options.find(option => option.value === value);
-
   return (
     <div className={styles.customYearSelect} ref={selectRef}>
       <button 
@@ -77,14 +70,11 @@ function CustomYearSelect({ options, value, onChange }: CustomYearSelectProps) {
     </div>
   );
 }
-
 export default function StudentsPage() {
   const { user } = useAuth();
   const { showSuccess, showError } = useNotificationContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYearFilter, setSelectedYearFilter] = useState<number | ''>('');
-  
-  // Опции для выбора курса
   const yearOptions = [
     { value: '' as const, label: 'Все курсы' },
     { value: 1, label: '1-й курс' },
@@ -94,53 +84,39 @@ export default function StudentsPage() {
     { value: 5, label: '5-й курс' },
     { value: 6, label: '6-й курс' },
   ];
-  
-  // Проверяем роль пользователя - в админ панели ADMIN имеет полный доступ
   const isUniversityUser = user?.role === 'UNIVERSITY';
   const isAdminUser = user?.role === 'ADMIN' || user?.role === 'MODERATOR';
   const canManageStudents = isUniversityUser || isAdminUser;
-  
-  // Для администраторов игнорируем все проверки университета
   const isAdminMode = isAdminUser;
-
   const { 
     data: students = [], 
     isLoading: studentsLoading, 
     error: studentsError 
   } = useGetStudentsQuery(undefined, { skip: !canManageStudents });
-
   const { 
     data: stats, 
     isLoading: statsLoading 
   } = useGetStudentStatsQuery(undefined, { skip: !canManageStudents });
-
   const [deleteStudent] = useDeleteStudentMutation();
-
-  // Фильтрация студентов
   const filteredStudents = students.filter(student => {
     const fullName = getStudentFullName(student).toLowerCase();
     const matchesSearch = fullName.includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.major.toLowerCase().includes(searchTerm.toLowerCase());
-
     const matchesYear = selectedYearFilter === '' || student.yearOfStudy === selectedYearFilter;
-
     return matchesSearch && matchesYear;
   });
-
   const handleDeleteStudent = async (studentId: string, studentName: string) => {
     if (window.confirm(`Вы уверены, что хотите удалить студента ${studentName}?`)) {
       try {
         await deleteStudent(studentId).unwrap();
         showSuccess('Студент удален', 'Студент успешно удален из системы');
       } catch (error) {
-        console.error('Ошибка при удалении студента:', error);
-        showError('Ошибка удаления', 'Ошибка при удалении студента');
+                showError('Ошибка удаления', 'Ошибка при удалении студента');
       }
     }
   };
-
   if (!canManageStudents) {
     return (
       <div className={styles.studentsPage}>
@@ -165,11 +141,10 @@ export default function StudentsPage() {
       </div>
     );
   }
-
   if (studentsLoading) {
     return (
       <div className={styles.studentsPage}>
-        {/* Header */}
+        {}
         <section className={styles.header}>
           <div className={styles.headerWrapper}>
             <div className={styles.headerContent}>
@@ -194,8 +169,7 @@ export default function StudentsPage() {
             </Link>
           </div>
         </section>
-
-        {/* Filters Section */}
+        {}
         <section className={styles.filtersSection}>
           <div className={styles.filtersContainer}>
             <div className={styles.searchBox}>
@@ -211,7 +185,6 @@ export default function StudentsPage() {
                 disabled
               />
             </div>
-
             <div className={styles.filters}>
               <div className={styles.customYearSelect}>
                 <button 
@@ -234,13 +207,11 @@ export default function StudentsPage() {
             </div>
           </div>
         </section>
-
-        {/* Students Section - Skeleton */}
+        {}
         <section className={styles.studentsSection}>
           <div className={styles.resultsHeader}>
             <p className={styles.resultsCount}>Загрузка студентов...</p>
           </div>
-
           <div className={styles.studentsGrid}>
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className={styles.skeletonCard}>
@@ -254,11 +225,9 @@ export default function StudentsPage() {
                   </div>
                   <div className={styles.skeletonBadge}></div>
                 </div>
-                
                 <div className={styles.skeletonDescription}></div>
                 <div className={styles.skeletonDescription}></div>
                 <div className={styles.skeletonDescription}></div>
-                
                 <div className={styles.skeletonFooter}>
                   <div className={styles.skeletonDate}></div>
                   <div className={styles.skeletonActions}>
@@ -274,7 +243,6 @@ export default function StudentsPage() {
       </div>
     );
   }
-
   if (studentsError) {
     return (
       <div className={styles.studentsPage}>
@@ -297,10 +265,9 @@ export default function StudentsPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.studentsPage}>
-      {/* Header */}
+      {}
       <section className={styles.header}>
         <div className={styles.headerWrapper}>
           <div className={styles.headerContent}>
@@ -325,8 +292,7 @@ export default function StudentsPage() {
           </Link>
         </div>
       </section>
-
-      {/* Stats Section */}
+      {}
       {stats && !statsLoading && (
         <section className={styles.statsSection}>
           <div className={styles.statsContainer}>
@@ -342,7 +308,6 @@ export default function StudentsPage() {
               <p className={styles.statNumber}>{stats.totalStudents}</p>
             </div>
           </div>
-
           <div className={styles.statCard}>
             <div className={styles.statIcon}>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -354,7 +319,6 @@ export default function StudentsPage() {
               <p className={styles.statNumber}>{stats.studentsWithSkills}</p>
             </div>
           </div>
-
           <div className={styles.statCard}>
             <div className={styles.statIcon}>
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,8 +334,7 @@ export default function StudentsPage() {
         </div>
         </section>
       )}
-
-      {/* Filters Section */}
+      {}
       <section className={styles.filtersSection}>
         <div className={styles.filtersContainer}>
           <div className={styles.searchBox}>
@@ -386,7 +349,6 @@ export default function StudentsPage() {
               className={styles.searchInput}
             />
           </div>
-
           <div className={styles.filters}>
             <CustomYearSelect
               options={yearOptions}
@@ -396,15 +358,13 @@ export default function StudentsPage() {
           </div>
         </div>
       </section>
-
-      {/* Students Section */}
+      {}
       <section className={styles.studentsSection}>
         <div className={styles.resultsHeader}>
           <p className={styles.resultsCount}>
             Найдено {filteredStudents.length} {filteredStudents.length === 1 ? 'студент' : 'студентов'}
           </p>
         </div>
-
         {filteredStudents.length === 0 ? (
           <div className={styles.emptyState}>
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
@@ -449,13 +409,11 @@ export default function StudentsPage() {
                     {student.skills.length} навыков
                   </div>
                 </div>
-
                 <p className={styles.studentDescription}>
                   {student.major} • {student.email}
                   {student.gpa && ` • Средний балл: ${formatGPA(student.gpa)}`}
                   {student.phone && ` • ${student.phone}`}
                 </p>
-
                 <div className={styles.studentActions}>
                   <div className={styles.studentInfo}>
                     <span className={styles.creationDate}>

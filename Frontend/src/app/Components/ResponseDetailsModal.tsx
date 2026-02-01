@@ -1,9 +1,7 @@
 'use client';
-
 import React from 'react';
-import { CompanyResponse } from '@/lib/api/internshipRequestsApi';
+import { CompanyResponse } from '@/entities/internship-request';
 import styles from './ResponseDetailsModal.module.css';
-
 interface ResponseDetailsModalProps {
   response: CompanyResponse;
   isOpen: boolean;
@@ -11,7 +9,6 @@ interface ResponseDetailsModalProps {
   onStatusUpdate: (responseId: string, status: 'ACCEPTED' | 'REJECTED') => void;
   isUpdating: boolean;
 }
-
 const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
   response,
   isOpen,
@@ -20,7 +17,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
   isUpdating
 }) => {
   if (!isOpen) return null;
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -30,7 +26,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
       minute: '2-digit'
     });
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -43,7 +38,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -56,7 +50,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
         return status;
     }
   };
-
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -66,7 +59,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
             ✕
           </button>
         </div>
-
         <div className={styles.content}>
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Информация о компании</h3>
@@ -94,14 +86,12 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
               </div>
             </div>
           </div>
-
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Сообщение от компании</h3>
             <div className={styles.messageBox}>
               <p className={styles.messageText}>{response.message}</p>
             </div>
           </div>
-
           {response.internshipRequest && (
             <div className={styles.section}>
               <h3 className={styles.sectionTitle}>Заявка на стажировку</h3>
@@ -134,21 +124,18 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
                     </span>
                   </div>
                 </div>
-
                 {response.internshipRequest.description && (
                   <div className={styles.descriptionBox}>
                     <h4 className={styles.descriptionTitle}>Описание:</h4>
                     <p className={styles.descriptionText}>{response.internshipRequest.description}</p>
                   </div>
                 )}
-
                 {response.internshipRequest.requirements && (
                   <div className={styles.descriptionBox}>
                     <h4 className={styles.descriptionTitle}>Требования:</h4>
                     <p className={styles.descriptionText}>{response.internshipRequest.requirements}</p>
                   </div>
                 )}
-
                 {response.internshipRequest.skills && response.internshipRequest.skills.length > 0 && (
                   <div className={styles.skillsBox}>
                     <h4 className={styles.skillsTitle}>Навыки:</h4>
@@ -161,7 +148,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
                     </div>
                   </div>
                 )}
-
                 <div className={styles.datesBox}>
                   <div className={styles.dateItem}>
                     <span className={styles.dateLabel}>Начало стажировки:</span>
@@ -186,7 +172,6 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
             </div>
           )}
         </div>
-
         <div className={styles.footer}>
           {response.status === 'PENDING' && (
             <div className={styles.actionButtons}>
@@ -211,5 +196,4 @@ const ResponseDetailsModal: React.FC<ResponseDetailsModalProps> = ({
     </div>
   );
 };
-
 export default ResponseDetailsModal;

@@ -1,11 +1,10 @@
 'use client';
-
 import React, { useState } from 'react';
 import { 
   CreateStudentDto, 
   validateStudent,
   useCreateStudentMutation 
-} from '../../lib/api/studentsApi';
+} from '@/entities/student';
 import { 
   User, 
   Mail, 
@@ -18,13 +17,11 @@ import {
   AlertCircle
 } from 'lucide-react';
 import styles from './CreateStudentForm.module.css';
-
 interface CreateStudentFormProps {
   onSuccess?: (student: any) => void;
   onCancel?: () => void;
   className?: string;
 }
-
 export default function CreateStudentForm({ 
   onSuccess, 
   onCancel, 
@@ -40,46 +37,33 @@ export default function CreateStudentForm({
     gpa: undefined,
     phone: ''
   });
-
   const [errors, setErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [createStudent, { isLoading }] = useCreateStudentMutation();
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
     setFormData(prev => ({
       ...prev,
       [name]: name === 'yearOfStudy' || name === 'gpa' ? 
         (value === '' ? undefined : Number(value)) : 
         value
     }));
-
-    // Очищаем ошибки при изменении
     if (errors.length > 0) {
       setErrors([]);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrors([]);
-
     try {
-      // Валидация данных
       const validationErrors = validateStudent(formData);
       if (validationErrors.length > 0) {
         setErrors(validationErrors);
         setIsSubmitting(false);
         return;
       }
-
-      // Создание студента
       const newStudent = await createStudent(formData).unwrap();
-      
-      // Сброс формы
       setFormData({
         firstName: '',
         lastName: '',
@@ -90,25 +74,20 @@ export default function CreateStudentForm({
         gpa: undefined,
         phone: ''
       });
-
       onSuccess?.(newStudent);
     } catch (error) {
-      console.error('Ошибка создания студента:', error);
-      setErrors(['Произошла ошибка при создании студента. Попробуйте еще раз.']);
+            setErrors(['Произошла ошибка при создании студента. Попробуйте еще раз.']);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const handleCancel = () => {
     onCancel?.();
   };
-
   const formClasses = [
     styles.createStudentForm,
     className
   ].filter(Boolean).join(' ');
-
   return (
     <div className={formClasses}>
       <div className={styles.formHeader}>
@@ -124,7 +103,6 @@ export default function CreateStudentForm({
           </button>
         )}
       </div>
-
       {errors.length > 0 && (
         <div className={styles.errorBanner}>
           <AlertCircle size={20} />
@@ -137,12 +115,10 @@ export default function CreateStudentForm({
           </div>
         </div>
       )}
-
       <form onSubmit={handleSubmit} className={styles.form}>
-        {/* Основная информация */}
+        {}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Основная информация</h3>
-          
           <div className={styles.fieldsRow}>
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
@@ -160,7 +136,6 @@ export default function CreateStudentForm({
                 maxLength={50}
               />
             </div>
-
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
                 <User size={20} />
@@ -178,7 +153,6 @@ export default function CreateStudentForm({
               />
             </div>
           </div>
-
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <Mail size={20} />
@@ -194,7 +168,6 @@ export default function CreateStudentForm({
               required
             />
           </div>
-
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <GraduationCap size={20} />
@@ -211,11 +184,9 @@ export default function CreateStudentForm({
             />
           </div>
         </div>
-
-        {/* Академическая информация */}
+        {}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Академическая информация</h3>
-          
           <div className={styles.fieldsRow}>
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
@@ -237,7 +208,6 @@ export default function CreateStudentForm({
                 <option value={6}>6-й курс</option>
               </select>
             </div>
-
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
                 <Award size={20} />
@@ -256,7 +226,6 @@ export default function CreateStudentForm({
               />
             </div>
           </div>
-
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <BookOpen size={20} />
@@ -274,11 +243,9 @@ export default function CreateStudentForm({
             />
           </div>
         </div>
-
-        {/* Контактная информация */}
+        {}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Контактная информация</h3>
-          
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <Phone size={20} />
@@ -296,8 +263,7 @@ export default function CreateStudentForm({
             />
           </div>
         </div>
-
-        {/* Кнопки действий */}
+        {}
         <div className={styles.formActions}>
           {onCancel && (
             <button
@@ -309,7 +275,6 @@ export default function CreateStudentForm({
               Отмена
             </button>
           )}
-          
           <button
             type="submit"
             className={styles.submitButton}

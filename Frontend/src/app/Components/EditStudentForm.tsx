@@ -1,12 +1,11 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { 
   UpdateStudentDto, 
   validateStudent,
   useUpdateStudentMutation,
   Student
-} from '../../lib/api/studentsApi';
+} from '@/entities/student';
 import { 
   User, 
   Mail, 
@@ -19,14 +18,12 @@ import {
   AlertCircle
 } from 'lucide-react';
 import styles from './CreateStudentForm.module.css';
-
 interface EditStudentFormProps {
   student: Student;
   onSuccess?: (student: Student) => void;
   onCancel?: () => void;
   className?: string;
 }
-
 export default function EditStudentForm({ 
   student,
   onSuccess, 
@@ -43,13 +40,9 @@ export default function EditStudentForm({
     gpa: student.gpa,
     phone: student.phone || ''
   });
-
   const [errors, setErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [updateStudent, { isLoading }] = useUpdateStudentMutation();
-
-  // Обновляем форму при изменении студента
   useEffect(() => {
     setFormData({
       firstName: student.firstName,
@@ -62,30 +55,23 @@ export default function EditStudentForm({
       phone: student.phone || ''
     });
   }, [student]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
     setFormData(prev => ({
       ...prev,
       [name]: name === 'yearOfStudy' || name === 'gpa' ? 
         (value === '' ? undefined : Number(value)) : 
         value
     }));
-
-    // Очищаем ошибки при изменении
     if (errors.length > 0) {
       setErrors([]);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrors([]);
-
     try {
-      // Валидация данных (используем CreateStudentDto для валидации)
       const validationErrors = validateStudent({
         firstName: formData.firstName || '',
         lastName: formData.lastName || '',
@@ -96,37 +82,29 @@ export default function EditStudentForm({
         gpa: formData.gpa,
         phone: formData.phone
       });
-      
       if (validationErrors.length > 0) {
         setErrors(validationErrors);
         setIsSubmitting(false);
         return;
       }
-
-      // Обновление студента
       const updatedStudent = await updateStudent({ 
         id: student.id, 
         data: formData 
       }).unwrap();
-      
       onSuccess?.(updatedStudent);
     } catch (error) {
-      console.error('Ошибка обновления студента:', error);
-      setErrors(['Произошла ошибка при обновлении студента. Попробуйте еще раз.']);
+            setErrors(['Произошла ошибка при обновлении студента. Попробуйте еще раз.']);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const handleCancel = () => {
     onCancel?.();
   };
-
   const formClasses = [
     styles.createStudentForm,
     className
   ].filter(Boolean).join(' ');
-
   return (
     <div className={formClasses}>
       <div className={styles.formHeader}>
@@ -142,7 +120,6 @@ export default function EditStudentForm({
           </button>
         )}
       </div>
-
       {errors.length > 0 && (
         <div className={styles.errorBanner}>
           <AlertCircle size={20} />
@@ -155,12 +132,10 @@ export default function EditStudentForm({
           </div>
         </div>
       )}
-
       <form onSubmit={handleSubmit} className={styles.form}>
-        {/* Основная информация */}
+        {}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Основная информация</h3>
-          
           <div className={styles.fieldsRow}>
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
@@ -178,7 +153,6 @@ export default function EditStudentForm({
                 maxLength={50}
               />
             </div>
-
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
                 <User size={20} />
@@ -196,7 +170,6 @@ export default function EditStudentForm({
               />
             </div>
           </div>
-
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <Mail size={20} />
@@ -212,7 +185,6 @@ export default function EditStudentForm({
               required
             />
           </div>
-
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <GraduationCap size={20} />
@@ -229,11 +201,9 @@ export default function EditStudentForm({
             />
           </div>
         </div>
-
-        {/* Академическая информация */}
+        {}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Академическая информация</h3>
-          
           <div className={styles.fieldsRow}>
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
@@ -255,7 +225,6 @@ export default function EditStudentForm({
                 <option value={6}>6-й курс</option>
               </select>
             </div>
-
             <div className={styles.fieldGroup}>
               <div className={styles.fieldHeader}>
                 <Award size={20} />
@@ -274,7 +243,6 @@ export default function EditStudentForm({
               />
             </div>
           </div>
-
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <BookOpen size={20} />
@@ -292,11 +260,9 @@ export default function EditStudentForm({
             />
           </div>
         </div>
-
-        {/* Контактная информация */}
+        {}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>Контактная информация</h3>
-          
           <div className={styles.fieldGroup}>
             <div className={styles.fieldHeader}>
               <Phone size={20} />
@@ -314,8 +280,7 @@ export default function EditStudentForm({
             />
           </div>
         </div>
-
-        {/* Кнопки действий */}
+        {}
         <div className={styles.formActions}>
           {onCancel && (
             <button
@@ -327,7 +292,6 @@ export default function EditStudentForm({
               Отмена
             </button>
           )}
-          
           <button
             type="submit"
             className={styles.submitButton}

@@ -19,7 +19,7 @@
   top: 0;
   bottom: 0;
   width: 60px;
-  background: linear-gradient(180deg, #e10600 0%, #ba0500 100%);
+  background: linear-gradient(180deg, #1db954 0%, #1aa34a 100%);
   border: none;
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
@@ -35,13 +35,13 @@
 
 .backTab:hover {
   width: 80px;
-  background: linear-gradient(180deg, #ba0500 0%, #e10600 100%);
-  box-shadow: 4px 0 25px rgba(225, 6, 0, 0.25);
+  background: linear-gradient(180deg, #1aa34a 0%, #1db954 100%);
+  box-shadow: 4px 0 25px rgba(29, 185, 84, 0.25);
 }
 
 .backTab:active {
   width: 70px;
-  box-shadow: 2px 0 15px rgba(225, 6, 0, 0.3);
+  box-shadow: 2px 0 15px rgba(29, 185, 84, 0.3);
 }
 
 .backTab svg {
@@ -54,11 +54,11 @@
 
 .backTab:focus {
   outline: none;
-  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(225, 6, 0, 0.3);
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(29, 185, 84, 0.3);
 }
 
 .backTab:focus:hover {
-  box-shadow: 4px 0 25px rgba(225, 6, 0, 0.25), 0 0 0 3px rgba(225, 6, 0, 0.3);
+  box-shadow: 4px 0 25px rgba(29, 185, 84, 0.25), 0 0 0 3px rgba(29, 185, 84, 0.3);
 }
 
 .headerContent {
@@ -95,7 +95,7 @@
 }
 
 .jobMetaItem svg {
-  color: #e10600;
+  color: #1db954;
   width: 16px;
   height: 16px;
 }
@@ -130,8 +130,8 @@
 }
 
 .jobCard:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 15px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.08);
   transform: translateY(-1px);
 }
 
@@ -179,7 +179,7 @@
 }
 
 .detailItem svg {
-  color: #e10600;
+  color: #1db954;
 }
 
 .jobDescription, .jobSection {
@@ -211,20 +211,20 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.75rem 1rem;
-  background: #fff5f5;
+  background: #f0fdf4;
   border-radius: 16px;
-  border: 1px solid #ffd5d5;
+  border: 1px solid #bbf7d0;
 }
 
 .skillName {
   font-weight: 500;
-  color: #e10600;
+  color: #1db954;
   font-size: 0.875rem;
 }
 
 .skillCategory {
   font-size: 0.75rem;
-  color: #ba0500;
+  color: #1aa34a;
 }
 
 /* Sidebar */
@@ -248,8 +248,8 @@
 }
 
 .hrCard:hover, .applicationsCard:hover, .applyCard:hover {
-  border-color: #ffc9c9;
-  box-shadow: 0 4px 15px rgba(225, 6, 0, 0.08);
+  border-color: #86efac;
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.08);
   transform: translateY(-1px);
 }
 
@@ -289,7 +289,7 @@
 }
 
 .hrContact svg {
-  color: #e10600;
+  color: #1db954;
 }
 
 /* Applications */
@@ -306,7 +306,7 @@
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 8px;
-  border-left: 3px solid #e10600;
+  border-left: 3px solid #1db954;
 }
 
 .applicationHeader {
@@ -342,7 +342,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: white;
   border: none;
   border-radius: 20px;
@@ -353,13 +353,13 @@
   margin-bottom: 1rem;
   flex-shrink: 0;
   margin-top: auto;
-  box-shadow: 0 2px 8px rgba(225, 6, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.2);
 }
 
 .applyButton:hover {
-  background: linear-gradient(135deg, #ba0500, #e10600);
+  background: linear-gradient(135deg, #1aa34a, #1db954);
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(225, 6, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
 }
 
 /* Application status button styles */
@@ -468,7 +468,7 @@
 }
 
 .loadingIcon {
-  color: #e10600;
+  color: #1db954;
   animation: pulse 2s infinite;
 }
 
@@ -492,10 +492,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: #fff5f5;
-  border: 1px solid #ffd5d5;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 20px;
-  color: #e10600;
+  color: #1db954;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.875rem;
@@ -505,11 +505,11 @@
 }
 
 .errorBackButton:hover {
-  background: #ffecec;
-  color: #ba0500;
+  background: #dcfce7;
+  color: #1aa34a;
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(225, 6, 0, 0.15);
-  border-color: #ffc9c9;
+  box-shadow: 0 2px 8px rgba(29, 185, 84, 0.15);
+  border-color: #86efac;
 }
 
 @keyframes pulse {

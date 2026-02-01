@@ -1,16 +1,11 @@
 'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useGetMyInternshipRequestsQuery } from '@/lib/api/internshipRequestsApi';
+import { useGetMyInternshipRequestsQuery } from '@/entities/internship-request';
 import styles from './internship-requests.module.css';
-
 const UniversityInternshipRequestsPage: React.FC = () => {
   const { data: responseData, isLoading, error, refetch } = useGetMyInternshipRequestsQuery();
-
-  // Безопасно получаем массив заявок из ответа API
   const requests = Array.isArray(responseData?.requests) ? responseData.requests : [];
-
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'Дата не указана';
     try {
@@ -25,7 +20,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
       return 'Ошибка даты';
     }
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -38,7 +32,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -51,7 +44,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
         return status;
     }
   };
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -62,7 +54,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -76,7 +67,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -87,13 +77,11 @@ const UniversityInternshipRequestsPage: React.FC = () => {
           </p>
         </div>
       </div>
-
-      {/* Результаты */}
+      {}
       <div className={styles.results}>
         <div className={styles.resultsHeader}>
           <h2>Мои заявки ({requests.length})</h2>
         </div>
-
         {requests.length === 0 ? (
           <div className={styles.empty}>
             <div className={styles.emptyIcon}>🎓</div>
@@ -121,20 +109,17 @@ const UniversityInternshipRequestsPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className={styles.requestContent}>
                   <div className={styles.requestDescription}>
                     <h4>Описание:</h4>
                     <p>{request.description}</p>
                   </div>
-
                   {request.requirements && (
                     <div className={styles.requestRequirements}>
                       <h4>Требования:</h4>
                       <p>{request.requirements}</p>
                     </div>
                   )}
-
                   {request.skills && Array.isArray(request.skills) && request.skills.length > 0 && (
                     <div className={styles.requestSkills}>
                       <h4>Навыки:</h4>
@@ -147,7 +132,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-
                   <div className={styles.requestDates}>
                     <div className={styles.dateItem}>
                       <span className={styles.dateLabel}>Начало:</span>
@@ -169,7 +153,6 @@ const UniversityInternshipRequestsPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className={styles.requestFooter}>
                   <div className={styles.requestMeta}>
                     <span className={styles.createdAt}>
@@ -185,5 +168,4 @@ const UniversityInternshipRequestsPage: React.FC = () => {
     </div>
   );
 };
-
 export default UniversityInternshipRequestsPage;

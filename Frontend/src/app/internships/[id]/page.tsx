@@ -1,17 +1,14 @@
 'use client';
-
 import React, { useState, use } from 'react';
 import Link from 'next/link';
-import { useGetInternshipByIdQuery } from '@/lib/api/internshipsApi';
-import { useCreateInternshipRequestMutation } from '@/lib/api/internshipRequestsApi';
+import { useGetInternshipByIdQuery } from '@/entities/internship';
+import { useCreateInternshipRequestMutation } from '@/entities/internship-request';
 import styles from './internship-details.module.css';
-
 interface InternshipDetailsPageProps {
   params: Promise<{
   id: string;
   }>;
 }
-
 const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params }) => {
   const resolvedParams = use(params);
   const { data: internship, isLoading, error } = useGetInternshipByIdQuery(resolvedParams.id);
@@ -31,7 +28,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
     isRemote: false
   });
   const [newSkill, setNewSkill] = useState('');
-
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'Дата не указана';
     try {
@@ -46,7 +42,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
       return 'Ошибка даты';
     }
   };
-
   const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -54,9 +49,7 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
       minimumFractionDigits: 0,
     }).format(amount);
   };
-
   const handleApply = async () => {
-    // Валидация обязательных полей
     if (!applicationData.specialty.trim()) {
       alert('Пожалуйста, укажите специальность');
       return;
@@ -81,7 +74,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
       alert('Пожалуйста, укажите описание');
       return;
     }
-
     setIsApplying(true);
     try {
       await createInternshipRequest({
@@ -96,7 +88,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
         location: applicationData.location,
         isRemote: applicationData.isRemote
       }).unwrap();
-      
       setShowApplicationForm(false);
       setApplicationData({
         specialty: '',
@@ -110,22 +101,18 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
         location: '',
         isRemote: false
       });
-      // Заявка успешно отправлена
     } catch (error) {
-      console.error('Failed to apply to internship:', error);
-      alert('Ошибка при отправке заявки. Попробуйте еще раз.');
+            alert('Ошибка при отправке заявки. Попробуйте еще раз.');
     } finally {
       setIsApplying(false);
     }
   };
-
   const handleInputChange = (field: string, value: string | boolean) => {
     setApplicationData(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
   const addSkill = () => {
     if (newSkill.trim() && !applicationData.skills.includes(newSkill.trim())) {
       setApplicationData(prev => ({
@@ -135,14 +122,12 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
       setNewSkill('');
     }
   };
-
   const removeSkill = (skillToRemove: string) => {
     setApplicationData(prev => ({
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove)
     }));
   };
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -153,7 +138,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
       </div>
     );
   }
-
   if (error || !internship) {
     return (
       <div className={styles.container}>
@@ -167,10 +151,9 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Хлебные крошки */}
+      {}
       <nav className={styles.breadcrumbs}>
         <Link href="/companies" className={styles.breadcrumbLink}>
           Стажировки
@@ -178,9 +161,8 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
         <span className={styles.breadcrumbSeparator}>/</span>
         <span className={styles.breadcrumbCurrent}>{internship.title}</span>
       </nav>
-
       <div className={styles.content}>
-        {/* Основная информация */}
+        {}
       <div className={styles.mainContent}>
           <header className={styles.header}>
             <div className={styles.headerTop}>
@@ -196,14 +178,12 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
               </span>
             </div>
           </div>
-
             <div className={styles.companyInfo}>
               <h2 className={styles.companyName}>{internship.company?.name || 'Компания не указана'}</h2>
               <div className={styles.location}>
                 📍 {internship.location} {internship.isRemote && '• Удаленно'}
               </div>
             </div>
-            
             <div className={styles.metaInfo}>
               <div className={styles.metaItem}>
                 <span className={styles.metaLabel}>Период:</span>
@@ -215,38 +195,33 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                 </div>
               </div>
           </header>
-
-          {/* Описание */}
+          {}
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>Описание</h3>
             <p className={styles.description}>{internship.description}</p>
           </section>
-
-          {/* Требования */}
+          {}
           {internship.requirements && (
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Требования</h3>
               <p className={styles.requirements}>{internship.requirements}</p>
             </section>
           )}
-
-          {/* Обязанности */}
+          {}
           {internship.responsibilities && (
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Обязанности</h3>
               <p className={styles.responsibilities}>{internship.responsibilities}</p>
             </section>
           )}
-
-          {/* Преимущества */}
+          {}
           {internship.benefits && (
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Преимущества</h3>
               <p className={styles.benefits}>{internship.benefits}</p>
             </section>
           )}
-
-          {/* Навыки */}
+          {}
           {internship.skills && Array.isArray(internship.skills) && internship.skills.length > 0 && (
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Требуемые навыки</h3>
@@ -259,8 +234,7 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
           </div>
             </section>
           )}
-
-          {/* Теги */}
+          {}
           {internship.tags && Array.isArray(internship.tags) && internship.tags.length > 0 && (
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Теги</h3>
@@ -273,8 +247,7 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
             </div>
             </section>
           )}
-
-          {/* Даты */}
+          {}
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>Важные даты</h3>
             <div className={styles.datesList}>
@@ -295,13 +268,11 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
             </div>
           </section>
         </div>
-
-        {/* Боковая панель */}
+        {}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarCard}>
             <h3 className={styles.sidebarTitle}>Информация о стажировке</h3>
-            
-            {/* Зарплата */}
+            {}
             <div className={styles.sidebarItem}>
               <span className={styles.sidebarLabel}>Зарплата:</span>
               <span className={styles.sidebarValue}>
@@ -313,43 +284,37 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                 }
               </span>
             </div>
-
-            {/* Тип */}
+            {}
             <div className={styles.sidebarItem}>
               <span className={styles.sidebarLabel}>Тип:</span>
               <span className={styles.sidebarValue}>
                 {internship.salaryMin ? 'Оплачиваемая' : 'Неоплачиваемая'}
               </span>
             </div>
-
-            {/* Локация */}
+            {}
             <div className={styles.sidebarItem}>
               <span className={styles.sidebarLabel}>Локация:</span>
               <span className={styles.sidebarValue}>
                 {internship.location} {internship.isRemote && '(Удаленно)'}
               </span>
             </div>
-
-            {/* Период */}
+            {}
             <div className={styles.sidebarItem}>
               <span className={styles.sidebarLabel}>Период:</span>
               <span className={styles.sidebarValue}>{internship.duration} дней</span>
             </div>
-
-            {/* Места */}
+            {}
             <div className={styles.sidebarItem}>
               <span className={styles.sidebarLabel}>Мест:</span>
               <span className={styles.sidebarValue}>{internship.maxParticipants}</span>
             </div>
-
-            {/* Статистика */}
+            {}
             <div className={styles.sidebarItem}>
               <span className={styles.sidebarLabel}>Заявок:</span>
               <span className={styles.sidebarValue}>{internship.applicationsCount}</span>
             </div>
           </div>
-
-          {/* Кнопки действий */}
+          {}
           <div className={styles.actionCard}>
             {internship.hasApplied ? (
               <div className={styles.appliedStatusCard}>
@@ -384,7 +349,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
             ) : (
               <div className={styles.applicationForm}>
                 <h4 className={styles.formTitle}>Заявка на стажировку</h4>
-                
                 <div className={styles.formGrid}>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Специальность *</label>
@@ -396,7 +360,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                       onChange={(e) => handleInputChange('specialty', e.target.value)}
                     />
                   </div>
-
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Количество студентов *</label>
                     <input
@@ -407,7 +370,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                       onChange={(e) => handleInputChange('studentCount', e.target.value)}
                     />
                   </div>
-
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Период стажировки *</label>
                     <input
@@ -418,7 +380,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                       onChange={(e) => handleInputChange('period', e.target.value)}
                     />
                   </div>
-
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Дата начала *</label>
                     <input
@@ -428,7 +389,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                       onChange={(e) => handleInputChange('startDate', e.target.value)}
                     />
                   </div>
-
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Дата окончания *</label>
                     <input
@@ -438,7 +398,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                       onChange={(e) => handleInputChange('endDate', e.target.value)}
                     />
                   </div>
-
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Локация</label>
                     <input
@@ -450,7 +409,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                     />
           </div>
         </div>
-
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>Описание *</label>
                   <textarea
@@ -461,7 +419,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                     rows={3}
                   />
                 </div>
-
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>Требования</label>
                   <textarea
@@ -472,7 +429,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                     rows={2}
                   />
                 </div>
-
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>Навыки</label>
                   <div className={styles.skillsInput}>
@@ -509,7 +465,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
               </div>
             )}
           </div>
-
                 <div className={styles.formGroup}>
                   <label className={styles.checkboxLabel}>
                     <input
@@ -520,7 +475,6 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
                     Удаленная стажировка
                   </label>
                 </div>
-
                 <div className={styles.formActions}>
                   <button 
                     className={styles.submitButton}
@@ -554,8 +508,7 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
           </div>
             )}
           </div>
-
-          {/* Информация о компании */}
+          {}
           {internship.company && (
             <div className={styles.companyCard}>
               <h3 className={styles.companyCardTitle}>О компании</h3>
@@ -572,5 +525,4 @@ const InternshipDetailsPage: React.FC<InternshipDetailsPageProps> = ({ params })
     </div>
   );
 };
-
 export default InternshipDetailsPage;

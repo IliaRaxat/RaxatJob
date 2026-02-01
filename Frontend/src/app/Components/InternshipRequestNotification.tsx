@@ -1,8 +1,6 @@
 'use client';
-
 import React from 'react';
 import styles from './InternshipRequestNotification.module.css';
-
 interface InternshipRequestNotificationProps {
   request: {
     id: string;
@@ -19,7 +17,6 @@ interface InternshipRequestNotificationProps {
   onView: (requestId: string) => void;
   onDismiss: (requestId: string) => void;
 }
-
 const InternshipRequestNotification: React.FC<InternshipRequestNotificationProps> = ({
   request,
   onView,
@@ -33,7 +30,6 @@ const InternshipRequestNotification: React.FC<InternshipRequestNotificationProps
       minute: '2-digit'
     });
   };
-
   return (
     <div className={styles.notification}>
       <div className={styles.notificationHeader}>
@@ -55,7 +51,6 @@ const InternshipRequestNotification: React.FC<InternshipRequestNotificationProps
           ×
         </button>
       </div>
-
       <div className={styles.notificationContent}>
         <div className={styles.requestInfo}>
           <h5 className={styles.specialty}>{request.specialty}</h5>
@@ -67,7 +62,6 @@ const InternshipRequestNotification: React.FC<InternshipRequestNotificationProps
             Университет: {request.university.name}
           </p>
         </div>
-
         <div className={styles.notificationActions}>
           <button
             onClick={() => onView(request.id)}
@@ -80,5 +74,4 @@ const InternshipRequestNotification: React.FC<InternshipRequestNotificationProps
     </div>
   );
 };
-
 export default InternshipRequestNotification;

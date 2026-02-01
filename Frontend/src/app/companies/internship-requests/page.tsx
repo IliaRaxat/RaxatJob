@@ -1,18 +1,13 @@
 'use client';
-
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useGetInternshipRequestsQuery } from '@/lib/api/internshipRequestsApi';
+import { useGetInternshipRequestsQuery } from '@/entities/internship-request';
 import styles from './internship-requests.module.css';
-
 const CompanyInternshipRequestsPage: React.FC = () => {
   const { data: responseData, isLoading, error, refetch } = useGetInternshipRequestsQuery();
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Безопасно получаем массив заявок из ответа API
   const requests = Array.isArray(responseData?.requests) ? responseData.requests : [];
-
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'Дата не указана';
     try {
@@ -27,7 +22,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
       return 'Ошибка даты';
     }
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -40,7 +34,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
         return '#6b7280';
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -53,18 +46,13 @@ const CompanyInternshipRequestsPage: React.FC = () => {
         return status;
     }
   };
-
-  // Фильтрация заявок
   const filteredRequests = requests.filter(request => {
     const matchesSearch = request.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          request.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          request.location.toLowerCase().includes(searchQuery.toLowerCase());
-    
     const matchesStatus = selectedStatus === 'all' || request.status === selectedStatus;
-    
     return matchesSearch && matchesStatus;
   });
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -75,7 +63,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.container}>
@@ -89,7 +76,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -100,8 +86,7 @@ const CompanyInternshipRequestsPage: React.FC = () => {
           </p>
         </div>
       </div>
-
-      {/* Фильтры */}
+      {}
       <div className={styles.filters}>
         <div className={styles.searchBox}>
           <input
@@ -112,7 +97,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
             className={styles.searchInput}
           />
         </div>
-        
         <div className={styles.statusFilter}>
           <select
             value={selectedStatus}
@@ -126,13 +110,11 @@ const CompanyInternshipRequestsPage: React.FC = () => {
           </select>
         </div>
       </div>
-
-      {/* Результаты */}
+      {}
       <div className={styles.results}>
         <div className={styles.resultsHeader}>
           <h2>Найдено {filteredRequests.length} заявок</h2>
         </div>
-
         {filteredRequests.length === 0 ? (
           <div className={styles.empty}>
             <div className={styles.emptyIcon}>🎓</div>
@@ -163,20 +145,17 @@ const CompanyInternshipRequestsPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className={styles.requestContent}>
                   <div className={styles.requestDescription}>
                     <h4>Описание:</h4>
                     <p>{request.description}</p>
                   </div>
-
                   {request.requirements && (
                     <div className={styles.requestRequirements}>
                       <h4>Требования:</h4>
                       <p>{request.requirements}</p>
                     </div>
                   )}
-
                   {request.skills && Array.isArray(request.skills) && request.skills.length > 0 && (
                     <div className={styles.requestSkills}>
                       <h4>Навыки:</h4>
@@ -189,7 +168,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-
                   <div className={styles.requestDates}>
                     <div className={styles.dateItem}>
                       <span className={styles.dateLabel}>Начало:</span>
@@ -211,7 +189,6 @@ const CompanyInternshipRequestsPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className={styles.requestFooter}>
                   <div className={styles.requestMeta}>
                     <span className={styles.createdAt}>
@@ -242,5 +219,4 @@ const CompanyInternshipRequestsPage: React.FC = () => {
     </div>
   );
 };
-
 export default CompanyInternshipRequestsPage;

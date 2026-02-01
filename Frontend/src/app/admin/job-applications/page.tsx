@@ -1,9 +1,7 @@
 'use client';
-
 import React from 'react';
 import JobApplicationsPanel from '@/app/Components/JobApplicationsPanel';
 import RoleGuard from '@/app/Components/RoleGuard';
-
 const JobApplicationsPage: React.FC = () => {
   return (
     <RoleGuard allowedRoles={['ADMIN']}>
@@ -13,5 +11,4 @@ const JobApplicationsPage: React.FC = () => {
     </RoleGuard>
   );
 };
-
 export default JobApplicationsPage;

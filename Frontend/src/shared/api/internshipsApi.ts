@@ -1,0 +1,1 @@
+import { createApi } from '@reduxjs/toolkit/query/react';import { baseQuery } from './base';export const internshipsApi = createApi({  reducerPath: 'internshipsApi',  baseQuery,  tagTypes: ['Internship', 'InternshipApplication'],  endpoints: () => ({}),});

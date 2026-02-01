@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import {
   useGetNotificationsQuery,
@@ -7,9 +6,8 @@ import {
   useDeleteNotificationMutation,
   NotificationsParams,
   BroadcastNotificationParams,
-} from '../../../../lib/api/analyticsApi';
+} from '@/shared/api/analyticsApi';
 import styles from '../moderation.module.css';
-
 export default function ModerationNotificationsPage() {
   const [activeTab, setActiveTab] = useState('list');
   const [page, setPage] = useState(1);
@@ -19,7 +17,6 @@ export default function ModerationNotificationsPage() {
     page: 1,
     limit: 20,
   });
-  
   const [newNotification, setNewNotification] = useState<BroadcastNotificationParams>({
     title: '',
     message: '',
@@ -28,27 +25,21 @@ export default function ModerationNotificationsPage() {
     targetRoles: ['ADMIN'],
     scheduledAt: '',
   });
-
-  // API хуки
   const { data: notificationsData, isLoading,  refetch } = useGetNotificationsQuery({
     ...filters,
     page,
   });
-  
   const [broadcastNotification, { isLoading: broadcastLoading }] = useBroadcastNotificationMutation();
   const [deleteNotification, { isLoading: deleteLoading }] = useDeleteNotificationMutation();
-
   const handleFilterChange = (key: keyof NotificationsParams, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setPage(1);
   };
-
   const handleBroadcast = async () => {
     if (!newNotification.title || !newNotification.message) {
       alert('Пожалуйста, заполните заголовок и сообщение');
       return;
     }
-
     try {
       await broadcastNotification(newNotification).unwrap();
       alert('Уведомление отправлено успешно!');
@@ -62,28 +53,22 @@ export default function ModerationNotificationsPage() {
       });
       refetch();
     } catch (error) {
-      console.error('Ошибка отправки уведомления:', error);
-      alert('Ошибка отправки уведомления');
+            alert('Ошибка отправки уведомления');
     }
   };
-
   const handleDelete = async (notificationId: string) => {
     if (!confirm('Вы уверены, что хотите удалить это уведомление?')) return;
-
     try {
       await deleteNotification(notificationId).unwrap();
       alert('Уведомление удалено');
       refetch();
     } catch (error) {
-      console.error('Ошибка удаления уведомления:', error);
-      alert('Ошибка удаления уведомления');
+            alert('Ошибка удаления уведомления');
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('ru-RU');
   };
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'HIGH':
@@ -96,7 +81,6 @@ export default function ModerationNotificationsPage() {
         return '#6b7280';
     }
   };
-
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'SYSTEM':
@@ -111,12 +95,10 @@ export default function ModerationNotificationsPage() {
         return '📢';
     }
   };
-
   const tabs = [
     { id: 'list', name: 'Уведомления', icon: '📋' },
     { id: 'create', name: 'Создать', icon: '✉️' },
   ];
-
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -127,10 +109,9 @@ export default function ModerationNotificationsPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Header */}
+      {}
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerTop}>
@@ -151,10 +132,9 @@ export default function ModerationNotificationsPage() {
           </div>
         </div>
       </div>
-
-      {/* Content */}
+      {}
       <div className={styles.content}>
-        {/* Tabs */}
+        {}
         <div className={styles.filtersCard}>
           <div className={styles.filters}>
             {tabs.map((tab) => (
@@ -173,11 +153,10 @@ export default function ModerationNotificationsPage() {
             ))}
           </div>
         </div>
-
-        {/* Notifications List Tab */}
+        {}
         {activeTab === 'list' && (
           <div>
-            {/* Filters */}
+            {}
             <div className={styles.filtersCard}>
               <div className={styles.filters}>
                 <span className={styles.filterLabel}>Фильтры:</span>
@@ -209,8 +188,7 @@ export default function ModerationNotificationsPage() {
                  )}
               </div>
             </div>
-
-            {/* Notifications List */}
+            {}
             {notificationsData && notificationsData.notifications && notificationsData.notifications.length > 0 ? (
               <div className={styles.jobsGrid}>
                 {notificationsData.notifications.map((notification) => (
@@ -243,11 +221,9 @@ export default function ModerationNotificationsPage() {
                         </span>
                       </div>
                     </div>
-                    
                     <p className={styles.jobDescription}>
                       {notification.message}
                     </p>
-                    
                     {notification.scheduledAt && (
                       <div className={styles.jobSkills}>
                         <span className={styles.skillTag}>
@@ -255,12 +231,10 @@ export default function ModerationNotificationsPage() {
                         </span>
                       </div>
                     )}
-                    
                     <div className={styles.jobFooter}>
                       <div className={styles.jobMeta}>
                         <span>ID: {notification.id}</span>
                       </div>
-                      
                       <div className={styles.jobActions}>
                         <button
                           onClick={() => handleDelete(notification.id)}
@@ -292,8 +266,7 @@ export default function ModerationNotificationsPage() {
                 <p>Пока нет уведомлений для отображения.</p>
               </div>
             )}
-
-            {/* Pagination */}
+            {}
             {notificationsData && notificationsData.totalPages && notificationsData.totalPages > 1 && (
               <div className={styles.pagination}>
                 <button
@@ -305,11 +278,9 @@ export default function ModerationNotificationsPage() {
                     <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
-                
                 <span className={styles.paginationButton} style={{ background: '#f8fafc', cursor: 'default' }}>
                   {page} из {notificationsData.totalPages}
                 </span>
-                
                 <button
                   onClick={() => setPage(page + 1)}
                   disabled={page >= notificationsData.totalPages}
@@ -323,8 +294,7 @@ export default function ModerationNotificationsPage() {
             )}
           </div>
         )}
-
-        {/* Create Notification Tab */}
+        {}
         {activeTab === 'create' && (
           <div>
             <div className={styles.jobCard}>
@@ -334,7 +304,6 @@ export default function ModerationNotificationsPage() {
                   <p className={styles.jobCompany}>Отправка уведомлений пользователям системы</p>
                 </div>
               </div>
-              
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#111' }}>
@@ -349,7 +318,6 @@ export default function ModerationNotificationsPage() {
                     style={{ width: '100%' }}
                   />
                 </div>
-
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#111' }}>
                     Сообщение:
@@ -363,7 +331,6 @@ export default function ModerationNotificationsPage() {
                     style={{ width: '100%', resize: 'vertical' }}
                   />
                 </div>
-
                 <div className={styles.filters}>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#111' }}>
@@ -380,7 +347,6 @@ export default function ModerationNotificationsPage() {
                       <option value="INFO">Информационное</option>
                     </select>
                   </div>
-
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#111' }}>
                       Приоритет:
@@ -395,7 +361,6 @@ export default function ModerationNotificationsPage() {
                       <option value="HIGH">Высокий</option>
                     </select>
                   </div>
-
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#111' }}>
                       Запланировать на:
@@ -408,7 +373,6 @@ export default function ModerationNotificationsPage() {
                     />
                   </div>
                 </div>
-
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#111' }}>
                     Целевые роли:
@@ -439,7 +403,6 @@ export default function ModerationNotificationsPage() {
                   </div>
                 </div>
               </div>
-
               <div className={styles.jobActions} style={{ marginTop: '2rem' }}>
                 <button
                   onClick={handleBroadcast}

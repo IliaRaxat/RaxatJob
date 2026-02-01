@@ -1,6 +1,4 @@
 'use client';
-
-
 import { useState, useEffect, useRef } from 'react';
 import styles from './users.module.css';
 import { 
@@ -12,29 +10,24 @@ import {
   useBulkDeleteUsersMutation,
   User,
   UsersParams
-} from '../../../lib/api/usersApi';
-
+} from '@/entities/user';
 interface CustomSelectProps {
   options: { value: string; label: string }[];
   value: string;
   onChange: (value: string) => void;
 }
-
 function CustomSelect({ options, value, onChange }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
   return (
     <div className={styles.selectContainer} ref={selectRef}>
       <button
@@ -73,7 +66,6 @@ function CustomSelect({ options, value, onChange }: CustomSelectProps) {
     </div>
   );
 }
-
 export default function UsersPage() {
   const [filter, setFilter] = useState<'ALL' | 'CANDIDATE' | 'HR' | 'UNIVERSITY' | 'ADMIN'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
@@ -81,64 +73,36 @@ export default function UsersPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(12);
-
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
       setCurrentPage(1);
     }, 500);
-
     return () => clearTimeout(timer);
   }, [searchTerm]);
-
-  // Reset page when filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [filter]);
-
-  // API параметры
   const usersParams: UsersParams = {
     role: filter === 'ALL' ? undefined : filter,
     page: currentPage,
     limit: pageSize,
     search: debouncedSearchTerm || undefined,
   };
-
-  // Отладочная информация
-  console.log('🔍 Users Search Debug:', {
-    searchTerm,
-    debouncedSearchTerm,
-    usersParams
-  });
-
-  // API хуки
-  const { 
+    const { 
     data: usersData, 
     isLoading: usersLoading, 
     error: usersError,
     refetch: refetchUsers 
   } = useGetUsersQuery(usersParams);
-
-  // Отладочная информация для API
-  console.log('🔍 Users API Debug:', {
-    usersData,
-    isLoading: usersLoading,
-    error: usersError
-  });
-
-  const { 
+    const { 
     data: statsData, 
     isLoading: statsLoading 
   } = useGetUsersStatsQuery();
-
-  // Мутации
   const [toggleUserStatus] = useToggleUserStatusMutation();
   const [deleteUser] = useDeleteUserMutation();
   const [bulkToggleStatus] = useBulkToggleStatusMutation();
   const [bulkDeleteUsers] = useBulkDeleteUsersMutation();
-
-  // Fallback данные для тестирования
   const fallbackUsers: User[] = [
     {
       id: '1',
@@ -178,8 +142,6 @@ export default function UsersPage() {
       }
     }
   ];
-
-  // Клиентская фильтрация для fallback данных
   const filteredFallbackUsers = fallbackUsers.filter(user => {
     const matchesRole = filter === 'ALL' || user.role === filter;
     const matchesSearch = !debouncedSearchTerm || 
@@ -192,10 +154,8 @@ export default function UsersPage() {
       (user.universityProfile && 
         (user.universityProfile.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
          user.universityProfile.address.toLowerCase().includes(debouncedSearchTerm.toLowerCase())));
-    
     return matchesRole && matchesSearch;
   });
-
   const users = usersData?.users || filteredFallbackUsers;
   const stats = statsData || {
     totalUsers: fallbackUsers.length,
@@ -208,7 +168,6 @@ export default function UsersPage() {
     ]
   };
   const loading = usersLoading || statsLoading;
-
   const roleOptions = [
     { value: 'ALL', label: 'Все роли' },
     { value: 'CANDIDATE', label: 'Кандидаты' },
@@ -216,7 +175,6 @@ export default function UsersPage() {
     { value: 'UNIVERSITY', label: 'Университеты' },
     { value: 'ADMIN', label: 'Администраторы' }
   ];
-
   const handleUserAction = async (userId: string, action: 'activate' | 'deactivate' | 'delete') => {
     try {
       if (action === 'delete') {
@@ -227,16 +185,12 @@ export default function UsersPage() {
           isActive: action === 'activate' 
         }).unwrap();
       }
-      
       refetchUsers();
     } catch (error) {
-      console.error('Error performing action:', error);
-    }
+          }
   };
-
   const handleBulkAction = async (action: 'activate' | 'deactivate' | 'delete') => {
     if (selectedUsers.length === 0) return;
-    
     try {
       if (action === 'delete') {
         await bulkDeleteUsers(selectedUsers).unwrap();
@@ -246,14 +200,11 @@ export default function UsersPage() {
           isActive: action === 'activate' 
         }).unwrap();
       }
-      
       setSelectedUsers([]);
       refetchUsers();
     } catch (error) {
-      console.error('Error performing bulk action:', error);
-    }
+          }
   };
-
   const toggleUserSelection = (userId: string) => {
     setSelectedUsers(prev => 
       prev.includes(userId) 
@@ -261,12 +212,10 @@ export default function UsersPage() {
         : [...prev, userId]
     );
   };
-
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Никогда';
     return new Date(dateString).toLocaleDateString('ru-RU');
   };
-
   const getRoleBadgeClass = (role: string) => {
     const roleClasses = {
       'CANDIDATE': styles.roleBadgeCandidate,
@@ -277,7 +226,6 @@ export default function UsersPage() {
     };
     return `${styles.roleBadge} ${roleClasses[role as keyof typeof roleClasses] || roleClasses.CANDIDATE}`;
   };
-
   const getRoleLabel = (role: string) => {
     const labels = {
       'CANDIDATE': 'Кандидат',
@@ -288,7 +236,6 @@ export default function UsersPage() {
     };
     return labels[role as keyof typeof labels] || role;
   };
-
   const getUserDisplayName = (user: User) => {
     if (user.hrProfile) {
       return `${user.hrProfile.firstName} ${user.hrProfile.lastName}`;
@@ -301,7 +248,6 @@ export default function UsersPage() {
     }
     return user.email;
   };
-
   const getUserOrganization = (user: User) => {
     if (user.hrProfile) {
       return user.hrProfile.company;
@@ -311,14 +257,12 @@ export default function UsersPage() {
     }
     return null;
   };
-
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && usersData && newPage <= usersData.pagination.totalPages) {
       setCurrentPage(newPage);
       setSelectedUsers([]);
     }
   };
-
   if (loading) {
     return (
       <div className={styles.container}>
@@ -329,7 +273,6 @@ export default function UsersPage() {
       </div>
     );
   }
-
   if (usersError) {
     return (
       <div className={styles.container}>
@@ -346,10 +289,9 @@ export default function UsersPage() {
       </div>
     );
   }
-
   return (
     <div className={styles.container}>
-      {/* Hero секция */}
+      {}
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
@@ -358,7 +300,6 @@ export default function UsersPage() {
           <p className={styles.heroSubtitle}>
             Управление пользователями, их ролями и активностью на платформе
           </p>
-          
           <div className={styles.searchSection}>
             <div className={styles.searchContainer}>
               <input
@@ -372,7 +313,6 @@ export default function UsersPage() {
                 <path d="M19 19L13 13L19 19ZM15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            
             <div className={styles.filters}>
               <CustomSelect
                 options={roleOptions}
@@ -383,8 +323,7 @@ export default function UsersPage() {
           </div>
         </div>
       </div>
-
-      {/* Bulk Actions */}
+      {}
       {selectedUsers.length > 0 && (
         <div className={styles.bulkActions}>
           <div className={styles.bulkActionsContent}>
@@ -412,8 +351,7 @@ export default function UsersPage() {
           </div>
         </div>
       )}
-
-      {/* Результаты */}
+      {}
       <div className={styles.results}>
         <div className={styles.resultsHeader}>
           <h2>Найдено {users.length} пользователей</h2>
@@ -425,7 +363,6 @@ export default function UsersPage() {
             </div>
           )}
         </div>
-
         <div className={styles.usersGrid}>
           {users.map((user) => (
             <article key={user.id} className={styles.userCard}>
@@ -450,7 +387,6 @@ export default function UsersPage() {
                   />
                 </div>
               </div>
-
               <div className={styles.userTags}>
                 <span className={getRoleBadgeClass(user.role)}>
                   {getRoleLabel(user.role)}
@@ -459,13 +395,11 @@ export default function UsersPage() {
                   {user.isActive ? 'Активен' : 'Неактивен'}
                 </span>
               </div>
-
               <div className={styles.userCardFooter}>
                 <div className={styles.userDates}>
                   <span>Регистрация: {formatDate(user.createdAt)}</span>
                   <span>Последний вход: {formatDate(user.lastLogin)}</span>
                 </div>
-                
                 {user.role !== 'ADMIN' && (
                   <div className={styles.userActions}>
                     <button
@@ -486,7 +420,6 @@ export default function UsersPage() {
             </article>
           ))}
         </div>
-
         {users.length === 0 && (
           <div className={styles.noResults}>
             <h3>Пользователи не найдены</h3>
@@ -494,8 +427,7 @@ export default function UsersPage() {
           </div>
         )}
       </div>
-
-      {/* Pagination */}
+      {}
       {usersData?.pagination && usersData.pagination.totalPages > 1 && (
         <div className={styles.pagination}>
           <button
@@ -505,11 +437,9 @@ export default function UsersPage() {
           >
             Назад
           </button>
-          
           <span className={styles.paginationInfo}>
             Страница {currentPage} из {usersData.pagination.totalPages}
           </span>
-          
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= usersData.pagination.totalPages}

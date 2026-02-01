@@ -1,8 +1,7 @@
 'use client';
-
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '@/features/auth';
 import { useStudentsManager } from '../../Components/StudentsHooks';
 import { StudentCardList } from '../../Components/StudentCard';
 import CreateStudentForm from '../../Components/CreateStudentForm';
@@ -25,17 +24,13 @@ import {
   Settings
 } from 'lucide-react';
 import styles from './students-page.module.css';
-
 export default function UniversityStudentsPage() {
   const { user, isAuthenticated } = useAuth();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingStudent, setEditingStudent] = useState<any>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showImportForm, setShowImportForm] = useState(false);
-  
-  // Проверяем, что пользователь - университет
   const isUniversityUser = user?.role === 'UNIVERSITY';
-
   const {
     filteredStudents,
     searchTerm,
@@ -48,8 +43,6 @@ export default function UniversityStudentsPage() {
     deleteStudent,
     refreshData
   } = useStudentsManager();
-
-  // Если пользователь не авторизован или не университет
   if (!isAuthenticated || !isUniversityUser) {
     return (
       <div className={styles.accessDenied}>
@@ -72,23 +65,19 @@ export default function UniversityStudentsPage() {
       </div>
     );
   }
-
   const handleDeleteStudent = async (student: { id: string; firstName: string; lastName: string }) => {
     try {
       await deleteStudent(student.id, `${student.firstName} ${student.lastName}`);
       refreshData();
     } catch (error) {
-      console.error('Ошибка удаления студента:', error);
-    }
+          }
   };
-
   const handleEditStudent = (student: any) => {
     setEditingStudent(student);
   };
-
   return (
     <div className={styles.studentsPage}>
-      {/* Hero Section */}
+      {}
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
           <div className={styles.heroText}>
@@ -126,8 +115,7 @@ export default function UniversityStudentsPage() {
           </div>
         </div>
       </div>
-
-      {/* Stats Section */}
+      {}
       {stats && (
         <div className={styles.statsSection}>
           <div className={styles.statsGrid}>
@@ -141,7 +129,6 @@ export default function UniversityStudentsPage() {
                 <p className={styles.statLabel}>в базе данных</p>
               </div>
             </div>
-
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
                 <Award size={24} />
@@ -152,7 +139,6 @@ export default function UniversityStudentsPage() {
                 <p className={styles.statLabel}>активных профилей</p>
               </div>
             </div>
-
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
                 <BookOpen size={24} />
@@ -166,8 +152,7 @@ export default function UniversityStudentsPage() {
           </div>
         </div>
       )}
-
-      {/* Search and Filters */}
+      {}
       <div className={styles.searchSection}>
         <div className={styles.searchContainer}>
           <div className={styles.searchBox}>
@@ -180,7 +165,6 @@ export default function UniversityStudentsPage() {
               className={styles.searchInput}
             />
           </div>
-          
           <button 
             onClick={() => setShowFilters(!showFilters)}
             className={styles.filterButton}
@@ -189,7 +173,6 @@ export default function UniversityStudentsPage() {
             Фильтры
           </button>
         </div>
-
         {showFilters && (
           <div className={styles.filtersPanel}>
             <div className={styles.filterGroup}>
@@ -211,8 +194,7 @@ export default function UniversityStudentsPage() {
           </div>
         )}
       </div>
-
-      {/* Error State */}
+      {}
       {error && (
         <div className={styles.errorBanner}>
           <div className={styles.errorContent}>
@@ -230,8 +212,7 @@ export default function UniversityStudentsPage() {
           </div>
         </div>
       )}
-
-      {/* Students List */}
+      {}
       <div className={styles.studentsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
@@ -241,7 +222,6 @@ export default function UniversityStudentsPage() {
             )}
           </h2>
         </div>
-
         <StudentCardList
           students={filteredStudents}
           onEdit={handleEditStudent}
@@ -255,15 +235,13 @@ export default function UniversityStudentsPage() {
           className={styles.studentsList}
         />
       </div>
-
-      {/* Create Student Modal */}
+      {}
       {showCreateForm && (
         <div className={styles.modalOverlay} onClick={() => setShowCreateForm(false)}>
           <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
             <CreateStudentForm
               onSuccess={(student) => {
-                console.log('Студент создан:', student);
-                setShowCreateForm(false);
+                                setShowCreateForm(false);
                 refreshData();
               }}
               onCancel={() => setShowCreateForm(false)}
@@ -271,16 +249,14 @@ export default function UniversityStudentsPage() {
           </div>
         </div>
       )}
-
-      {/* Edit Student Modal */}
+      {}
       {editingStudent && (
         <div className={styles.modalOverlay} onClick={() => setEditingStudent(null)}>
           <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
             <EditStudentForm
               student={editingStudent}
               onSuccess={(student) => {
-                console.log('Студент обновлен:', student);
-                setEditingStudent(null);
+                                setEditingStudent(null);
                 refreshData();
               }}
               onCancel={() => setEditingStudent(null)}
@@ -288,15 +264,13 @@ export default function UniversityStudentsPage() {
           </div>
         </div>
       )}
-
-      {/* Import Students Modal */}
+      {}
       {showImportForm && (
         <div className={styles.modalOverlay} onClick={() => setShowImportForm(false)}>
           <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
             <StudentImportForm
               onSuccess={(importedCount) => {
-                console.log(`Импортировано ${importedCount} студентов`);
-                setShowImportForm(false);
+                                setShowImportForm(false);
                 refreshData();
               }}
               onCancel={() => setShowImportForm(false)}
@@ -304,14 +278,12 @@ export default function UniversityStudentsPage() {
           </div>
         </div>
       )}
-
-      {/* Quick Actions */}
+      {}
       <div className={styles.quickActions}>
         <Link href="/universities" className={styles.backButton}>
           <GraduationCap size={20} />
           Панель университета
         </Link>
-        
         <div className={styles.actionsGroup}>
           <button 
             onClick={() => setShowCreateForm(true)}
@@ -320,7 +292,6 @@ export default function UniversityStudentsPage() {
             <Plus size={16} />
             Быстрое добавление
           </button>
-          
           <button 
             onClick={() => setShowImportForm(true)}
             className={styles.quickImportButton}
@@ -328,7 +299,6 @@ export default function UniversityStudentsPage() {
             <Users size={16} />
             Импорт списка
           </button>
-          
           <button 
             onClick={refreshData}
             className={styles.quickRefreshButton}

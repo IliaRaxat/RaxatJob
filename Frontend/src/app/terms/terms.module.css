@@ -15,7 +15,7 @@
 }
 
 .header {
-  background: linear-gradient(135deg, #e10600, #ba0500);
+  background: linear-gradient(135deg, #1db954, #1aa34a);
   color: white;
   padding: 3rem 2rem;
   text-align: center;
@@ -54,10 +54,10 @@
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #e10600;
+  color: #1db954;
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e10600;
+  border-bottom: 2px solid #1db954;
   display: inline-block;
 }
 
@@ -91,25 +91,25 @@
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 12px;
-  border-left: 4px solid #e10600;
+  border-left: 4px solid #1db954;
 }
 
 .userTypeTitle {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #e10600;
+  color: #1db954;
   margin: 0 0 0.75rem 0;
 }
 
 .link {
-  color: #e10600;
+  color: #1db954;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
 .link:hover {
-  color: #ba0500;
+  color: #1aa34a;
   text-decoration: underline;
 }
 
@@ -194,3 +194,5 @@
     font-size: 0.95rem;
   }
 }
+
+
