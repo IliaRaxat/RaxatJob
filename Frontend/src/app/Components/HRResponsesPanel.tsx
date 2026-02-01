@@ -4,6 +4,7 @@ import {
   useGetHRCompanyResponsesQuery, 
   useUpdateCompanyResponseStatusMutation
 } from '@/entities/internship-request';
+import { InternshipRequestStatus } from '@/entities/internship-request/model/types';
 import ResponseDetailsModal from './ResponseDetailsModal';
 import styles from './HRResponsesPanel.module.css';
 interface HRResponsesPanelProps {
@@ -12,12 +13,20 @@ interface HRResponsesPanelProps {
 const HRResponsesPanel: React.FC<HRResponsesPanelProps> = ({ onClose }) => {
   const [filters, setFilters] = useState({
     search: '',
-    status: 'all',
+    status: 'all' as string | InternshipRequestStatus,
     page: 1,
   });
   const [selectedResponse, setSelectedResponse] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const { data: responses, isLoading, error, refetch } = useGetHRCompanyResponsesQuery(filters);
+  
+  // Convert 'all' to undefined for the query
+  const queryFilters = {
+    search: filters.search,
+    status: filters.status === 'all' ? undefined : (filters.status as InternshipRequestStatus),
+    page: filters.page,
+  };
+  
+  const { data: responses, isLoading, error, refetch } = useGetHRCompanyResponsesQuery(queryFilters);
   const [updateStatus, { isLoading: isUpdating }] = useUpdateCompanyResponseStatusMutation();
   const handleStatusUpdate = async (responseId: string, newStatus: 'ACCEPTED' | 'REJECTED') => {
     try {

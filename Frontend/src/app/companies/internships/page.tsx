@@ -5,6 +5,7 @@ import {
   useGetMyInternshipsQuery, 
   useUpdateInternshipStatusMutation
 } from '@/entities/internship';
+import { InternshipStatus } from '@/entities/internship/model/types';
 import styles from './internships.module.css';
 const CompanyInternshipsPage: React.FC = () => {
   const { data: responseData, isLoading, error, refetch } = useGetMyInternshipsQuery();
@@ -58,21 +59,21 @@ const CompanyInternshipsPage: React.FC = () => {
   };
   const handlePublish = async (internshipId: string) => {
     try {
-      await updateStatus({ id: internshipId, status: 'ACTIVE' }).unwrap();
+      await updateStatus({ id: internshipId, status: InternshipStatus.ACTIVE }).unwrap();
       refetch(); 
     } catch (err) {
           }
   };
   const handlePause = async (internshipId: string) => {
     try {
-      await updateStatus({ id: internshipId, status: 'PAUSED' }).unwrap();
+      await updateStatus({ id: internshipId, status: InternshipStatus.PAUSED }).unwrap();
       refetch(); 
     } catch (err) {
           }
   };
   const handleResume = async (internshipId: string) => {
     try {
-      await updateStatus({ id: internshipId, status: 'ACTIVE' }).unwrap();
+      await updateStatus({ id: internshipId, status: InternshipStatus.ACTIVE }).unwrap();
       refetch(); 
     } catch (err) {
           }
@@ -80,7 +81,7 @@ const CompanyInternshipsPage: React.FC = () => {
   const handleComplete = async (internshipId: string) => {
     if (confirm('Вы уверены, что хотите завершить эту стажировку?')) {
       try {
-        await updateStatus({ id: internshipId, status: 'COMPLETED' }).unwrap();
+        await updateStatus({ id: internshipId, status: InternshipStatus.COMPLETED }).unwrap();
         refetch(); 
       } catch (err) {
               }
@@ -89,7 +90,7 @@ const CompanyInternshipsPage: React.FC = () => {
   const handleCancel = async (internshipId: string) => {
     if (confirm('Вы уверены, что хотите отменить эту стажировку? Это действие нельзя отменить.')) {
       try {
-        await updateStatus({ id: internshipId, status: 'CANCELLED' }).unwrap();
+        await updateStatus({ id: internshipId, status: InternshipStatus.CANCELLED }).unwrap();
         refetch(); 
       } catch (err) {
               }
@@ -141,7 +142,7 @@ const CompanyInternshipsPage: React.FC = () => {
                     <p className={styles.internshipDetails}>
                       {internship.location} • {internship.duration} дней • {internship.maxParticipants} мест
                       {internship.isRemote && ' • Удаленно'}
-                      {internship.currentParticipants && ` • ${internship.currentParticipants} участников`}
+                      {internship._count?.participants && ` • ${internship._count.participants} участников`}
                     </p>
                     <p className={styles.internshipSalary}>
                       {internship.salaryMin && internship.salaryMax && internship.currency
@@ -219,10 +220,6 @@ const CompanyInternshipsPage: React.FC = () => {
                     )}
                   </div>
                   <div className={styles.internshipStats}>
-                    <div className={styles.statItem}>
-                      <span className={styles.statLabel}>Просмотры:</span>
-                      <span className={styles.statValue}>{internship.views}</span>
-                    </div>
                     <div className={styles.statItem}>
                       <span className={styles.statLabel}>Заявки:</span>
                       <span className={styles.statValue}>{internship.applicationsCount}</span>

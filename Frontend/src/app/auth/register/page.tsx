@@ -46,7 +46,7 @@ export default function RegisterPage() {
           errorMessage = 'Пользователь с таким email уже существует';
         } else if (error.status === 422) {
           errorMessage = 'Пароль не соответствует требованиям безопасности';
-        } else if (error.status >= 500) {
+        } else if (error.status !== undefined && error.status >= 500) {
           errorMessage = 'Ошибка сервера. Попробуйте позже';
         } else {
           errorMessage = error?.data?.message || error?.message || errorMessage;

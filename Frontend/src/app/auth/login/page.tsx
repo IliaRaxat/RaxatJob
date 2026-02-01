@@ -33,7 +33,7 @@ export default function LoginPage() {
           errorMessage = 'Доступ запрещен';
         } else if (error.status === 429) {
           errorMessage = 'Слишком много попыток входа. Попробуйте позже';
-        } else if (error.status >= 500) {
+        } else if (error.status !== undefined && error.status >= 500) {
           errorMessage = 'Ошибка сервера. Попробуйте позже';
         } else {
           errorMessage = error?.data?.message || error?.message || errorMessage;

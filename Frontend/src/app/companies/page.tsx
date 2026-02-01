@@ -243,41 +243,23 @@ export default function CompaniesPage() {
   ];
   const filteredAndSortedInternships = (() => {
     const filtered = internships.filter(internship => {
+      const companyName = typeof internship.company === 'string' ? internship.company : internship.company?.name || '';
       const matchesSearch = internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           internship.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            internship.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           internship.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesType = selectedType === 'all' || internship.type === selectedType;
+                           (internship.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())) ?? false);
       const matchesLocation = selectedLocation === 'all' || internship.location === selectedLocation;
-      const matchesExperience = selectedExperience === 'all' || selectedExperience === 'Без опыта';
-      const matchesSalary = (() => {
-        if (selectedSalary === 'all') return true;
-        if (selectedSalary === 'Неоплачиваемая') return !internship.salary;
-        if (!internship.salary) return selectedSalary === 'Неоплачиваемая';
-        const salary = parseInt(internship.salary.replace(/[^\d]/g, ''));
-        switch (selectedSalary) {
-          case 'До 30 000₽': return salary < 30000;
-          case '30 000₽ - 50 000₽': return salary >= 30000 && salary <= 50000;
-          case '50 000₽ - 80 000₽': return salary >= 50000 && salary <= 80000;
-          case 'От 80 000₽': return salary > 80000;
-          default: return true;
-        }
-      })();
-      const matchesDuration = selectedDuration === 'all' || internship.duration === selectedDuration;
-      return matchesSearch && matchesType && matchesLocation && matchesExperience && matchesSalary && matchesDuration;
+      return matchesSearch && matchesLocation;
     });
     return filtered.sort((a, b) => {
       switch (selectedSort) {
         case 'date':
-          const dateA = a.applicationDeadline ? new Date(a.applicationDeadline).getTime() : 0;
-          const dateB = b.applicationDeadline ? new Date(b.applicationDeadline).getTime() : 0;
-          if (isNaN(dateA) && isNaN(dateB)) return 0;
-          if (isNaN(dateA)) return 1;
-          if (isNaN(dateB)) return -1;
+          const dateA = a.endDate ? new Date(a.endDate).getTime() : 0;
+          const dateB = b.endDate ? new Date(b.endDate).getTime() : 0;
           return dateB - dateA;
         case 'salary':
-          const salaryA = a.salary ? parseInt(a.salary.replace(/[^\d]/g, '')) : 0;
-          const salaryB = b.salary ? parseInt(b.salary.replace(/[^\d]/g, '')) : 0;
+          const salaryA = a.salaryMin ?? 0;
+          const salaryB = b.salaryMin ?? 0;
           return salaryB - salaryA;
         case 'relevance':
         default:
