@@ -726,6 +726,31 @@
   .skillModalCancelButton,
   .skillModalCreateButton {
     width: 100%;
+    min-height: 48px; /* Увеличиваем для удобства тапа */
+  }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+  .selectButton,
+  .skillDropdownButton,
+  .skillOption,
+  .selectOption,
+  .createSkillButton {
+    min-height: 48px; /* Минимальная высота для тач-устройств */
+    -webkit-tap-highlight-color: rgba(29, 185, 84, 0.1);
+  }
+  
+  .input,
+  .textarea,
+  .skillSearchInput {
+    font-size: 16px; /* Предотвращаем зум на iOS */
+  }
+  
+  .skillModalInput,
+  .skillModalSelect,
+  .skillModalTextarea {
+    font-size: 16px; /* Предотвращаем зум на iOS */
   }
 }
 

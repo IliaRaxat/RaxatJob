@@ -15,6 +15,12 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "RaxatJob - Найди работу мечты",
   description: "Платформа нового поколения для поиска работы. Тысячи актуальных вакансий, умный поиск по навыкам и персональные рекомендации от ИИ.",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 };
 export default function RootLayout({
   children,

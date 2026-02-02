@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useCreateJobMutation, useGetPopularSkillsQuery, useCreateSkillMutation, JobType, ExperienceLevel } from '@/entities/job';
 import RoleGuard from '@/app/Components/RoleGuard';
 import styles from './create.module.css';
+import { useClickOutside } from './useClickOutside';
 interface CustomSelectProps {
   options: string[];
   value: string;
@@ -13,17 +14,9 @@ interface CustomSelectProps {
 function CustomSelect({ options, value, onChange, placeholder }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  
+  useClickOutside(selectRef, () => setIsOpen(false));
+  
   return (
     <div className={styles.customSelect} ref={selectRef}>
       <button 
@@ -79,17 +72,24 @@ function SkillSelect({ selectedSkills, onChange, availableSkills, onSkillCreated
   });
   const selectRef = useRef<HTMLDivElement>(null);
   const [createSkill, { isLoading: isCreatingSkill }] = useCreateSkillMutation();
+  
+  useClickOutside(selectRef, () => setIsOpen(false));
+  
+  // Предотвращаем скролл body когда модальное окно открыто
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
+    if (showCreateModal) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     }
-    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     };
-  }, []);
+  }, [showCreateModal]);
+  
   const filteredSkills = availableSkills.filter(popularSkill =>
     popularSkill.skill.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     !selectedSkills.includes(popularSkill.skill.id)
@@ -379,6 +379,22 @@ export default function CreateJobPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [createdJobInfo, setCreatedJobInfo] = useState<{title: string, status: string} | null>(null);
+  
+  // Предотвращаем скролл body когда success overlay открыт
+  useEffect(() => {
+    if (showSuccessMessage) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [showSuccessMessage]);
+  
   useEffect(() => {
     if (skills && skills.length > 0) {
       setLocalSkills(skills);
