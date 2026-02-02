@@ -26,7 +26,8 @@ export const resumesApi = createApi({
       if (process.env.NODE_ENV === 'development') {
       }
       if (!response.ok) {
-        const errorText = await response.text();
+        const clonedResponse = response.clone();
+        const errorText = await clonedResponse.text();
         const url = typeof input === 'string' ? input : input.url;
         const context = determineErrorContext(errorText, url);
         handleAuthError(response.status, response, context);
