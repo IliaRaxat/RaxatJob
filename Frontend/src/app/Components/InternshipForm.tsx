@@ -26,7 +26,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
     endDate: '',
     duration: '',
     maxParticipants: '',
-    deadline: '',
     skills: [] as string[],
     tags: [] as string[],
   });
@@ -98,7 +97,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
       formData.endDate &&
       formData.duration &&
       formData.maxParticipants &&
-      formData.deadline &&
       formData.skills.length > 0
     );
   };
@@ -320,20 +318,6 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
                 className={styles.input}
                 placeholder="90"
                 min="1"
-                required
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="deadline" className={styles.label}>
-                Дедлайн подачи заявок *
-              </label>
-              <input
-                type="datetime-local"
-                id="deadline"
-                name="deadline"
-                value={formData.deadline}
-                onChange={handleInputChange}
-                className={styles.input}
                 required
               />
             </div>

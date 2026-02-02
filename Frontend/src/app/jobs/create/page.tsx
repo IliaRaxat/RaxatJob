@@ -373,7 +373,6 @@ export default function CreateJobPage() {
     type: '' as JobType | '',
     experienceLevel: '' as ExperienceLevel | '',
     remote: false,
-    deadline: '',
     skillIds: [] as string[]
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -444,9 +443,6 @@ export default function CreateJobPage() {
     if (formData.salaryMin && formData.salaryMax && formData.salaryMin >= formData.salaryMax) {
       newErrors.salaryMax = 'Максимальная зарплата должна быть больше минимальной';
     }
-    if (formData.deadline && new Date(formData.deadline) <= new Date()) {
-      newErrors.deadline = 'Дедлайн должен быть в будущем';
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -469,7 +465,6 @@ export default function CreateJobPage() {
         type: formData.type as JobType,
         experienceLevel: formData.experienceLevel as ExperienceLevel,
         remote: formData.remote,
-        deadline: formData.deadline || undefined,
         skillIds: formData.skillIds
       };
             const createdJob = await createJob(jobData).unwrap();
@@ -637,20 +632,6 @@ export default function CreateJobPage() {
                 />
                 Удаленная работа
               </label>
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="deadline">
-                Дедлайн подачи заявок
-              </label>
-              <input
-                id="deadline"
-                type="date"
-                value={formData.deadline}
-                onChange={(e) => handleInputChange('deadline', e.target.value)}
-                className={`${styles.input} ${errors.deadline ? styles.inputError : ''}`}
-                min={new Date().toISOString().split('T')[0]}
-              />
-              {errors.deadline && <span className={styles.error}>{errors.deadline}</span>}
             </div>
           </div>
         </div>
