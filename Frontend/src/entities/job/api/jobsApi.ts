@@ -1,1 +1,158 @@
-import { createApi } from '@reduxjs/toolkit/query/react';import { baseQuery } from '@/shared/api/base';import {  Job,  JobsResponse,  JobQueryDto,  CreateJobDto,  UpdateJobDto,  CreateApplicationDto,  Application,  DetailedApplication,  Skill,  PopularSkill,  CreateSkillDto,} from '../model/types';export const jobsApi = createApi({  reducerPath: 'jobsApi',  baseQuery,  tagTypes: ['Job', 'MyJobs', 'Skill', 'Application'],  endpoints: (builder) => ({    createJob: builder.mutation<Job, CreateJobDto>({      query: (jobData) => ({        url: '/jobs',        method: 'POST',        body: jobData,      }),      invalidatesTags: ['Job', 'MyJobs'],    }),    getJobs: builder.query<JobsResponse, JobQueryDto | void>({      query: (params) => {        const searchParams = new URLSearchParams();        if (params?.search) searchParams.append('search', params.search);        if (params?.location) searchParams.append('location', params.location);        if (params?.type) searchParams.append('type', params.type);        if (params?.skills) searchParams.append('skills', params.skills);        if (params?.remote !== undefined) searchParams.append('remote', params.remote.toString());        if (params?.page && params.page > 0) searchParams.append('page', params.page.toString());        const queryString = searchParams.toString();        return `/jobs${queryString ? `?${queryString}` : ''}`;      },      providesTags: ['Job'],    }),    getMyJobs: builder.query<Job[], void>({      query: () => '/jobs/my',      providesTags: ['MyJobs'],    }),    getJobById: builder.query<Job, string>({      query: (id) => `/jobs/${id}`,      providesTags: (result, error, id) => [{ type: 'Job', id }],    }),    updateJob: builder.mutation<Job, { id: string; data: UpdateJobDto }>({      query: ({ id, data }) => ({        url: `/jobs/${id}`,        method: 'PATCH',        body: data,      }),      invalidatesTags: (result, error, { id }) => [        { type: 'Job', id },        'Job',        'MyJobs',      ],    }),    deleteJob: builder.mutation<void, string>({      query: (id) => ({        url: `/jobs/${id}`,        method: 'DELETE',      }),      invalidatesTags: (result, error, id) => [        { type: 'Job', id },        'Job',        'MyJobs',      ],    }),    getPopularSkills: builder.query<PopularSkill[], void>({      query: () => '/skills/popular',      providesTags: ['Skill'],    }),    createSkill: builder.mutation<Skill, CreateSkillDto>({      query: (skillData) => ({        url: '/skills',        method: 'POST',        body: skillData,      }),      invalidatesTags: ['Skill'],    }),    createApplication: builder.mutation<Application, CreateApplicationDto>({      query: (applicationData) => ({        url: '/applications',        method: 'POST',        body: applicationData,      }),      invalidatesTags: ['Job'],    }),    publishJob: builder.mutation<Job, string>({      query: (jobId) => ({        url: `/jobs/${jobId}/publish`,        method: 'POST',      }),      invalidatesTags: (result, error, jobId) => [        { type: 'Job', id: jobId },        'Job',        'MyJobs',      ],    }),    updateJobStatus: builder.mutation<Job, { jobId: string; status: string }>({      query: ({ jobId, status }) => ({        url: `/jobs/${jobId}`,        method: 'PATCH',        body: { status },      }),      invalidatesTags: (result, error, { jobId }) => [        { type: 'Job', id: jobId },        'Job',        'MyJobs',      ],    }),    getMyApplications: builder.query<DetailedApplication[], void>({      query: () => '/applications/my',      providesTags: ['Application'],    }),    updateApplicationStatus: builder.mutation<DetailedApplication, {       applicationId: string;       status: 'PENDING' | 'REVIEWED' | 'ACCEPTED' | 'REJECTED' | 'INTERVIEW_SCHEDULED' | 'HIRED' | 'WITHDRAWN';      notes?: string;    }>({      query: ({ applicationId, status, notes }) => ({        url: `/applications/${applicationId}`,        method: 'PATCH',        body: { status, notes },      }),      invalidatesTags: (result, error, { applicationId }) => [        { type: 'Application', id: applicationId },        'Application',      ],    }),  }),});export const {  useCreateJobMutation,  useGetJobsQuery,  useGetMyJobsQuery,  useGetJobByIdQuery,  useUpdateJobMutation,  useDeleteJobMutation,  useGetPopularSkillsQuery,  useCreateSkillMutation,  useCreateApplicationMutation,  usePublishJobMutation,  useUpdateJobStatusMutation,  useGetMyApplicationsQuery,  useUpdateApplicationStatusMutation,} = jobsApi;
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from '@/shared/api/base';
+import {
+  Job,
+  JobsResponse,
+  JobQueryDto,
+  CreateJobDto,
+  UpdateJobDto,
+  CreateApplicationDto,
+  Application,
+  DetailedApplication,
+  Skill,
+  PopularSkill,
+  CreateSkillDto,
+} from '../model/types';
+export const jobsApi = createApi({
+  reducerPath: 'jobsApi',
+  baseQuery,
+  tagTypes: ['Job', 'MyJobs', 'Skill', 'Application'],
+  endpoints: (builder) => ({
+    createJob: builder.mutation<Job, CreateJobDto>({
+      query: (jobData) => ({
+        url: '/jobs',
+        method: 'POST',
+        body: jobData,
+      }),
+      invalidatesTags: [{ type: 'Job', id: 'LIST' }, 'MyJobs'],
+    }),
+    getJobs: builder.query<JobsResponse, JobQueryDto | void>({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        if (params?.search) searchParams.append('search', params.search);
+        if (params?.location) searchParams.append('location', params.location);
+        if (params?.type) searchParams.append('type', params.type);
+        if (params?.skills) searchParams.append('skills', params.skills);
+        if (params?.remote !== undefined) searchParams.append('remote', params.remote.toString());
+        if (params?.page && params.page > 0) searchParams.append('page', params.page.toString());
+        const queryString = searchParams.toString();
+        return `/jobs${queryString ? `?${queryString}` : ''}`;
+      },
+      providesTags: (result) => 
+        result
+          ? [
+              ...result.jobs.map(({ id }) => ({ type: 'Job' as const, id })),
+              { type: 'Job', id: 'LIST' },
+            ]
+          : [{ type: 'Job', id: 'LIST' }],
+    }),
+    getMyJobs: builder.query<Job[], void>({
+      query: () => '/jobs/my',
+      providesTags: ['MyJobs'],
+    }),
+    getJobById: builder.query<Job, string>({
+      query: (id) => `/jobs/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Job', id }],
+    }),
+    updateJob: builder.mutation<Job, { id: string; data: UpdateJobDto }>({
+      query: ({ id, data }) => ({
+        url: `/jobs/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Job', id },
+        'Job',
+        'MyJobs',
+      ],
+    }),
+    deleteJob: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/jobs/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'Job', id },
+        'Job',
+        'MyJobs',
+      ],
+    }),
+    getPopularSkills: builder.query<PopularSkill[], void>({
+      query: () => '/skills/popular',
+      providesTags: ['Skill'],
+    }),
+    createSkill: builder.mutation<Skill, CreateSkillDto>({
+      query: (skillData) => ({
+        url: '/skills',
+        method: 'POST',
+        body: skillData,
+      }),
+      invalidatesTags: ['Skill'],
+    }),
+    createApplication: builder.mutation<Application, CreateApplicationDto>({
+      query: (applicationData) => ({
+        url: '/applications',
+        method: 'POST',
+        body: applicationData,
+      }),
+      invalidatesTags: ['Job'],
+    }),
+    publishJob: builder.mutation<Job, string>({
+      query: (jobId) => ({
+        url: `/jobs/${jobId}/publish`,
+        method: 'POST',
+      }),
+      invalidatesTags: (result, error, jobId) => [
+        { type: 'Job', id: jobId },
+        'Job',
+        'MyJobs',
+      ],
+    }),
+    updateJobStatus: builder.mutation<Job, { jobId: string; status: string }>({
+      query: ({ jobId, status }) => ({
+        url: `/jobs/${jobId}`,
+        method: 'PATCH',
+        body: { status },
+      }),
+      invalidatesTags: (result, error, { jobId }) => [
+        { type: 'Job', id: jobId },
+        'Job',
+        'MyJobs',
+      ],
+    }),
+    getMyApplications: builder.query<DetailedApplication[], void>({
+      query: () => '/applications/my',
+      providesTags: ['Application'],
+    }),
+    updateApplicationStatus: builder.mutation<DetailedApplication, { 
+      applicationId: string; 
+      status: 'PENDING' | 'REVIEWED' | 'ACCEPTED' | 'REJECTED' | 'INTERVIEW_SCHEDULED' | 'HIRED' | 'WITHDRAWN';
+      notes?: string;
+    }>({
+      query: ({ applicationId, status, notes }) => ({
+        url: `/applications/${applicationId}`,
+        method: 'PATCH',
+        body: { status, notes },
+      }),
+      invalidatesTags: (result, error, { applicationId }) => [
+        { type: 'Application', id: applicationId },
+        'Application',
+      ],
+    }),
+  }),
+});
+export const {
+  useCreateJobMutation,
+  useGetJobsQuery,
+  useGetMyJobsQuery,
+  useGetJobByIdQuery,
+  useUpdateJobMutation,
+  useDeleteJobMutation,
+  useGetPopularSkillsQuery,
+  useCreateSkillMutation,
+  useCreateApplicationMutation,
+  usePublishJobMutation,
+  useUpdateJobStatusMutation,
+  useGetMyApplicationsQuery,
+  useUpdateApplicationStatusMutation,
+} = jobsApi;

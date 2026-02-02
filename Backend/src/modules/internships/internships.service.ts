@@ -270,8 +270,15 @@ export class InternshipsService {
       this.prisma.internship.count({ where }),
     ]);
 
+    // Преобразуем BigInt в Number
+    const internshipsWithConvertedSalary = internships.map(internship => ({
+      ...internship,
+      salaryMin: internship.salaryMin ? Number(internship.salaryMin) : null,
+      salaryMax: internship.salaryMax ? Number(internship.salaryMax) : null,
+    }));
+
     // Добавляем информацию о статусе откликов
-    const internshipsWithStatus = await this.addApplicationStatusToInternships(internships, userId);
+    const internshipsWithStatus = await this.addApplicationStatusToInternships(internshipsWithConvertedSalary, userId);
 
     return {
       internships: internshipsWithStatus,
@@ -321,8 +328,15 @@ export class InternshipsService {
       this.prisma.internship.count({ where }),
     ]);
 
+    // Преобразуем BigInt в Number
+    const internshipsWithConvertedSalary = internships.map(internship => ({
+      ...internship,
+      salaryMin: internship.salaryMin ? Number(internship.salaryMin) : null,
+      salaryMax: internship.salaryMax ? Number(internship.salaryMax) : null,
+    }));
+
     return {
-      internships,
+      internships: internshipsWithConvertedSalary,
       total,
       page: query.page || 1,
       limit: query.limit || 10,
@@ -396,8 +410,15 @@ export class InternshipsService {
       data: { views: { increment: 1 } },
     });
 
+    // Преобразуем BigInt в Number
+    const internshipWithConvertedSalary = {
+      ...internship,
+      salaryMin: internship.salaryMin ? Number(internship.salaryMin) : null,
+      salaryMax: internship.salaryMax ? Number(internship.salaryMax) : null,
+    };
+
     // Добавляем информацию о статусе отклика
-    const internshipsWithStatus = await this.addApplicationStatusToInternships([internship], userId);
+    const internshipsWithStatus = await this.addApplicationStatusToInternships([internshipWithConvertedSalary], userId);
     
     return internshipsWithStatus[0];
   }

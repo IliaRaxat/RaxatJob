@@ -457,14 +457,17 @@ export default function CreateJobPage() {
         skillIds: formData.skillIds
       };
             const createdJob = await createJob(jobData).unwrap();
-            setCreatedJobInfo({
+      
+      setCreatedJobInfo({
         title: createdJob.title,
         status: createdJob.status
       });
       setShowSuccessMessage(true);
+      
+      // Принудительно перезагружаем страницу со списком вакансий
       setTimeout(() => {
-        router.push('/jobs');
-      }, 3000);
+        window.location.href = '/jobs';
+      }, 2000);
     } catch (error) {
           }
   };

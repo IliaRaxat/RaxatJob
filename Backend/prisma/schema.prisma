@@ -475,8 +475,8 @@ model Job {
   requirements      String?
   responsibilities  String?
   benefits          String?
-  salaryMin         Int?
-  salaryMax         Int?
+  salaryMin         BigInt?
+  salaryMax         BigInt?
   currency          String           @default("RUB")
   location          String
   type              JobType
@@ -919,8 +919,8 @@ model Internship {
   requirements      String?          // Требования к кандидатам
   responsibilities  String?          // Обязанности
   benefits          String?          // Преимущества
-  salaryMin         Int?             // Минимальная стипендия
-  salaryMax         Int?             // Максимальная стипендия
+  salaryMin         BigInt?             // Минимальная стипендия
+  salaryMax         BigInt?             // Максимальная стипендия
   currency          String           @default("RUB")
   location          String           // Локация
   isRemote          Boolean          @default(false) // Удаленная стажировка

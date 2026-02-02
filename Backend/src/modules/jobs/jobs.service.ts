@@ -36,11 +36,13 @@ export class JobsService {
         ...jobData,
         deadline: deadlineDate,
         hrId: hrProfileId,
-        moderationStatus: ModerationStatus.PENDING, // Новая вакансия попадает на модерацию
-        status: JobStatus.DRAFT, // Сначала в черновик, пока не одобрена
-        publishedAt: null, // Будет установлена после одобрения
+        moderationStatus: ModerationStatus.APPROVED, // HR вакансии сразу одобрены
+        status: JobStatus.ACTIVE, // Сразу активна
+        publishedAt: new Date(), // Публикуется сразу
       },
     });
+
+    console.log(`[JOB CREATED] ID: ${job.id}, Status: ${job.status}, ModerationStatus: ${job.moderationStatus}, PublishedAt: ${job.publishedAt}`);
 
     // Добавляем навыки к вакансии
     if (skillIds && skillIds.length > 0) {
@@ -62,8 +64,8 @@ export class JobsService {
         entityId: job.id,
         newValues: {
           title: job.title,
-          status: JobStatus.DRAFT,
-          moderationStatus: ModerationStatus.PENDING,
+          status: JobStatus.ACTIVE,
+          moderationStatus: ModerationStatus.APPROVED,
         },
       },
     });
@@ -77,7 +79,6 @@ export class JobsService {
 
     const where: any = {
       status: JobStatus.ACTIVE,
-      moderationStatus: ModerationStatus.APPROVED, // Показываем только одобренные вакансии
     };
 
     if (search) {
@@ -92,6 +93,8 @@ export class JobsService {
     if (location) where.location = { contains: location, mode: 'insensitive' };
     if (remote !== undefined) where.remote = remote;
 
+    console.log('[FIND ALL JOBS] Query filters:', JSON.stringify(where, null, 2));
+
     const [jobs, total] = await Promise.all([
       this.prisma.job.findMany({
         where,
@@ -103,10 +106,19 @@ export class JobsService {
       this.prisma.job.count({ where }),
     ]);
 
+    console.log(`[FIND ALL JOBS] Found ${jobs.length} jobs out of ${total} total`);
+
+    // Преобразуем BigInt в Number для JSON сериализации
+    const jobsWithConvertedSalary = jobs.map(job => ({
+      ...job,
+      salaryMin: job.salaryMin ? Number(job.salaryMin) : null,
+      salaryMax: job.salaryMax ? Number(job.salaryMax) : null,
+    }));
+
     // Если пользователь аутентифицирован, добавляем информацию о статусе откликов
-    let jobsWithApplicationStatus = jobs;
+    let jobsWithApplicationStatus = jobsWithConvertedSalary;
     if (userId) {
-      jobsWithApplicationStatus = await this.addApplicationStatusToJobs(jobs, userId);
+      jobsWithApplicationStatus = await this.addApplicationStatusToJobs(jobsWithConvertedSalary, userId);
     }
 
     return {
@@ -149,22 +161,29 @@ export class JobsService {
 
     console.log(`[DEBUG] Job found: ${job.title}, applications count: ${job.applications.length}`);
 
+    // Преобразуем BigInt в Number
+    const jobWithConvertedSalary = {
+      ...job,
+      salaryMin: job.salaryMin ? Number(job.salaryMin) : null,
+      salaryMax: job.salaryMax ? Number(job.salaryMax) : null,
+    };
+
     // Увеличиваем счетчик просмотров только для уникальных просмотров
-    if (job.status === JobStatus.ACTIVE && job.moderationStatus === ModerationStatus.APPROVED) {
+    if (job.status === JobStatus.ACTIVE) {
       await this.trackJobView(id, userId, ipAddress, userAgent);
     }
 
     // Добавляем информацию о статусе отклика, если пользователь аутентифицирован
     if (userId) {
       console.log(`[DEBUG] User is authenticated, adding application status`);
-      const jobWithApplicationStatus = await this.addApplicationStatusToJobs([job], userId);
+      const jobWithApplicationStatus = await this.addApplicationStatusToJobs([jobWithConvertedSalary], userId);
       return jobWithApplicationStatus[0];
     }
 
     console.log(`[DEBUG] User is not authenticated, returning basic info`);
     // Если пользователь не аутентифицирован, возвращаем базовую информацию без статуса отклика
     return {
-      ...job,
+      ...jobWithConvertedSalary,
       hasApplied: false,
       applicationStatus: null,
       appliedAt: null,
@@ -268,7 +287,7 @@ export class JobsService {
     // Автоматически создаем HR профиль если не существует
     const hrProfileId = await this.autoProfileService.getProfileId(userId, user.role as UserRole);
 
-    return this.prisma.job.findMany({
+    const jobs = await this.prisma.job.findMany({
       where: { hrId: hrProfileId },
       include: {
         ...JOB_INCLUDE_BASIC,
@@ -290,6 +309,13 @@ export class JobsService {
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    // Преобразуем BigInt в Number
+    return jobs.map(job => ({
+      ...job,
+      salaryMin: job.salaryMin ? Number(job.salaryMin) : null,
+      salaryMax: job.salaryMax ? Number(job.salaryMax) : null,
+    }));
   }
 
   /**
